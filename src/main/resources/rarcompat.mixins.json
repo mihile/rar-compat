@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "it.hurts.octostudios.rarcompat.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "rarcompat.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
