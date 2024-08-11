@@ -2,8 +2,7 @@ package it.hurts.octostudios.rarcompat.mixin;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.NoveltyDrinkingHat;
-import it.hurts.octostudios.rarcompat.items.PlasticDrinkingHat;
+import it.hurts.octostudios.rarcompat.items.*;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +18,16 @@ public class ModItemsMixin {
     @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;wearableItem(Ljava/lang/String;Ljava/util/function/Consumer;)Lnet/minecraft/core/Holder;"))
     private static Holder<Item> redirectWearableItem(String name, Consumer<WearableArtifactItem.Builder> builderConsumer) {
         return switch (name) {
-            case "plastic_drinking_hat" -> register(name, PlasticDrinkingHat::new);
-            case "novelty_drinking_hat" -> register(name, NoveltyDrinkingHat::new);
+            case "plastic_drinking_hat" -> register(name, PlasticDrinkingHatItem::new);
+            case "novelty_drinking_hat" -> register(name, NoveltyDrinkingHatItem::new);
+            case "snorkel" -> register(name, SnorkelItem::new);
+            case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
+            case "villager_hat" -> register(name, VillagerHatItem::new);
+            case "superstitious_hat" -> register(name, SuperstitiousHatItem::new);
+            case "cowboy_hat" -> register(name, CowboyHatItem::new);
+            case "anglers_hat" -> register(name, AnglersHatItem::new);
+            case "lucky_scarf" -> register(name, LuckyScarfItem::new);
+            case "scarf_of_invisibility" -> register(name, ScarfOfInvisibilityItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
