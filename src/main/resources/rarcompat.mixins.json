@@ -5,9 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "rarcompat.refmap.json",
   "mixins": [
+    "GameRendererMixin",
     "LivingEntityMixin",
     "ModItemsMixin",
-    "UmbrellaItemMixin"
+    "UmbrellaItemMixin",
+    "VillagerMixin"
   ],
   "client": [
   ],

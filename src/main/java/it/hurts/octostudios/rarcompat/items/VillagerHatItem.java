@@ -10,14 +10,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.utils.MathUtils;
 
 public class VillagerHatItem extends WearableRelicItem {
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("example")
-                                .stat(StatData.builder("example")
-                                        .initialValue(1D, 1D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
+                        .ability(AbilityData.builder("villager_discount")
+                                .stat(StatData.builder("discount")
+                                        .initialValue(50.0D, 120.0D)
+                                        .upgradeModifier(UpgradeOperation.ADD, 10.0D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
