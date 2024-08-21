@@ -56,8 +56,7 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        double drinkSpeed = getStatValue(stack, "quick_sip", "drinking_speed");
-        EntityUtils.applyAttribute(player, stack, ModAttributes.DRINKING_SPEED, (float) drinkSpeed - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.applyAttribute(player, stack, ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "quick_sip", "drinking_speed") - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
         if (player.isUsingItem() && player.getUseItem().getUseAnimation() == UseAnim.DRINK)
             player.getFoodData().eat((int) getStatValue(stack, "nutritional_sip", "hunger"),

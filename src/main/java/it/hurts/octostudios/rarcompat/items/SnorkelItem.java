@@ -43,7 +43,7 @@ public class SnorkelItem extends WearableRelicItem {
         boolean toggled = stack.getOrDefault(TOGGLED, false);
 
         if (player.hasEffect(MobEffects.WATER_BREATHING))
-            spreadExperience(player, stack, 1);
+            spreadRelicExperience(player, stack, 1);
 
         if (player.isUnderWater()) {
             if (!toggled) {

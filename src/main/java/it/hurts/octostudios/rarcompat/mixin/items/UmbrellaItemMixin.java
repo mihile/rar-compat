@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.mixin;
+package it.hurts.octostudios.rarcompat.mixin.items;
 
 import artifacts.Artifacts;
 import artifacts.item.ArtifactItem;

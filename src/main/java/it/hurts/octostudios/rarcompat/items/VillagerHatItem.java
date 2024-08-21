@@ -10,7 +10,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.utils.MathUtils;
 
 public class VillagerHatItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -26,4 +25,5 @@ public class VillagerHatItem extends WearableRelicItem {
                 .leveling(new LevelingData(100, 10, 100))
                 .build();
     }
+
 }
