@@ -14,6 +14,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 
@@ -23,10 +24,10 @@ import java.util.List;
 public class UmbrellaEvent {
 
     @SubscribeEvent
-    public static void onEntityHurt(AttackEntityEvent event) {
-        LivingEntity player = event.getEntity();
+    public static void onEntityHurt(LivingIncomingDamageEvent event) {
+        LivingEntity entity = event.getEntity();
 
-        if (player.isUsingItem() && player.getUseItem().getItem() instanceof UmbrellaItem) {
+        if ((entity instanceof Player player) && player.isUsingItem() && player.getUseItem().getItem() instanceof UmbrellaItem) {
             DamageSource source = event.getEntity().getLastDamageSource();
             Entity target = source.getEntity();
 

@@ -11,11 +11,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -24,6 +27,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(UmbrellaItem.class)
 public class UmbrellaItemMixin extends ArtifactItem implements IRelicItem {
@@ -83,6 +88,12 @@ public class UmbrellaItemMixin extends ArtifactItem implements IRelicItem {
                 e.setDeltaMovement(e.getDeltaMovement().add(kb));
             });
         }
+    }
+
+    @Inject(method = "addEffectsTooltip", at = @At("HEAD"), cancellable = true)
+    protected void addEffectsTooltip(List<MutableComponent> tooltip, CallbackInfo ci) {
+        tooltip.add(Component.translatable("tooltip.relics.researching.info"));
+        ci.cancel();
     }
 
     @Inject(method = "onLivingUpdate", at = @At("HEAD"))
