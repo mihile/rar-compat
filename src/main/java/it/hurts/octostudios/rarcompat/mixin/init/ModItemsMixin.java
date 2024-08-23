@@ -40,6 +40,8 @@ public class ModItemsMixin {
             case "cross_necklace" -> register(name, CrossNecklaceItem::new);
             case "crystal_heart" -> register(name, CrystalHeartItem::new);
             case "flame_pendant" -> register(name, FlamePendant::new);
+            case "shock_pendant" -> register(name, ShockPendant::new);
+            case "thorn_pendant" -> register(name, ThornPendant::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
