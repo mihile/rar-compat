@@ -38,17 +38,19 @@ public class ModItemsMixin {
             case "lucky_scarf" -> register(name, LuckyScarfItem::new);
             case "scarf_of_invisibility" -> register(name, ScarfOfInvisibilityItem::new);
             case "cross_necklace" -> register(name, CrossNecklaceItem::new);
+            case "crystal_heart" -> register(name, CrystalHeartItem::new);
+            case "flame_pendant" -> register(name, FlamePendant::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
 
-//    @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
-//    private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
-//        return switch (name) {
-//            case "umbrella" -> register(name, UmbrellaItem::new);
-//            default -> register(name, supplier);
-//        };
-//    }
+    @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
+    private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
+        return switch (name) {
+            case "umbrella" -> register(name, UmbrellaItem::new);
+            default -> register(name, supplier);
+        };
+    }
 
     @Shadow
     private static Holder<Item> wearableItem(String name, Consumer<WearableArtifactItem.Builder> consumer) {

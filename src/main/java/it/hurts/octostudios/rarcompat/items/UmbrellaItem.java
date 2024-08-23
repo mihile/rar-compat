@@ -60,5 +60,23 @@ public class UmbrellaItem extends WearableRelicItem {
                 .build();
     }
 
+    @EventBusSubscriber
+    public static class Event {
 
+        @SubscribeEvent
+        public static void onEntityHurt(LivingIncomingDamageEvent event) {
+            LivingEntity entity = event.getEntity();
+
+            if ((entity instanceof Player player) && player.isUsingItem() && player.getUseItem().getItem() instanceof artifacts.item.UmbrellaItem) {
+                DamageSource source = event.getEntity().getLastDamageSource();
+                Entity target = source.getEntity();
+
+                if (target instanceof LivingEntity) {
+                    Vec3 kb = new Vec3(target.getX() - player.getX(), 0, target.getZ() - player.getZ()).normalize()
+                            .scale(((IRelicItem) player.getUseItem().getItem()).getStatValue(player.getUseItem(), "shield", "passive_knockback"));
+                    target.setDeltaMovement(target.getDeltaMovement().add(kb));
+                }
+            }
+        }
+    }
 }
