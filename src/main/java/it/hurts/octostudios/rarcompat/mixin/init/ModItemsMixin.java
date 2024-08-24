@@ -28,7 +28,6 @@ public class ModItemsMixin {
     private static Holder<Item> redirectWearableItem(String name, Consumer<WearableArtifactItem.Builder> builderConsumer) {
         return switch (name) {
             case "plastic_drinking_hat" -> register(name, PlasticDrinkingHatItem::new);
-            case "novelty_drinking_hat" -> register(name, NoveltyDrinkingHatItem::new);
             case "snorkel" -> register(name, SnorkelItem::new);
             case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
             case "villager_hat" -> register(name, VillagerHatItem::new);
@@ -42,6 +41,7 @@ public class ModItemsMixin {
             case "flame_pendant" -> register(name, FlamePendant::new);
             case "shock_pendant" -> register(name, ShockPendant::new);
             case "thorn_pendant" -> register(name, ThornPendant::new);
+            case "panic_necklace" -> register(name, PanicNecklace::new);
             default -> wearableItem(name, builderConsumer);
         };
     }

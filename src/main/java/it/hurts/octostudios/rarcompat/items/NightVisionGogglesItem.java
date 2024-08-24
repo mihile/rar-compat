@@ -23,15 +23,15 @@ public class NightVisionGogglesItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("night_vision")
-                        .active(CastData.builder()
-                                .type(CastType.TOGGLEABLE)
+                                .active(CastData.builder()
+                                        .type(CastType.TOGGLEABLE)
+                                        .build())
+                                .stat(StatData.builder("brightness_amount")
+                                        .initialValue(0.005D, 5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
                                 .build())
-                        .stat(StatData.builder("brightness_amount")
-                                .initialValue(0.005D, 5D)
-                                .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                .formatValue(value -> MathUtils.round(value, 1))
-                                .build())
-                        .build())
 
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
@@ -40,8 +40,9 @@ public class NightVisionGogglesItem extends WearableRelicItem {
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (slotContext.entity() instanceof Player player)
-            player.removeEffect(MobEffects.NIGHT_VISION);
+        super.onUnequip(slotContext, newStack, stack);
+
+        slotContext.entity().removeEffect(MobEffects.NIGHT_VISION);
     }
 
     @Override
