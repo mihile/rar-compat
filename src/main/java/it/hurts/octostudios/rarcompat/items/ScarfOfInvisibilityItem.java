@@ -1,6 +1,8 @@
 package it.hurts.octostudios.rarcompat.items;
 
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.entity.InvisibilityZoneEntity;
+import it.hurts.octostudios.rarcompat.init.EntityRegistry;
 import it.hurts.octostudios.rarcompat.items.base.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
@@ -13,7 +15,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,12 +29,11 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class ScarfOfInvisibilityItem extends WearableRelicItem {
-    private static Vec3 prePos;
+    @Setter
+    @Getter
+    private Entity posEntity;
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -42,7 +46,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
-                                        .initialValue(1D, 10D)
+                                        .initialValue(1D, 2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
@@ -56,15 +60,8 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player)) return;
 
-        boolean inRadius = true;
-        if (prePos != null) {
-            double distance = Math.sqrt(Math.pow(player.getX() - prePos.x, 2) + Math.pow(player.getZ() - prePos.z, 2));
-            inRadius = distance >= this.getStatValue(stack, "invisible", "radius");
-        }
-
-        if (player.getSpeed() < this.getStatValue(stack, "invisible", "threshold") && inRadius) {
+        if (getPosEntity() == null || player.distanceTo(posEntity) > getStatValue(stack, "invisible", "radius"))
             player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
-        }
     }
 
     @EventBusSubscriber
@@ -72,43 +69,28 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onRight(PlayerInteractEvent.RightClickBlock event) {
-            Player player = event.getEntity();
-            interaction(event.getEntity(), player.position());
-
-            prePos = new Vec3(player.getX(), player.getY(), player.getZ());
+            interaction(event.getEntity());
         }
 
         @SubscribeEvent
         public static void onLeft(PlayerInteractEvent.LeftClickBlock event) {
-            Player player = event.getEntity();
-            interaction(event.getEntity(), player.position());
-
-            prePos = new Vec3(player.getX(), player.getY(), player.getZ());
+            interaction(event.getEntity());
         }
 
-        private static void interaction(Player player, Vec3 pos) {
+        private static void interaction(Player player) {
             Level level = player.level();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SCARF_OF_INVISIBILITY.value());
 
-            if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic) || !player.hasEffect(EffectRegistry.VANISHING))
+            if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic) || !player.hasEffect(EffectRegistry.VANISHING) || level.isClientSide)
                 return;
 
-            player.removeEffect(EffectRegistry.VANISHING);
+            InvisibilityZoneEntity zone = new InvisibilityZoneEntity(EntityRegistry.INVISIBILITY_ZONE.get(), level);
+            relic.setPosEntity(zone);
+            zone.setPos(player.getPosition(1));
+            zone.setRadius(relic.getStatValue(stack, "invisible", "radius"));
 
-            double radius = relic.getStatValue(stack, "invisible", "radius");
-            System.out.println(radius);
-            int particleCount = 40;
+            zone.replaceZone(level, zone);
 
-            for (int i = 0; i < particleCount; i++) {
-                double angle = 2 * Math.PI * i / particleCount;
-                double xOffset = radius * Math.cos(angle);
-                double zOffset = radius * Math.sin(angle);
-
-                Random random = new Random();
-
-                level.addParticle(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.25F, 500, 0.9f),
-                        pos.x + xOffset, pos.y, pos.z + zOffset, 0, 0, 0);
-            }
         }
     }
 }

@@ -52,6 +52,7 @@ public class PanicNecklace extends WearableRelicItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (slotContext.entity().level().isClientSide || !(slotContext.entity() instanceof Player player)) return;
+
         Level level = player.level();
         int targetingMobsCount = 0;
 
