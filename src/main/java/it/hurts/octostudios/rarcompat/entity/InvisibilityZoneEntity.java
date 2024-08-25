@@ -19,7 +19,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.level.NoteBlockEvent;
 
 import java.awt.*;
@@ -71,7 +74,7 @@ public class InvisibilityZoneEntity extends Entity {
             double y = this.getY();
             double z = this.getZ() + getRadius() * Math.sin(angle);
 
-            y = adjustYPositionToValidBlock(x, y, z);
+            y = adjustYPositionToValidBlock(x, y, z, playerOwner);
 
             Random random = new Random();
 
@@ -97,22 +100,17 @@ public class InvisibilityZoneEntity extends Entity {
 
     }
 
-    private double adjustYPositionToValidBlock(double x, double y, double z) {
-        for (int i = 0; i <= 2; i++) {
-            BlockPos posAbove = new BlockPos((int) x, (int) (y + i), (int) z);
-            if (!level().getBlockState(posAbove).isAir() && !level().getBlockState(posAbove).canBeReplaced()) {
-                return y + i + 1;
-            }
-        }
+    private double adjustYPositionToValidBlock(double x, double y, double z, Player player) {
+        HitResult result = this.level().clip(new ClipContext(new Vec3(x, player.getY() + 2, z),
+                new Vec3(x, player.getY() - 2, z),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 
-        for (int i = 0; i <= 2; i++) {
-            BlockPos posBelow = new BlockPos((int) x, (int) y - i - 1, (int) z);
-            if (!level().getBlockState(posBelow).isAir() && !level().getBlockState(posBelow).canBeReplaced()) {
-                return y - i;
-            }
-        }
+        Vec3 position = result.getLocation();
 
-        return y;
+        if (result.getType() == HitResult.Type.MISS || level().getBlockState(new BlockPos((int) position.x, (int) position.y, (int) position.z)).blocksMotion())
+            return y;
+
+        return position.y();
     }
 
     @Override
