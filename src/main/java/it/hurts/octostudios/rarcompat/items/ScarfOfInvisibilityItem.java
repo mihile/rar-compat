@@ -33,7 +33,7 @@ import top.theillusivec4.curios.api.SlotContext;
 public class ScarfOfInvisibilityItem extends WearableRelicItem {
     @Setter
     @Getter
-    private Entity posEntity;
+    private boolean flagEffect = true;
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -41,8 +41,8 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("invisible")
                                 .stat(StatData.builder("threshold")
-                                        .initialValue(1D, 5D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
+                                        .initialValue(1D, 3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
@@ -58,10 +58,16 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player)) return;
+        if (!(slotContext.entity() instanceof Player player) || !flagEffect) return;
 
-        if (getPosEntity() == null || player.distanceTo(posEntity) > getStatValue(stack, "invisible", "radius"))
-            player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
+        player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        super.onUnequip(slotContext, newStack, stack);
+
+        setFlagEffect(true);
     }
 
     @EventBusSubscriber
@@ -84,13 +90,16 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic) || !player.hasEffect(EffectRegistry.VANISHING) || level.isClientSide)
                 return;
 
+            if (player.getSpeed() > relic.getStatValue(stack, "invisible", "threshold")) return;
+
             InvisibilityZoneEntity zone = new InvisibilityZoneEntity(EntityRegistry.INVISIBILITY_ZONE.get(), level);
-            relic.setPosEntity(zone);
+
+            zone.setPlayerOwner(player);
             zone.setPos(player.getPosition(1));
             zone.setRadius(relic.getStatValue(stack, "invisible", "radius"));
+            zone.setInvZoneUUID(zone.getUUID());
 
-            zone.replaceZone(level, zone);
-
+            InvisibilityZoneEntity.replaceZone(level, zone);
         }
     }
 }

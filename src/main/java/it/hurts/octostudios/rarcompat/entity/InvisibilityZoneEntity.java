@@ -1,6 +1,8 @@
 package it.hurts.octostudios.rarcompat.entity;
 
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.ScarfOfInvisibilityItem;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -11,26 +13,37 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.level.NoteBlockEvent;
 
 import java.awt.*;
 import java.util.Random;
+import java.util.UUID;
 
 public class InvisibilityZoneEntity extends Entity {
-    private static InvisibilityZoneEntity existingZone;
-
     @Getter
     @Setter
     private double radius;
 
     @Getter
     @Setter
-    private Player player;
+    private UUID invZoneUUID;
+
+    @Getter
+    @Setter
+    private UUID playerOwnerUUID;
+
+    @Getter
+    @Setter
+    private Player playerOwner;
+
+    private static InvisibilityZoneEntity existingZone;
 
     public InvisibilityZoneEntity(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
@@ -39,7 +52,15 @@ public class InvisibilityZoneEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+
         if (level().isClientSide) return;
+
+        if (invZoneUUID != null && playerOwnerUUID != null) {
+            existingZone = (InvisibilityZoneEntity) ((ServerLevel) this.level()).getEntity(invZoneUUID);
+            playerOwner = (Player) ((ServerLevel) this.level()).getEntity(playerOwnerUUID);
+        }
+
+        checkDistance();
 
         double particles = getRadius() * 75;
 
@@ -57,6 +78,23 @@ public class InvisibilityZoneEntity extends Entity {
             ((ServerLevel) level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.5F, 1, 1),
                     x, y + 0.2, z, 0, 0.0, 0, 0, 0);
         }
+    }
+
+    private void checkDistance() {
+        ItemStack stack = EntityUtils.findEquippedCurio(playerOwner, ModItems.SCARF_OF_INVISIBILITY.value());
+
+        if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic)) {
+            discard();
+            existingZone = null;
+            return;
+        }
+
+        if (playerOwner.distanceTo(this) > relic.getStatValue(stack, "invisible", "radius")) {
+            relic.setFlagEffect(true);
+            this.discard();
+        } else if (playerOwner.distanceTo(this) < relic.getStatValue(stack, "invisible", "radius"))
+            relic.setFlagEffect(false);
+
     }
 
     private double adjustYPositionToValidBlock(double x, double y, double z) {
@@ -84,12 +122,15 @@ public class InvisibilityZoneEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.radius = compound.getInt("Radius");
-
+        this.playerOwnerUUID = compound.getUUID("Player");
+        invZoneUUID = compound.getUUID("ExistingZoneUUID");
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         compound.putDouble("Radius", getRadius());
+        compound.putUUID("Player", getPlayerOwner().getUUID());
+        compound.putUUID("ExistingZoneUUID", invZoneUUID);
     }
 
     public static void replaceZone(Level level, InvisibilityZoneEntity newZone) {
