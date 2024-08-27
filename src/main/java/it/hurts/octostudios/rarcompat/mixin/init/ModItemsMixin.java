@@ -1,23 +1,15 @@
 package it.hurts.octostudios.rarcompat.mixin.init;
 
-import artifacts.Artifacts;
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
-import artifacts.registry.RegistryHolder;
 import it.hurts.octostudios.rarcompat.items.*;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -42,6 +34,9 @@ public class ModItemsMixin {
             case "shock_pendant" -> register(name, ShockPendant::new);
             case "thorn_pendant" -> register(name, ThornPendant::new);
             case "panic_necklace" -> register(name, PanicNecklace::new);
+            case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
+            case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
+            case "cloud_in_a_bottle" -> register(name, CloudInBottleItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
