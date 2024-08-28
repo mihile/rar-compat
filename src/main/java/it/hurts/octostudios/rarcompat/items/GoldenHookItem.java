@@ -2,14 +2,12 @@ package it.hurts.octostudios.rarcompat.items;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.base.WearableRelicItem;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
-import it.hurts.sskirillss.relics.items.relics.necklace.HolyLocketItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,15 +15,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 
-public class VampiricGloveItem extends WearableRelicItem {
+public class GoldenHookItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("vampire")
+                        .ability(AbilityData.builder("hook")
                                 .stat(StatData.builder("amount")
                                         .initialValue(10D, 90D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 9D)
@@ -41,17 +39,19 @@ public class VampiricGloveItem extends WearableRelicItem {
     public static class Event {
 
         @SubscribeEvent
-        public static void onAttack(AttackEntityEvent event) {
-            if (event.getEntity() instanceof Player player && event.getTarget() instanceof LivingEntity) {
-                ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.VAMPIRIC_GLOVE.value());
+        public static void onLivingExperienceDrop(LivingExperienceDropEvent event) {
+            if (!(event.getEntity() instanceof Player player)) return;
 
-                if (!(stack.getItem() instanceof VampiricGloveItem relic)) return;
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.GOLDEN_HOOK.value());
 
-                double damageToHeal = event.getEntity().getAttackStrengthScale(0.5F) * relic.getStatValue(stack, "vampire", "amount");
+            if (!(stack.getItem() instanceof GoldenHookItem relic)) return;
 
-                player.heal((float) damageToHeal);
+            int originalExperience = event.getDroppedExperience();
+            int boostedExperience = (int) Math.round(originalExperience * relic.getStatValue(stack, "hook", "amount"));
 
-            }
+            event.setDroppedExperience(boostedExperience);
         }
+
     }
+
 }
