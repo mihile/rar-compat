@@ -37,6 +37,7 @@ public class ModItemsMixin {
             case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
             case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             case "cloud_in_a_bottle" -> register(name, CloudInBottleItem::new);
+            case "vampiric_glove" -> register(name, VampiricGloveItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
