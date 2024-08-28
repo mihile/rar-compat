@@ -26,6 +26,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
+import java.util.Objects;
+
 public class CloudInBottleItem extends WearableRelicItem {
 
     @Override
@@ -48,98 +50,30 @@ public class CloudInBottleItem extends WearableRelicItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player)) return;
+
         LocalPlayer localPlayer = Minecraft.getInstance().player;
 
         if (localPlayer != null && !player.onGround() && localPlayer.input.jumping) {
             player.fallDistance = 0.0F;
-            double upwardsMotion = 0.5;
+            double upwardsMotion = 0.7;
 
-            if (player.hasEffect(MobEffects.JUMP)) {
-                upwardsMotion += 0.1 * (double) (player.getEffect(MobEffects.JUMP).getAmplifier() + 1);
-            }
-
-            if (player.isSprinting()) {
-                upwardsMotion *= 2;
-            }
-
-            Vec3 motion = player.getDeltaMovement();
-            double motionMultiplier = 0.0;
-
-            if (player.isSprinting()) {
-                motionMultiplier = 2;
-            }
+            if (player.hasEffect(MobEffects.JUMP))
+                upwardsMotion += 0.1 * (double) (Objects.requireNonNull(player.getEffect(MobEffects.JUMP)).getAmplifier() + 1);
 
             float direction = (float) ((double) player.getYRot() * Math.PI / 180.0);
-            player.setDeltaMovement(player.getDeltaMovement().add((double) (-Mth.sin(direction)) * motionMultiplier, upwardsMotion - motion.y, (double) Mth.cos(direction) * motionMultiplier));
+            double horizontalFactor = 3.5;
+
+            player.setDeltaMovement(player.getDeltaMovement().add(
+                    -Mth.sin(direction) / horizontalFactor,
+                    upwardsMotion - player.getDeltaMovement().y,
+                    Mth.cos(direction) / horizontalFactor
+            ));
+
             player.hasImpulse = true;
             player.awardStat(Stats.JUMP);
 
-            if (player.isSprinting()) {
-                player.causeFoodExhaustion(0.2F);
-            } else {
-                player.causeFoodExhaustion(0.05F);
-            }
-
-            if (!player.level().isClientSide()) {
-                double chance = player.getAttributeValue(ModAttributes.FLATULENCE);
-                if ((double) player.getRandom().nextFloat() < chance) {
-                    player.level().playSound((Player) null, player, (SoundEvent) ModSoundEvents.FART.value(), SoundSource.PLAYERS, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
-                } else {
-                    player.level().playSound((Player) null, player, SoundEvents.WOOL_FALL, SoundSource.PLAYERS, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
-                }
-            }
+            player.level().playSound(null, player, SoundEvents.WOOL_FALL, SoundSource.PLAYERS, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
         }
+
     }
-
-
-//
-//    @EventBusSubscriber
-//    public static class Event {
-//
-//        @SubscribeEvent
-//        public static void onJumpPlayer(LivingEvent.LivingJumpEvent event) {
-//            if (!(event.getEntity() instanceof Player player)) return;
-//
-//            player.fallDistance = 0;
-//            System.out.println("hahq");
-//            double upwardsMotion = 0.5;
-//            if (player.hasEffect(MobEffects.JUMP)) {
-//                upwardsMotion += 0.1 * (player.getEffect(MobEffects.JUMP).getAmplifier() + 1);
-//            }
-//            if (player.isSprinting()) {
-//                upwardsMotion *= 2;
-//            }
-//
-//            Vec3 motion = player.getDeltaMovement();
-//            double motionMultiplier = 0;
-//            if (player.isSprinting()) {
-//                motionMultiplier = 2;
-//            }
-//            float direction = (float) (player.getYRot() * Math.PI / 180);
-//            player.setDeltaMovement(player.getDeltaMovement().add(
-//                    -Mth.sin(direction) * motionMultiplier,
-//                    upwardsMotion - motion.y,
-//                    Mth.cos(direction) * motionMultiplier)
-//            );
-//
-//            player.hasImpulse = true;
-//
-//            player.awardStat(Stats.JUMP);
-//            if (player.isSprinting()) {
-//                player.causeFoodExhaustion(0.2F);
-//            } else {
-//                player.causeFoodExhaustion(0.05F);
-//            }
-//
-//            if (!player.level().isClientSide()) {
-//                double chance = player.getAttributeValue(ModAttributes.FLATULENCE);
-//                if (player.getRandom().nextFloat() < chance) {
-//                    player.level().playSound(null, player, ModSoundEvents.FART.value(), SoundSource.PLAYERS, 1, 0.9F + player.getRandom().nextFloat() * 0.2F);
-//                } else {
-//                    player.level().playSound(null, player, SoundEvents.WOOL_FALL, SoundSource.PLAYERS, 1, 0.9F + player.getRandom().nextFloat() * 0.2F);
-//                }
-//            }
-//
-//        }
-//    }
 }
