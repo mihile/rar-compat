@@ -2,10 +2,7 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.arm.GoldenHookItem;
-import it.hurts.octostudios.rarcompat.items.arm.OnionRingItem;
-import it.hurts.octostudios.rarcompat.items.arm.UmbrellaItem;
-import it.hurts.octostudios.rarcompat.items.arm.VampiricGloveItem;
+import it.hurts.octostudios.rarcompat.items.arm.*;
 import it.hurts.octostudios.rarcompat.items.body.*;
 import it.hurts.octostudios.rarcompat.items.hat.*;
 import net.minecraft.core.Holder;
@@ -45,6 +42,7 @@ public class ModItemsMixin {
             case "vampiric_glove" -> register(name, VampiricGloveItem::new);
             case "golden_hook" -> register(name, GoldenHookItem::new);
             case "onion_ring" -> register(name, OnionRingItem::new);
+            case "digging_claws" -> register(name, DiggingClawsItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
