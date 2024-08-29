@@ -43,6 +43,7 @@ public class ModItemsMixin {
             case "golden_hook" -> register(name, GoldenHookItem::new);
             case "onion_ring" -> register(name, OnionRingItem::new);
             case "digging_claws" -> register(name, DiggingClawsItem::new);
+            case "feral_claws" -> register(name, FeralClawsItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
