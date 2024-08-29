@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.base;
+package it.hurts.octostudios.rarcompat.items;
 
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;

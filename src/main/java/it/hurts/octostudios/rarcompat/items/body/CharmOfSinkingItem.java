@@ -1,7 +1,6 @@
-package it.hurts.octostudios.rarcompat.items;
+package it.hurts.octostudios.rarcompat.items.body;
 
-import dev.architectury.event.events.common.BlockEvent;
-import it.hurts.octostudios.rarcompat.items.base.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;

@@ -1,6 +1,6 @@
-package it.hurts.octostudios.rarcompat.items;
+package it.hurts.octostudios.rarcompat.items.body;
 
-import it.hurts.octostudios.rarcompat.items.base.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -11,7 +11,6 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.neoforged.neoforge.event.level.NoteBlockEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class LuckyScarfItem extends WearableRelicItem {

@@ -2,15 +2,13 @@ package it.hurts.octostudios.rarcompat;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.init.EntityRegistry;
-import it.hurts.octostudios.rarcompat.items.UmbrellaItem;
-import it.hurts.octostudios.rarcompat.items.base.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 @Mod(RARCompat.MODID)

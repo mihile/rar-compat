@@ -2,7 +2,7 @@ package it.hurts.octostudios.rarcompat.mixin;
 
 import artifacts.registry.ModItems;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import it.hurts.octostudios.rarcompat.items.VillagerHatItem;
+import it.hurts.octostudios.rarcompat.items.hat.VillagerHatItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;

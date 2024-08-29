@@ -1,29 +1,23 @@
 package it.hurts.octostudios.rarcompat.entity;
 
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.ScarfOfInvisibilityItem;
-import it.hurts.sskirillss.relics.init.EffectRegistry;
-import it.hurts.sskirillss.relics.init.ItemRegistry;
+import it.hurts.octostudios.rarcompat.items.body.ScarfOfInvisibilityItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.level.NoteBlockEvent;
 
 import java.awt.*;
 import java.util.Random;

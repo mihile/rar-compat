@@ -1,7 +1,7 @@
-package it.hurts.octostudios.rarcompat.items;
+package it.hurts.octostudios.rarcompat.items.arm;
 
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.base.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -15,15 +15,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 
-public class GoldenHookItem extends WearableRelicItem {
+public class VampiricGloveItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("hook")
+                        .ability(AbilityData.builder("vampire")
                                 .stat(StatData.builder("amount")
                                         .initialValue(10D, 90D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 9D)
@@ -39,19 +39,17 @@ public class GoldenHookItem extends WearableRelicItem {
     public static class Event {
 
         @SubscribeEvent
-        public static void onLivingExperienceDrop(LivingExperienceDropEvent event) {
-            if (!(event.getEntity() instanceof Player player)) return;
+        public static void onAttack(AttackEntityEvent event) {
+            if (event.getEntity() instanceof Player player && event.getTarget() instanceof LivingEntity) {
+                ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.VAMPIRIC_GLOVE.value());
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.GOLDEN_HOOK.value());
+                if (!(stack.getItem() instanceof VampiricGloveItem relic)) return;
 
-            if (!(stack.getItem() instanceof GoldenHookItem relic)) return;
+                double damageToHeal = event.getEntity().getAttackStrengthScale(0.5F) * relic.getStatValue(stack, "vampire", "amount");
 
-            int originalExperience = event.getDroppedExperience();
-            int boostedExperience = (int) Math.round(originalExperience * relic.getStatValue(stack, "hook", "amount"));
+                player.heal((float) damageToHeal);
 
-            event.setDroppedExperience(boostedExperience);
+            }
         }
-
     }
-
 }

@@ -1,7 +1,7 @@
-package it.hurts.octostudios.rarcompat.items;
+package it.hurts.octostudios.rarcompat.items.body;
 
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.base.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -13,8 +13,6 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,21 +23,21 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import java.awt.*;
 import java.util.Random;
 
-public class ShockPendant extends WearableRelicItem {
+public class FlamePendantItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("lightning")
-                                .stat(StatData.builder("damage")
+                        .ability(AbilityData.builder("fire")
+                                .stat(StatData.builder("time")
                                         .initialValue(1D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
-                                        .initialValue(10D, 90D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 9D)
+                                        .initialValue(1D, 10D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -59,19 +57,15 @@ public class ShockPendant extends WearableRelicItem {
                 return;
 
             Level level = attacker.level();
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FLAME_PENDANT.value());
 
-            if (!(stack.getItem() instanceof ShockPendant relic) || level.isClientSide) return;
+            if (!(stack.getItem() instanceof FlamePendantItem relic) || level.isClientSide) return;
             Random random = new Random();
 
-            if (random.nextInt(100) < relic.getStatValue(stack, "lightning", "chance")) {
-                LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+            if (random.nextInt(100) < relic.getStatValue(stack, "fire", "chance")) {
+                attacker.setRemainingFireTicks((int) relic.getStatValue(stack, "fire", "time"));
 
-                lightningBolt.setPos(attacker.position());
-                lightningBolt.setDamage((float) relic.getStatValue(stack, "lightning", "damage"));
-                level.addFreshEntity(lightningBolt);
-
-                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.4F, 20, 0.95F),
+                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.4F, 20, 0.95F),
                         attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
             }
         }

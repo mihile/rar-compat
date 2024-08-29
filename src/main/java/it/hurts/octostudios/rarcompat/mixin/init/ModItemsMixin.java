@@ -2,7 +2,12 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.*;
+import it.hurts.octostudios.rarcompat.items.arm.GoldenHookItem;
+import it.hurts.octostudios.rarcompat.items.arm.OnionRingItem;
+import it.hurts.octostudios.rarcompat.items.arm.UmbrellaItem;
+import it.hurts.octostudios.rarcompat.items.arm.VampiricGloveItem;
+import it.hurts.octostudios.rarcompat.items.body.*;
+import it.hurts.octostudios.rarcompat.items.hat.*;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,15 +35,16 @@ public class ModItemsMixin {
             case "scarf_of_invisibility" -> register(name, ScarfOfInvisibilityItem::new);
             case "cross_necklace" -> register(name, CrossNecklaceItem::new);
             case "crystal_heart" -> register(name, CrystalHeartItem::new);
-            case "flame_pendant" -> register(name, FlamePendant::new);
-            case "shock_pendant" -> register(name, ShockPendant::new);
-            case "thorn_pendant" -> register(name, ThornPendant::new);
-            case "panic_necklace" -> register(name, PanicNecklace::new);
+            case "flame_pendant" -> register(name, FlamePendantItem::new);
+            case "shock_pendant" -> register(name, ShockPendantItem::new);
+            case "thorn_pendant" -> register(name, ThornPendantItem::new);
+            case "panic_necklace" -> register(name, PanicNecklaceItem::new);
             case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
             case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             case "cloud_in_a_bottle" -> register(name, CloudInBottleItem::new);
             case "vampiric_glove" -> register(name, VampiricGloveItem::new);
             case "golden_hook" -> register(name, GoldenHookItem::new);
+            case "onion_ring" -> register(name, OnionRingItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
