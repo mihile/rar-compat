@@ -91,7 +91,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
             zone.setPlayerOwner(player);
             zone.setPos(player.getPosition(1));
-            zone.setRadius(relic.getStatValue(stack, "invisible", "radius"));
+            zone.setRadius(8 - relic.getStatValue(stack, "invisible", "radius"));
             zone.setInvZoneUUID(zone.getUUID());
 
             InvisibilityZoneEntity.replaceZone(level, zone);

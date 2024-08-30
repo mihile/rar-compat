@@ -44,7 +44,7 @@ public class ModItemsMixin {
             case "onion_ring" -> register(name, OnionRingItem::new);
             case "digging_claws" -> register(name, DiggingClawsItem::new);
             case "feral_claws" -> register(name, FeralClawsItem::new);
-            case "power_glove" -> register(name, PowerGlove::new);
+            case "antidote_vessel" -> register(name, AntidoteVesselItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
@@ -52,7 +52,7 @@ public class ModItemsMixin {
     @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
     private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
         return switch (name) {
-            case "umbrella" -> register(name, UmbrellaItem::new);
+            case "umbrella" -> register(name, UmbrellaItemItem::new);
             default -> register(name, supplier);
         };
     }

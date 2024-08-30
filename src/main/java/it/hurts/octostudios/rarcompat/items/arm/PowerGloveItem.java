@@ -2,7 +2,6 @@ package it.hurts.octostudios.rarcompat.items.arm;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
-import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -13,18 +12,14 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
-public class PowerGlove extends WearableRelicItem {
+public class PowerGloveItem extends WearableRelicItem {
     @Getter
     @Setter
     private long powerTimer;
@@ -62,7 +57,7 @@ public class PowerGlove extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POWER_GLOVE.value());
 
-            if (!(stack.getItem() instanceof PowerGlove relic) || relic.getPowerTimer() < 5) return;
+            if (!(stack.getItem() instanceof PowerGloveItem relic) || relic.getPowerTimer() < 5) return;
 
             event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "power", "amount")));
             relic.setPowerTimer(0);
