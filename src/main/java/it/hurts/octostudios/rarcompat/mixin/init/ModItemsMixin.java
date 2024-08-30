@@ -45,6 +45,7 @@ public class ModItemsMixin {
             case "digging_claws" -> register(name, DiggingClawsItem::new);
             case "feral_claws" -> register(name, FeralClawsItem::new);
             case "antidote_vessel" -> register(name, AntidoteVesselItem::new);
+            case "universal_attractor" -> register(name, UniversalAttractor::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
