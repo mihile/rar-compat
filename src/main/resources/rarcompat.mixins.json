@@ -6,8 +6,9 @@
   "refmap": "rarcompat.refmap.json",
   "mixins": [
     "GameRendererMixin",
-    "init.ModItemsMixin",
-    "VillagerMixin"
+    "UmbrellaItemMixin",
+    "VillagerMixin",
+    "init.ModItemsMixin"
   ],
   "client": [
   ],

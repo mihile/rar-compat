@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 
-public class NightVisionGogglesItem extends WearableRelicItem {
+public class    NightVisionGogglesItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {

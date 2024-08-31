@@ -34,7 +34,7 @@ public class DiggingClawsItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+    //  @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent

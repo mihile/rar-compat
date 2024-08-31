@@ -54,7 +54,7 @@ public class ThornPendantItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+    //  @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent

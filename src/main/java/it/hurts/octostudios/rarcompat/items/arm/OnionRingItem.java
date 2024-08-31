@@ -34,7 +34,7 @@ public class OnionRingItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+    // @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent

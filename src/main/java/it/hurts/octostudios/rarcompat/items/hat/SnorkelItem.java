@@ -38,17 +38,15 @@ public class SnorkelItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
-        boolean toggled = stack.getOrDefault(TOGGLED, false);
-
         if (player.hasEffect(MobEffects.WATER_BREATHING))
             spreadRelicExperience(player, stack, 1);
 
-        if (player.isUnderWater()) {
-            if (!toggled) {
-                stack.set(TOGGLED, true);
+        boolean toggled = stack.getOrDefault(TOGGLED, false);
 
-                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, (int) (getStatValue(stack, "diving", "duration") * 20), 0));
-            }
+        if (player.isUnderWater() && !toggled) {
+            stack.set(TOGGLED, true);
+
+            player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, (int) (getStatValue(stack, "diving", "duration") * 20), 0));
         } else {
             if (toggled)
                 stack.set(TOGGLED, false);

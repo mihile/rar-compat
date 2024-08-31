@@ -61,7 +61,7 @@ public class FeralClawsItem extends WearableRelicItem {
         EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
-    @EventBusSubscriber
+    //  @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent

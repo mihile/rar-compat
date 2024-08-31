@@ -41,8 +41,8 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
-                                        .initialValue(1D, 2D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .initialValue(12D, 2D)
+                                        .upgradeModifier(UpgradeOperation.ADD, -1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -91,7 +91,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
             zone.setPlayerOwner(player);
             zone.setPos(player.getPosition(1));
-            zone.setRadius(8 - relic.getStatValue(stack, "invisible", "radius"));
+            zone.setRadius(relic.getStatValue(stack, "invisible", "radius"));
             zone.setInvZoneUUID(zone.getUUID());
 
             InvisibilityZoneEntity.replaceZone(level, zone);

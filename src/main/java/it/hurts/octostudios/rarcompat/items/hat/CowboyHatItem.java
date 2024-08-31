@@ -39,7 +39,7 @@ public class CowboyHatItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+  //  @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent

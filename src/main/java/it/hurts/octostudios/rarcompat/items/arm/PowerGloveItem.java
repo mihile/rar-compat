@@ -48,7 +48,7 @@ public class PowerGloveItem extends WearableRelicItem {
         this.powerTimer++;
     }
 
-    @EventBusSubscriber
+    // @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent

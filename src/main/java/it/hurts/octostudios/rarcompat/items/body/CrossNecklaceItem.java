@@ -42,7 +42,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
         player.invulnerableTime = 20;
     }
 
-    @EventBusSubscriber
+    // @EventBusSubscriber
     public static class Events {
 
         @SubscribeEvent

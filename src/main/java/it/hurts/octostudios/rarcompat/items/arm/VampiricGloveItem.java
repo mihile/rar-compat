@@ -35,7 +35,7 @@ public class VampiricGloveItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+    // @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent

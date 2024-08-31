@@ -18,6 +18,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
 
 public class AnglersHatItem extends WearableRelicItem {
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()

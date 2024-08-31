@@ -48,7 +48,7 @@ public class ShockPendantItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+    // @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent

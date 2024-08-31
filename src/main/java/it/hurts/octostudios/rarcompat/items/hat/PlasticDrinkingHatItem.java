@@ -22,22 +22,22 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("quick_sip")
-                                .stat(StatData.builder("drinking_speed")
+                        .ability(AbilityData.builder("drinking")
+                                .stat(StatData.builder("speed")
                                         .initialValue(1.1D, 1.5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
-                        .ability(AbilityData.builder("nutritional_sip")
+                        .ability(AbilityData.builder("nutritional")
                                 .stat(StatData.builder("hunger")
-                                        .initialValue(1.0D, 4.0D)
-                                        .upgradeModifier(UpgradeOperation.ADD, 0.05D)
+                                        .initialValue(1D, 5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
                                 .stat(StatData.builder("saturation")
-                                        .initialValue(0.6D, 4.8D)
-                                        .upgradeModifier(UpgradeOperation.ADD, 0.1D)
+                                        .initialValue(1D, 5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -48,7 +48,9 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        EntityUtils.removeAttribute(slotContext.entity(), stack, ModAttributes.DRINKING_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
+
+        EntityUtils.removeAttribute(player, stack, ModAttributes.DRINKING_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
     @Override
@@ -56,10 +58,9 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        EntityUtils.applyAttribute(player, stack, ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "quick_sip", "drinking_speed") - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.applyAttribute(player, stack, ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed") - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-        if (player.isUsingItem() && player.getUseItem().getUseAnimation() == UseAnim.DRINK)
-            player.getFoodData().eat((int) getStatValue(stack, "nutritional_sip", "hunger"),
-                    (float) getStatValue(stack, "nutritional_sip", "saturation"));
+        if (player.isUsingItem() && player.getUseItem().getUseAnimation() == UseAnim.DRINK && player.getUseItemRemainingTicks() == 1)
+            player.getFoodData().eat((int) getStatValue(stack, "nutritional", "hunger"), (float) getStatValue(stack, "nutritional", "saturation"));
     }
 }
