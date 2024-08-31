@@ -1,0 +1,94 @@
+{
+  "tooltip.relics.umbrella.description": "x",
+
+  "tooltip.relics.umbrella.ability.glider": "x",
+  "tooltip.relics.umbrella.ability.glider.description": "x",
+  "tooltip.relics.umbrella.ability.glider.stat.speed.title": "x",
+  "tooltip.relics.umbrella.ability.glider.stat.speed.value": "x",
+
+  "tooltip.relics.umbrella.ability.shield": "x",
+  "tooltip.relics.umbrella.ability.shield.description": "x",
+  "tooltip.relics.umbrella.ability.shield.stat.knockback": "x",
+  "tooltip.relics.umbrella.ability.shield.stat.knockback.title": "x",
+  "tooltip.relics.umbrella.ability.shield.stat.knockback.value": "x",
+
+
+
+  "tooltip.relics.plastic_drinking_hat.description": "x",
+
+  "tooltip.relics.plastic_drinking_hat.ability.drinking": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.drinking.description": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.drinking.stat.speed.title": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.drinking.stat.speed.value": "x",
+
+  "tooltip.relics.plastic_drinking_hat.ability.nutritional": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutritional.description": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.hunger": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.hunger.title": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.hunger.value": "x",
+
+  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.saturation": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.saturation.title": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.saturation.value": "x",
+
+
+  "tooltip.relics.snorkel.description": "x",
+
+  "tooltip.relics.snorkel.ability.diving": "x",
+  "tooltip.relics.snorkel.ability.diving.description": "x",
+  "tooltip.relics.snorkel.ability.diving.stat.duration.title": "x",
+  "tooltip.relics.snorkel.ability.diving.stat.duration.value": "x",
+
+
+
+ "tooltip.relics.villager_hat.description": "x",
+
+  "tooltip.relics.villager_hat.ability.villager_discount": "x",
+  "tooltip.relics.villager_hat.ability.villager_discount.description": "x",
+  "tooltip.relics.villager_hat.ability.villager_discount.stat.discount.title": "x",
+  "tooltip.relics.villager_hat.ability.villager_discount.stat.discount.value": "x",
+
+
+  "tooltip.relics.superstitious_hat.description": "x",
+  "tooltip.relics.superstitious_hat.ability.superstitious.description": "x",
+
+  "tooltip.relics.superstitious_hat.ability.superstitious": "x",
+  "tooltip.relics.superstitious_hat.ability.superstitious.chance": "x",
+  "tooltip.relics.superstitious_hat.ability.superstitious.stat.chance.title": "x",
+  "tooltip.relics.superstitious_hat.ability.superstitious.stat.chance.value": "x",
+
+
+
+  "tooltip.relics.anglers_hat.description": "x",
+  "tooltip.relics.anglers_hat.ability.fishing.description": "x",
+
+  "tooltip.relics.anglers_hat.ability.fishing": "x",
+  "tooltip.relics.anglers_hat.ability.fishing.chance": "x",
+  "tooltip.relics.anglers_hat.ability.fishing.stat.chance.title": "x",
+  "tooltip.relics.anglers_hat.ability.fishing.stat.chance.value": "x",
+
+
+
+  "tooltip.relics.lucky_scarf.description": "x",
+  "tooltip.relics.lucky_scarf.ability.superstitious.description": "x",
+
+  "tooltip.relics.lucky_scarf.ability.superstitious": "x",
+  "tooltip.relics.lucky_scarf.ability.superstitious.chance": "x",
+  "tooltip.relics.lucky_scarf.ability.superstitious.stat.chance.title": "x",
+  "tooltip.relics.lucky_scarf.ability.superstitious.stat.chance.value": "x",
+
+
+
+  "tooltip.relics.scarf_of_invisibility.description": "x",
+  "tooltip.relics.scarf_of_invisibility.ability.invisible": "x",
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.description": "x",
+
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.threshold": "x",
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.threshold.title": "x",
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.threshold.value": "x",
+
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.radius": "x",
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.title": "x",
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.value": "x"
+
+}
