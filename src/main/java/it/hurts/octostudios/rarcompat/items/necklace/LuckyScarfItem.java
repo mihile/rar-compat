@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.body;
+package it.hurts.octostudios.rarcompat.items.necklace;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -9,7 +9,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import top.theillusivec4.curios.api.SlotContext;
@@ -22,9 +21,9 @@ public class LuckyScarfItem extends WearableRelicItem {
                         .ability(AbilityData.builder("luck")
                                 .stat(StatData.builder("chance")
                                         .icon(StatIcons.CHANCE)
-                                        .initialValue(1D, 9D)
+                                        .initialValue(0.01D, 0.09D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
                         .build())
@@ -34,10 +33,6 @@ public class LuckyScarfItem extends WearableRelicItem {
 
     @Override
     public int getFortuneLevel(SlotContext slotContext, LootContext lootContext, ItemStack stack) {
-        if (slotContext.entity() instanceof Player player)
-            return MathUtils.multicast(player.level().getRandom(), getStatValue(stack, "luck", "chance"), 0.4);
-
-        return super.getFortuneLevel(slotContext, lootContext, stack);
+        return MathUtils.multicast(lootContext.getRandom(), getStatValue(stack, "luck", "chance"), 1);
     }
-
 }

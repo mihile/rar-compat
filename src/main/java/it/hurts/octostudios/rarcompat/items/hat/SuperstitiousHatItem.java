@@ -27,8 +27,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +39,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Map;
 import java.util.Optional;
@@ -51,9 +54,9 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                         .ability(AbilityData.builder("looting")
                                 .stat(StatData.builder("chance")
                                         .icon(StatIcons.CHANCE)
-                                        .initialValue(1D, 9D)
+                                        .initialValue(0.01D, 0.09D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
                         .build())
@@ -61,26 +64,9 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
-    public static class Event {
-
-        @SubscribeEvent
-        public static void onLivingDrops(LivingDropsEvent event) {
-            if (!(event.getSource().getEntity() instanceof Player player)) return;
-
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SUPERSTITIOUS_HAT.value());
-
-            if (!(stack.getItem() instanceof SuperstitiousHatItem relic))
-                return;
-
-            double lootingLevel = player.getMainHandItem().getOrDefault(DataComponents.ENCHANTMENTS,
-                    ItemEnchantments.EMPTY).getLevel(player.getCommandSenderWorld().holderLookup(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING));
-
-            for (ItemEntity itemEntity : event.getDrops())
-                itemEntity.getItem().grow(MathUtils.multicast(player.level().getRandom(), relic.getStatValue(stack, "looting", "chance"), 0.5)
-                        * lootingLevel > 0 ? (int) Math.max(1.5, lootingLevel / 1.5) : 1);
-
-        }
-
+    // TODO: Use same way to modify fortune/looting/etc-etc for other items
+    @Override
+    public int getLootingLevel(SlotContext slotContext, DamageSource source, LivingEntity target, int baseLooting, ItemStack stack) {
+        return MathUtils.multicast(target.getRandom(), getStatValue(stack, "looting", "chance"), 1F);
     }
 }

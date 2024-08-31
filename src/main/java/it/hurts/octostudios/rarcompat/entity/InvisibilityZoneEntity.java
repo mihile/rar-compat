@@ -1,7 +1,7 @@
 package it.hurts.octostudios.rarcompat.entity;
 
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.body.ScarfOfInvisibilityItem;
+import it.hurts.octostudios.rarcompat.items.necklace.ScarfOfInvisibilityItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;

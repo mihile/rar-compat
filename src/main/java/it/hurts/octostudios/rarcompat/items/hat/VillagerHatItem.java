@@ -15,8 +15,8 @@ public class VillagerHatItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("villager_discount")
-                                .stat(StatData.builder("discount")
+                        .ability(AbilityData.builder("discount")
+                                .stat(StatData.builder("multiplier")
                                         .icon(StatIcons.SIZE)
                                         .initialValue(1D, 9D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
@@ -27,5 +27,4 @@ public class VillagerHatItem extends WearableRelicItem {
                 .leveling(new LevelingData(100, 10, 100))
                 .build();
     }
-
 }

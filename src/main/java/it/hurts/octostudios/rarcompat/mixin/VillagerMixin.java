@@ -17,7 +17,7 @@ public abstract class VillagerMixin {
     private int increaseReputation(int original, Player player) {
         ItemStack relicStack = EntityUtils.findEquippedCurio(player, ModItems.VILLAGER_HAT.value());
         if (relicStack != null && relicStack.getItem() instanceof VillagerHatItem hat) {
-            double discount = hat.getStatValue(relicStack, "villager_discount", "discount");
+            double discount = hat.getStatValue(relicStack, "discount", "multiplier");
             return (int) discount;
         }
         return original;

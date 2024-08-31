@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.body;
+package it.hurts.octostudios.rarcompat.items.necklace;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.entity.InvisibilityZoneEntity;
@@ -28,6 +28,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 
 public class ScarfOfInvisibilityItem extends WearableRelicItem {
+    // TODO: Move from Item to ItemStack as a DataComponent
     @Setter
     @Getter
     private boolean flagEffect = true;
@@ -73,7 +74,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class Events {
-
+        // TODO: Use generic RMB/LMB events, then send packet to server to change the ItemStack flag and create area
         @SubscribeEvent
         public static void onRight(PlayerInteractEvent.RightClickBlock event) {
             interaction(event.getEntity());
@@ -91,6 +92,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic) || !player.hasEffect(EffectRegistry.VANISHING) || level.isClientSide)
                 return;
 
+            // TODO: Use static area drawing from item update method instead of custom entity
             InvisibilityZoneEntity zone = new InvisibilityZoneEntity(EntityRegistry.INVISIBILITY_ZONE.get(), level);
 
             zone.setPlayerOwner(player);

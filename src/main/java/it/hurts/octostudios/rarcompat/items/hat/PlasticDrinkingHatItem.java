@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.items.hat;
 
 import artifacts.registry.ModAttributes;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -12,6 +13,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
@@ -28,7 +30,7 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
                                         .icon(StatIcons.SPEED)
                                         .initialValue(1D, 1.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("nutrition")
@@ -45,10 +47,10 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
     }
 
     @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
-
-        EntityUtils.removeAttribute(player, stack, ModAttributes.DRINKING_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+        return RelicAttributeModifier.builder()
+                .attribute(new RelicAttributeModifier.Modifier(ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed") - 1F))
+                .build();
     }
 
     @Override
@@ -56,8 +58,7 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        EntityUtils.applyAttribute(player, stack, ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed") - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-
+        // TODO: Move to the "item use finish" event
         if (player.isUsingItem() && player.getUseItem().getUseAnimation() == UseAnim.DRINK && player.getUseItemRemainingTicks() == 1)
             player.getFoodData().eat((int) getStatValue(stack, "nutrition", "hunger"), (float) getStatValue(stack, "nutrition", "hunger"));
     }

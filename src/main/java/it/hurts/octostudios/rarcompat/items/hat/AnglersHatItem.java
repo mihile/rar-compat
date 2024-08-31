@@ -39,7 +39,7 @@ public class AnglersHatItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class Event {
-
+        // TODO: Cause additional loot table rolls instead of just increasing the stack size
         @SubscribeEvent
         public static void onItemFished(ItemFishedEvent event) {
             Player player = event.getEntity();
