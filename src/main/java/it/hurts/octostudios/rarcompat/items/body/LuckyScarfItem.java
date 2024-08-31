@@ -18,7 +18,7 @@ public class LuckyScarfItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("superstitious")
+                        .ability(AbilityData.builder("luck")
                                 .stat(StatData.builder("chance")
                                         .initialValue(20D, 90D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 10D)
@@ -33,7 +33,7 @@ public class LuckyScarfItem extends WearableRelicItem {
     @Override
     public int getFortuneLevel(SlotContext slotContext, LootContext lootContext, ItemStack stack) {
         if (slotContext.entity() instanceof Player player)
-            return MathUtils.multicast(player.level().getRandom(), getStatValue(stack, "superstitious", "chance"), 0.4);
+            return MathUtils.multicast(player.level().getRandom(), getStatValue(stack, "luck", "chance"), 0.4);
 
         return super.getFortuneLevel(slotContext, lootContext, stack);
     }

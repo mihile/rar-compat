@@ -23,7 +23,7 @@ public class AnglersHatItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("fishing")
+                        .ability(AbilityData.builder("catch")
                                 .stat(StatData.builder("chance")
                                         .initialValue(20D, 90D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 10D)
@@ -49,7 +49,7 @@ public class AnglersHatItem extends WearableRelicItem {
                 return;
 
             for (ItemStack itemStack : event.getDrops())
-                itemStack.grow(MathUtils.multicast( level.getRandom(), relic.getStatValue(stack, "fishing", "chance"), 0.4));
+                itemStack.grow(MathUtils.multicast( level.getRandom(), relic.getStatValue(stack, "catch", "chance"), 0.4));
 
         }
     }

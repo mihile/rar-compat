@@ -47,7 +47,7 @@ public class SuperstitiousHatItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("superstitious")
+                        .ability(AbilityData.builder("looting")
                                 .stat(StatData.builder("chance")
                                         .initialValue(20D, 90D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 10D)
@@ -75,7 +75,7 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                     ItemEnchantments.EMPTY).getLevel(player.getCommandSenderWorld().holderLookup(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING));
 
             for (ItemEntity itemEntity : event.getDrops())
-                itemEntity.getItem().grow(MathUtils.multicast(player.level().getRandom(), relic.getStatValue(stack, "superstitious", "chance"), 0.4)
+                itemEntity.getItem().grow(MathUtils.multicast(player.level().getRandom(), relic.getStatValue(stack, "looting", "chance"), 0.4)
                         * lootingLevel > 0 ? (int) Math.max(1.5, lootingLevel / 1.5) : 1);
 
         }

@@ -29,17 +29,18 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
-                        .ability(AbilityData.builder("nutritional")
+                        .ability(AbilityData.builder("nutrition")
                                 .stat(StatData.builder("hunger")
                                         .initialValue(1D, 5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
-                                .stat(StatData.builder("saturation")
-                                        .initialValue(1D, 5D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
-                                        .build())
+// TODO: Use only hunger value
+//                                .stat(StatData.builder("saturation")
+//                                        .initialValue(1D, 5D)
+//                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
+//                                        .formatValue(value -> MathUtils.round(value, 1))
+//                                        .build())
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
@@ -61,6 +62,6 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
         EntityUtils.applyAttribute(player, stack, ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed") - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
         if (player.isUsingItem() && player.getUseItem().getUseAnimation() == UseAnim.DRINK && player.getUseItemRemainingTicks() == 1)
-            player.getFoodData().eat((int) getStatValue(stack, "nutritional", "hunger"), (float) getStatValue(stack, "nutritional", "saturation"));
+            player.getFoodData().eat((int) getStatValue(stack, "nutrition", "hunger"), (float) getStatValue(stack, "nutrition", "saturation"));
     }
 }

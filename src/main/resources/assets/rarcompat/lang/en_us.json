@@ -21,15 +21,15 @@
   "tooltip.relics.plastic_drinking_hat.ability.drinking.stat.speed.title": "x",
   "tooltip.relics.plastic_drinking_hat.ability.drinking.stat.speed.value": "x",
 
-  "tooltip.relics.plastic_drinking_hat.ability.nutritional": "x",
-  "tooltip.relics.plastic_drinking_hat.ability.nutritional.description": "x",
-  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.hunger": "x",
-  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.hunger.title": "x",
-  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.hunger.value": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutrition": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutrition.description": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutrition.stat.hunger": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutrition.stat.hunger.title": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutrition.stat.hunger.value": "x",
 
-  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.saturation": "x",
-  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.saturation.title": "x",
-  "tooltip.relics.plastic_drinking_hat.ability.nutritional.stat.saturation.value": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutrition.stat.saturation": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutrition.stat.saturation.title": "x",
+  "tooltip.relics.plastic_drinking_hat.ability.nutrition.stat.saturation.value": "x",
 
 
   "tooltip.relics.snorkel.description": "x",
