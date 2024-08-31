@@ -11,10 +11,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,13 +38,15 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("invisible")
                                 .stat(StatData.builder("threshold")
-                                        .initialValue(1D, 3D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
+                                        .icon(StatIcons.SPEED)
+                                        .initialValue(0.1D, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.035D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
-                                        .initialValue(12D, 2D)
-                                        .upgradeModifier(UpgradeOperation.ADD, -1D)
+                                        .icon(StatIcons.DISTANCE)
+                                        .initialValue(8D, 3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -53,8 +57,10 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !flagEffect) return;
+        if (!(slotContext.entity() instanceof Player player) || !flagEffect
+                || player.getSpeed() > getStatValue(stack, "invisible", "threshold")) return;
 
+        player.displayClientMessage(Component.literal(String.valueOf(player.getSpeed())), true);
         player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
     }
 
@@ -84,8 +90,6 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic) || !player.hasEffect(EffectRegistry.VANISHING) || level.isClientSide)
                 return;
-
-            if (player.getSpeed() > relic.getStatValue(stack, "invisible", "threshold")) return;
 
             InvisibilityZoneEntity zone = new InvisibilityZoneEntity(EntityRegistry.INVISIBILITY_ZONE.get(), level);
 

@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.body;
+package it.hurts.octostudios.rarcompat.items.bunch;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
@@ -10,23 +10,23 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import top.theillusivec4.curios.api.SlotContext;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 
-public class CrossNecklaceItem extends WearableRelicItem {
+public class VampiricGloveItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("analnii")
-                                .stat(StatData.builder("tick")
-                                        .initialValue(1D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
+                        .ability(AbilityData.builder("vampire")
+                                .stat(StatData.builder("amount")
+                                        .initialValue(10D, 90D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 9D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -35,25 +35,21 @@ public class CrossNecklaceItem extends WearableRelicItem {
                 .build();
     }
 
-    @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
-
-        player.invulnerableTime = 20;
-    }
-
     // @EventBusSubscriber
-    public static class Events {
+    public static class Event {
 
         @SubscribeEvent
-        public static void onLivingDamaged(LivingDamageEvent.Post event) {
-            if (!(event.getEntity() instanceof Player player)) return;
+        public static void onAttack(AttackEntityEvent event) {
+            if (event.getEntity() instanceof Player player && event.getTarget() instanceof LivingEntity) {
+                ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.VAMPIRIC_GLOVE.value());
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CROSS_NECKLACE.value());
+                if (!(stack.getItem() instanceof VampiricGloveItem relic)) return;
 
-            if (!(stack.getItem() instanceof CrossNecklaceItem relic)) return;
+                double damageToHeal = event.getEntity().getAttackStrengthScale(0.5F) * relic.getStatValue(stack, "vampire", "amount");
 
-            player.invulnerableTime = (int) (20 + relic.getStatValue(stack, "analnii", "tick"));
+                player.heal((float) damageToHeal);
+
+            }
         }
     }
 }

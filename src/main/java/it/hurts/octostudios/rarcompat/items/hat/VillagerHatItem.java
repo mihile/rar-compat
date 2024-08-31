@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 
 public class VillagerHatItem extends WearableRelicItem {
@@ -16,8 +17,9 @@ public class VillagerHatItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("villager_discount")
                                 .stat(StatData.builder("discount")
-                                        .initialValue(50.0D, 120.0D)
-                                        .upgradeModifier(UpgradeOperation.ADD, 10.0D)
+                                        .icon(StatIcons.SIZE)
+                                        .initialValue(1D, 9D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())

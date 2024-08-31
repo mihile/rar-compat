@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
@@ -49,8 +50,9 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("looting")
                                 .stat(StatData.builder("chance")
-                                        .initialValue(20D, 90D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 10D)
+                                        .icon(StatIcons.CHANCE)
+                                        .initialValue(1D, 9D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -75,7 +77,7 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                     ItemEnchantments.EMPTY).getLevel(player.getCommandSenderWorld().holderLookup(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING));
 
             for (ItemEntity itemEntity : event.getDrops())
-                itemEntity.getItem().grow(MathUtils.multicast(player.level().getRandom(), relic.getStatValue(stack, "looting", "chance"), 0.4)
+                itemEntity.getItem().grow(MathUtils.multicast(player.level().getRandom(), relic.getStatValue(stack, "looting", "chance"), 0.5)
                         * lootingLevel > 0 ? (int) Math.max(1.5, lootingLevel / 1.5) : 1);
 
         }

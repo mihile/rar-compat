@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.arm;
+package it.hurts.octostudios.rarcompat.items.bunch;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
@@ -14,18 +14,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import top.theillusivec4.curios.api.SlotContext;
 
-public class DiggingClawsItem extends WearableRelicItem {
+public class CrossNecklaceItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("claws")
-                                .stat(StatData.builder("amount")
-                                        .initialValue(2D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
+                        .ability(AbilityData.builder("analnii")
+                                .stat(StatData.builder("tick")
+                                        .initialValue(1D, 10D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -34,19 +35,25 @@ public class DiggingClawsItem extends WearableRelicItem {
                 .build();
     }
 
-    //  @EventBusSubscriber
-    public static class Event {
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
 
-        @SubscribeEvent
-        public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-            Player player = event.getEntity();
-
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
-
-            if (!(stack.getItem() instanceof DiggingClawsItem relic)) return;
-
-            event.setNewSpeed((float) (event.getNewSpeed() + relic.getStatValue(stack, "claws", "amount")));
-        }
+        player.invulnerableTime = 20;
     }
 
+    // @EventBusSubscriber
+    public static class Events {
+
+        @SubscribeEvent
+        public static void onLivingDamaged(LivingDamageEvent.Post event) {
+            if (!(event.getEntity() instanceof Player player)) return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CROSS_NECKLACE.value());
+
+            if (!(stack.getItem() instanceof CrossNecklaceItem relic)) return;
+
+            player.invulnerableTime = (int) (20 + relic.getStatValue(stack, "analnii", "tick"));
+        }
+    }
 }

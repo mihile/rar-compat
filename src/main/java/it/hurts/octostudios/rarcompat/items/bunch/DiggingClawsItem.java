@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.arm;
+package it.hurts.octostudios.rarcompat.items.bunch;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
@@ -10,23 +10,22 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
-public class VampiricGloveItem extends WearableRelicItem {
+public class DiggingClawsItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("vampire")
+                        .ability(AbilityData.builder("claws")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(10D, 90D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 9D)
+                                        .initialValue(2D, 10D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -35,21 +34,19 @@ public class VampiricGloveItem extends WearableRelicItem {
                 .build();
     }
 
-    // @EventBusSubscriber
+    //  @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent
-        public static void onAttack(AttackEntityEvent event) {
-            if (event.getEntity() instanceof Player player && event.getTarget() instanceof LivingEntity) {
-                ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.VAMPIRIC_GLOVE.value());
+        public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
+            Player player = event.getEntity();
 
-                if (!(stack.getItem() instanceof VampiricGloveItem relic)) return;
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-                double damageToHeal = event.getEntity().getAttackStrengthScale(0.5F) * relic.getStatValue(stack, "vampire", "amount");
+            if (!(stack.getItem() instanceof DiggingClawsItem relic)) return;
 
-                player.heal((float) damageToHeal);
-
-            }
+            event.setNewSpeed((float) (event.getNewSpeed() + relic.getStatValue(stack, "claws", "amount")));
         }
     }
+
 }

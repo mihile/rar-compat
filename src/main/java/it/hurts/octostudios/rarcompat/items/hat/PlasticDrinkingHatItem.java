@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -24,23 +25,19 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("drinking")
                                 .stat(StatData.builder("speed")
-                                        .initialValue(1.1D, 1.5D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .icon(StatIcons.SPEED)
+                                        .initialValue(1D, 1.3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("nutrition")
                                 .stat(StatData.builder("hunger")
-                                        .initialValue(1D, 5D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
-                                        .formatValue(value -> MathUtils.round(value, 0))
+                                        .icon(StatIcons.SATURATION)
+                                        .initialValue(1D, 3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
-// TODO: Use only hunger value
-//                                .stat(StatData.builder("saturation")
-//                                        .initialValue(1D, 5D)
-//                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
-//                                        .formatValue(value -> MathUtils.round(value, 1))
-//                                        .build())
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
@@ -62,6 +59,6 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
         EntityUtils.applyAttribute(player, stack, ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed") - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
         if (player.isUsingItem() && player.getUseItem().getUseAnimation() == UseAnim.DRINK && player.getUseItemRemainingTicks() == 1)
-            player.getFoodData().eat((int) getStatValue(stack, "nutrition", "hunger"), (float) getStatValue(stack, "nutrition", "saturation"));
+            player.getFoodData().eat((int) getStatValue(stack, "nutrition", "hunger"), (float) getStatValue(stack, "nutrition", "hunger"));
     }
 }

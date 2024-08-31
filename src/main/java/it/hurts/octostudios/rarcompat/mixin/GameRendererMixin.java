@@ -2,7 +2,7 @@ package it.hurts.octostudios.rarcompat.mixin;
 
 import artifacts.registry.ModItems;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import it.hurts.octostudios.rarcompat.items.hat.NightVisionGogglesItem;
+import it.hurts.octostudios.rarcompat.items.bunch.NightVisionGogglesItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;

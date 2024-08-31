@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.body;
+package it.hurts.octostudios.rarcompat.items.bunch;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;

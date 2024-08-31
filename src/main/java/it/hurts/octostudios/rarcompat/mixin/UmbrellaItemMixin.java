@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -37,6 +38,7 @@ public class UmbrellaItemMixin extends ArtifactItem implements IRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("glider")
                                 .stat(StatData.builder("speed")
+                                        .icon(StatIcons.JUMP_HEIGHT)
                                         .initialValue(0.4D, 0.6D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 2))
@@ -44,6 +46,7 @@ public class UmbrellaItemMixin extends ArtifactItem implements IRelicItem {
                                 .build())
                         .ability(AbilityData.builder("shield")
                                 .stat(StatData.builder("knockback")
+                                        .icon(StatIcons.DEPTH)
                                         .initialValue(2.0D, 1.5D)
                                         .upgradeModifier(UpgradeOperation.ADD, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 2))

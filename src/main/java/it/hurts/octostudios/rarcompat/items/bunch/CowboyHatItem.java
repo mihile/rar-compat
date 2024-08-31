@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.hat;
+package it.hurts.octostudios.rarcompat.items.bunch;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
