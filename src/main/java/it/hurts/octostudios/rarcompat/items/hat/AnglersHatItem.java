@@ -74,7 +74,7 @@ public class AnglersHatItem extends WearableRelicItem {
                         .create(LootContextParamSets.FISHING);
 
                 int rolls = MathUtils.multicast(level.getRandom(), relic.getStatValue(stack, "catch", "chance"), 1F);
-                System.out.println(rolls + " GEGQ");
+
                 for (int i = 0; i < rolls; i++) {
                     if (level.getRandom().nextFloat() < 0.5f) {
                         for (ItemStack loot : loottable.getRandomItems(lootparams)) {

@@ -1,7 +1,6 @@
 package it.hurts.octostudios.rarcompat;
 
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.init.EntityRegistry;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -16,8 +15,6 @@ public class RARCompat {
     public static final String MODID = "rarcompat";
 
     public RARCompat(IEventBus bus) {
-        EntityRegistry.register(bus);
-
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
