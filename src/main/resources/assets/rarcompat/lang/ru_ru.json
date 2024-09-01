@@ -19,6 +19,16 @@
   "tooltip.relics.plastic_drinking_hat.ability.nutrition.stat.hunger.title": "Восполняемый голод:",
   "tooltip.relics.plastic_drinking_hat.ability.nutrition.stat.hunger.value": "%1$s единиц.",
 
+  "tooltip.relics.novelty_drinking_hat.description": "Ускоряет процесс питья, что помогает не только быстро утолить жажду, но и удивительным образом восполнить голод.",
+  "tooltip.relics.novelty_drinking_hat.ability.drinking": "Быстрое питьё",
+  "tooltip.relics.novelty_drinking_hat.ability.drinking.description": "Увеличивает скорость питья.",
+  "tooltip.relics.novelty_drinking_hat.ability.drinking.stat.speed.title": "Дополнительная скорость питья:",
+  "tooltip.relics.novelty_drinking_hat.ability.drinking.stat.speed.value": "+%1$s%%.",
+  "tooltip.relics.novelty_drinking_hat.ability.nutrition": "Живительный глоток",
+  "tooltip.relics.novelty_drinking_hat.ability.nutrition.description": "При употреблении жидкости также восполняет и голод игрока.",
+  "tooltip.relics.novelty_drinking_hat.ability.nutrition.stat.hunger.title": "Восполняемый голод:",
+  "tooltip.relics.novelty_drinking_hat.ability.nutrition.stat.hunger.value": "%1$s единиц.",
+
   "tooltip.relics.snorkel.description": "Позволяет на дольше погружаться под воду и исследовать глубины без рисков захлебнуться.",
   "tooltip.relics.snorkel.ability.diving": "Контроль дыхания",
   "tooltip.relics.snorkel.ability.diving.description": "Применяет временный эффект подводного дыхания при полном погружении в воду.",
