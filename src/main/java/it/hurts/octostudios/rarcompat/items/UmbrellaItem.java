@@ -73,7 +73,21 @@ public class UmbrellaItem extends WearableRelicItem {
         if (player.onGround() || !isHoldingUmbrellaUpright(player))
             fallDistanceTick = 0;
 
+        if (!player.onGround() && !player.isInWater()
+                && player.getDeltaMovement().y < 0
+                && !player.hasEffect(MobEffects.SLOW_FALLING)
+                && isHoldingUmbrellaUpright(player)) {
+            fallDistanceTick++;
 
+            Vec3 motion = player.getDeltaMovement();
+
+            double newFallSpeed = motion.y * (1.0 - Math.min((((UmbrellaItem) stack.getItem()).getStatValue(stack, "glider", "speed") * fallDistanceTick / 130) / 100.0, 0.60));
+
+            if(newFallSpeed <= -0.06 && !level.isClientSide)
+                player.fallDistance = 0;
+
+            player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
+        }
     }
 
     @Override
@@ -124,24 +138,6 @@ public class UmbrellaItem extends WearableRelicItem {
     public static class Events {
 
         @SubscribeEvent
-        public static void onLivingFall(LivingFallEvent event) {
-            if (!(event.getEntity() instanceof Player player) || player.isInWater() || player.hasEffect(MobEffects.SLOW_FALLING) || !isHoldingUmbrellaUpright(player))
-                return;
-
-            ItemStack stack = getUmbrellaItemStack(player);
-
-            fallDistanceTick++;
-
-            Vec3 motion = player.getDeltaMovement();
-
-            double newFallSpeed = motion.y * (1.0 - Math.min((((UmbrellaItem) stack.getItem()).getStatValue(stack, "glider", "speed") * fallDistanceTick / 130) / 100.0, 0.60));
-
-            player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
-            event.setDamageMultiplier((float) (event.getDamageMultiplier() * newFallSpeed));
-        }
-
-
-        @SubscribeEvent
         public static void onLivingRender(RenderLivingEvent.Pre<?, ?> event) {
             if (!(event.getRenderer().getModel() instanceof HumanoidModel<?> humanoidModel) || !(event.getEntity() instanceof Player player)
                     || !isHoldingUmbrellaUpright(player))
@@ -168,17 +164,6 @@ public class UmbrellaItem extends WearableRelicItem {
                 if (relic.pushAwayEntity(player, attacker))
                     event.setCanceled(true);
             }
-        }
-
-        private static ItemStack getUmbrellaItemStack(Player player) {
-            ItemStack mainHandStack = player.getItemInHand(InteractionHand.MAIN_HAND);
-            ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
-
-            if (!mainHandStack.isEmpty()) {
-                return mainHandStack;
-            }
-
-            return offHandStack;
         }
 
     }
