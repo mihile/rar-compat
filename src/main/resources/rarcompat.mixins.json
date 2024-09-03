@@ -6,11 +6,11 @@
   "refmap": "rarcompat.refmap.json",
   "mixins": [
     "GameRendererMixin",
-    "UmbrellaItemMixin",
     "VillagerMixin",
     "init.ModItemsMixin"
   ],
   "client": [
+    "HumanoidModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

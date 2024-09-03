@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.UmbrellaItem;
 import it.hurts.octostudios.rarcompat.items.necklace.*;
 import it.hurts.octostudios.rarcompat.items.hat.*;
 import net.minecraft.core.Holder;
@@ -50,13 +51,13 @@ public class ModItemsMixin {
         };
     }
 
-//    @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
-//    private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
-//        return switch (name) {
-//            case "umbrella" -> register(name, UmbrellaItemItem::new);
-//            default -> register(name, supplier);
-//        };
-//    }
+    @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
+    private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
+        return switch (name) {
+            case "umbrella" -> register(name, UmbrellaItem::new);
+            default -> register(name, supplier);
+        };
+    }
 
     @Shadow
     private static Holder<Item> wearableItem(String name, Consumer<WearableArtifactItem.Builder> consumer) {
