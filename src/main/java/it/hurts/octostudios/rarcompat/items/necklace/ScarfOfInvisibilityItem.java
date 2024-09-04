@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -46,9 +47,13 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                         .ability(AbilityData.builder("invisible")
                                 .stat(StatData.builder("threshold")
                                         .icon(StatIcons.SPEED)
-                                        .initialValue(0.1D, 0.2D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.035D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(0.07D, 0.08D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.03D)
+                                        .formatValue(value -> {
+                                            if (value >= 0.1)
+                                                return MathUtils.round(value, 1);
+                                            return MathUtils.round(value, 3);
+                                        })
                                         .build())
                                 .stat(StatData.builder("radius")
                                         .icon(StatIcons.DISTANCE)
@@ -64,14 +69,18 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
-        if (stack.getOrDefault(DataComponentRegistry.TOGGLED, true) && player.getSpeed() < getStatValue(stack, "invisible", "threshold"))
-            player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
-        else {
+        if (stack.getOrDefault(DataComponentRegistry.TOGGLED, true)) {
+            if (player.getSpeed() <= getStatValue(stack, "invisible", "threshold"))
+                player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
+            else if (player.isShiftKeyDown() && getStatValue(stack, "invisible", "threshold") < 0.9F) {
+                player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
+            }
+        } else {
             if (stack.get(DataComponentRegistry.TARGET) != null)
-                updateInvisibilityZone((ServerLevel) player.level(), player.getUUID(), getStatValue(stack, "invisible", "radius"), stack);
+                updateInvisibilityZone(player.level(), player, getStatValue(stack, "invisible", "radius"), stack);
         }
     }
 
@@ -83,39 +92,21 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
         stack.set(DataComponentRegistry.TARGET, null);
     }
 
-    public static void updateInvisibilityZone(ServerLevel level, UUID playerOwnerUUID, double radius, ItemStack itemStack) {
-        Player playerOwner = (Player) level.getEntity(playerOwnerUUID);
-
-        if (playerOwner == null)
+    public static void updateInvisibilityZone(Level level, Player player, double radius, ItemStack itemStack) {
+        if (player == null)
             return;
 
-        checkDistance(level, playerOwner, radius);
+        checkDistance(player, radius);
+        RandomSource random = player.getRandom();
 
-        double particles = radius * 75;
-
-        for (int i = 0; i < particles; i++) {
-            double angle = 2 * Math.PI * i / particles;
-
-            double x = getBlockPos(itemStack).getX() + radius * Math.cos(angle);
-            double y = getBlockPos(itemStack).getY();
-            double z = getBlockPos(itemStack).getZ() + radius * Math.sin(angle);
-
-            y = adjustYPositionToValidBlock(level, x, y, z);
-
-            RandomSource random = playerOwner.getRandom();
-
-            level.sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.5F, 1, 1),
-                    x, y + 0.2, z, 0, 0.0, 0, 0, 0);
-        }
+        ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.5F, 1, 1),
+                getBlockPos(itemStack), level, radius, 0.1F);
     }
 
-    private static void checkDistance(ServerLevel level, Player playerOwner, double radius) {
+    private static void checkDistance(Player playerOwner, double radius) {
         ItemStack stack = EntityUtils.findEquippedCurio(playerOwner, ModItems.SCARF_OF_INVISIBILITY.value());
 
-        if (!(stack.getItem() instanceof ScarfOfInvisibilityItem))
-            return;
-
-        if (getBlockPos(stack).getCenter().distanceTo(level.getEntity(playerOwner.getUUID()).getPosition(1)) > radius) {
+        if (getBlockPos(stack).distanceTo(playerOwner.position()) > radius) {
             stack.set(DataComponentRegistry.TOGGLED, true);
             stack.set(DataComponentRegistry.TARGET, null);
         } else {
@@ -123,35 +114,15 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
         }
     }
 
-    private static double adjustYPositionToValidBlock(ServerLevel level, double x, double y, double z) {
-        BlockPos pos = new BlockPos((int) x, (int) y, (int) z);
-
-        for (int i = 0; i <= 2; i++) {
-            BlockPos upPos = pos.above(i);
-
-            if (level.getBlockState(upPos).blocksMotion())
-                return upPos.getY() + 1;
-        }
-
-        for (int i = 1; i == 1; i++) {
-            BlockPos downPos = pos.below(i);
-
-            if (level.getBlockState(downPos).blocksMotion())
-                return downPos.getY() + 1;
-        }
-
-        return y;
-    }
-
-    private static BlockPos getBlockPos(ItemStack stack) {
+    private static Vec3 getBlockPos(ItemStack stack) {
         if (stack.get(DataComponentRegistry.TARGET) == null) {
             stack.set(DataComponentRegistry.TOGGLED, true);
-            return BlockPos.ZERO;
+            return Vec3.ZERO;
         }
 
         String[] parts = Objects.requireNonNull(stack.get(DataComponentRegistry.TARGET)).split("\\s+");
 
-        return new BlockPos((int) Double.parseDouble(parts[0]), (int) Double.parseDouble(parts[1]), (int) Double.parseDouble(parts[2]));
+        return new Vec3(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2]));
     }
 
     @EventBusSubscriber
@@ -162,7 +133,11 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
             Player playerClient = Minecraft.getInstance().player;
             ItemStack stack = EntityUtils.findEquippedCurio(playerClient, ModItems.SCARF_OF_INVISIBILITY.value());
 
-            if (stack.getItem() instanceof ScarfOfInvisibilityItem && playerClient != null && !playerClient.hasContainerOpen() && playerClient.hasEffect(EffectRegistry.VANISHING))
+            if (stack.getItem() instanceof ScarfOfInvisibilityItem
+                    && playerClient != null
+                    && !playerClient.hasContainerOpen()
+                    && playerClient.hasEffect(EffectRegistry.VANISHING)
+                    && Minecraft.getInstance().screen == null)
                 NetworkHandler.sendToServer(new PacketCreateZone(Minecraft.getInstance().player.getUUID().toString()));
         }
 
