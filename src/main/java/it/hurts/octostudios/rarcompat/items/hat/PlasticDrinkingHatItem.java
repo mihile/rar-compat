@@ -1,6 +1,7 @@
 package it.hurts.octostudios.rarcompat.items.hat;
 
 import artifacts.registry.ModAttributes;
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -15,8 +16,13 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class PlasticDrinkingHatItem extends WearableRelicItem {
@@ -53,13 +59,22 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
                 .build();
     }
 
-    @Override
-    public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
-            return;
+    @EventBusSubscriber
+    public static class Event {
 
-        // TODO: Move to the "item use finish" event
-        if (player.isUsingItem() && player.getUseItem().getUseAnimation() == UseAnim.DRINK && player.getUseItemRemainingTicks() == 1)
-            player.getFoodData().eat((int) getStatValue(stack, "nutrition", "hunger"), (float) getStatValue(stack, "nutrition", "hunger"));
+        @SubscribeEvent
+        public static void onUseItem(LivingEntityUseItemEvent.Finish event) {
+            if (!(event.getEntity() instanceof Player player) || player.level().isClientSide) return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PLASTIC_DRINKING_HAT.value());
+
+            if (!(stack.getItem() instanceof PlasticDrinkingHatItem relic) || event.getItem().getUseAnimation() != UseAnim.DRINK)
+                return;
+
+            int hunger = (int) relic.getStatValue(stack, "nutrition", "hunger");
+            float saturation = (float) relic.getStatValue(stack, "nutrition", "hunger");
+
+            player.getFoodData().eat(hunger, saturation);
+        }
     }
 }

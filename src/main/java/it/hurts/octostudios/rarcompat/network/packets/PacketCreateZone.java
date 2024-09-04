@@ -39,7 +39,6 @@ public class PacketCreateZone implements CustomPacketPayload {
             stack.set(DataComponentRegistry.TOGGLED, false);
 
             if (stack.get(DataComponentRegistry.TARGET) == null)
-                // https://i.pinimg.com/474x/23/cf/83/23cf837112b2d871be00aa371858062c.jpg
                 stack.set(DataComponentRegistry.TARGET, player.getX() + " " + player.getY() + " " + player.getZ());
         });
     }
