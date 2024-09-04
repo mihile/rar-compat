@@ -15,9 +15,13 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -59,6 +63,8 @@ public class AnglersHatItem extends WearableRelicItem {
             Player player = event.getEntity();
             Level level = player.level();
 
+            FishingHook fishingHook = event.getHookEntity();
+
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ANGLERS_HAT.value());
 
             if (!(stack.getItem() instanceof AnglersHatItem relic))
@@ -76,11 +82,17 @@ public class AnglersHatItem extends WearableRelicItem {
                 int rolls = MathUtils.multicast(level.getRandom(), relic.getStatValue(stack, "catch", "chance"), 1F);
 
                 for (int i = 0; i < rolls; i++) {
-                    if (level.getRandom().nextFloat() < 0.5f) {
-                        for (ItemStack loot : loottable.getRandomItems(lootparams)) {
-                            ItemEntity entity = new ItemEntity(serverLevel, player.getX(), player.getY(), player.getZ(), loot);
-                            serverLevel.addFreshEntity(entity);
-                        }
+                    for (ItemStack itemstack : loottable.getRandomItems(lootparams)) {
+                        ItemEntity itementity = new ItemEntity(serverLevel, fishingHook.getX(), fishingHook.getY(), fishingHook.getZ(), itemstack);
+                        double x = player.getX() - fishingHook.getX();
+                        double y = player.getY() - fishingHook.getY();
+                        double z = player.getZ() - fishingHook.getZ();
+
+                        itementity.setDeltaMovement(x * 0.1, y * 0.1 + Math.sqrt(Math.sqrt(x * x + y * y + z * z)) * 0.08, z * 0.1);
+                        player.level().addFreshEntity(itementity);
+
+                        player.level().addFreshEntity(new ExperienceOrb(player.level(), player.getX(), player.getY() + 0.5, player.getZ() + 0.5,
+                                fishingHook.getRandom().nextInt(6) + 1));
                     }
                 }
             }
