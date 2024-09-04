@@ -49,7 +49,7 @@ public class SnorkelItem extends WearableRelicItem {
             if (!toggled) {
                 stack.set(TOGGLED, true);
 
-                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, (int) (getStatValue(stack, "diving", "duration") * 20), 0));
+                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, (int) (getStatValue(stack, "diving", "duration") * 20), 0, true, false));
             }
         } else if (toggled)
             stack.set(TOGGLED, false);
