@@ -83,12 +83,13 @@ public class UmbrellaItem extends WearableRelicItem {
             Vec3 motion = player.getDeltaMovement();
             double modifyVal = ((UmbrellaItem) stack.getItem()).getStatValue(stack, "glider", "speed") / 100.0;
 
-            double fallDistanceRatio = Math.min(fallDistanceTick / 130.0, 1.0);
+            double fallDistanceRatio = fallDistanceTick / 130.0;
 
             double logFactor = Math.min(Math.log1p(modifyVal * fallDistanceRatio), 0.33);
 
             double newFallSpeed = motion.y * (1.0 - logFactor);
 // -0.39461410894084625 - min
+            // -0.2283051969238161 - new min
             player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
         }
     }
