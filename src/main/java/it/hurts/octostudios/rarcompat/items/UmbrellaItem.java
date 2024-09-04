@@ -49,7 +49,7 @@ public class UmbrellaItem extends WearableRelicItem {
                                 .stat(StatData.builder("speed")
                                         .icon(StatIcons.JUMP_HEIGHT)
                                         .initialValue(20D, 40D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -66,6 +66,7 @@ public class UmbrellaItem extends WearableRelicItem {
                 .build();
     }
 
+    // 0.2 - максимально возможная скорость падения с зонта (-0.13)
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         if (!(entity instanceof Player player)) return;
@@ -78,14 +79,16 @@ public class UmbrellaItem extends WearableRelicItem {
                 && !player.hasEffect(MobEffects.SLOW_FALLING)
                 && isHoldingUmbrellaUpright(player)) {
             fallDistanceTick++;
-
+            System.out.println(player.getDeltaMovement().y);
             Vec3 motion = player.getDeltaMovement();
+            double modifyVal = ((UmbrellaItem) stack.getItem()).getStatValue(stack, "glider", "speed") / 100.0;
 
-            double newFallSpeed = motion.y * (1.0 - Math.min((((UmbrellaItem) stack.getItem()).getStatValue(stack, "glider", "speed") * fallDistanceTick / 130) / 100.0, 0.60));
+            double fallDistanceRatio = Math.min(fallDistanceTick / 130.0, 1.0);
 
-            if(newFallSpeed <= -0.06 && !level.isClientSide)
-                player.fallDistance = 0;
+            double logFactor = Math.min(Math.log1p(modifyVal * fallDistanceRatio), 0.33);
 
+            double newFallSpeed = motion.y * (1.0 - logFactor);
+// -0.39461410894084625 - min
             player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
         }
     }
