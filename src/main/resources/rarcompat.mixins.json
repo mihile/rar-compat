@@ -7,7 +7,7 @@
   "mixins": [
     "GameRendererMixin",
     "MerchantOfferMixin",
-    "VillagerMixin",
+    "AbstractVillagerMixin",
     "init.ModItemsMixin"
   ],
   "client": [
