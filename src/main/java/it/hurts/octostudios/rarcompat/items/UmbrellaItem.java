@@ -33,6 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.jetbrains.annotations.Nullable;
@@ -112,11 +113,11 @@ public class UmbrellaItem extends WearableRelicItem {
     }
 
     @Override
-    public void releaseUsing(ItemStack p_41412_, Level p_41413_, LivingEntity entity, int p_41415_) {
+    public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
         if (entity instanceof Player player)
             player.getCooldowns().addCooldown(this, 60);
 
-        super.releaseUsing(p_41412_, p_41413_, entity, p_41415_);
+        super.onStopUsing(stack, entity, count);
     }
 
     @Override
@@ -153,6 +154,20 @@ public class UmbrellaItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class Events {
+
+        @SubscribeEvent
+        public static void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+            if (!(event.getEntity() instanceof Player player) || isHoldingUmbrellaUpright(player)
+                    || !(player.getUseItem().getItem() instanceof UmbrellaItem relic)
+                    || !player.isUsingItem()) return;
+
+            Vec3 lookDirection = player.getLookAngle();
+            int modifierVal = (int) relic.getStatValue(new ItemStack(relic), "shield", "knockback");
+
+            Vec3 knockbackDirection = new Vec3((-lookDirection.x + modifierVal) * 1.2, (-lookDirection.y + modifierVal) * 0.7, (-lookDirection.z + modifierVal) * 1.2);
+
+            player.setDeltaMovement(knockbackDirection);
+        }
 
         @SubscribeEvent
         public static void onLivingRender(RenderLivingEvent.Pre<?, ?> event) {
