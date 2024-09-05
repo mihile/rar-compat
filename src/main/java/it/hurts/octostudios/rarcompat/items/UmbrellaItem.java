@@ -40,6 +40,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 public class UmbrellaItem extends WearableRelicItem {
     public static double fallDistanceTick = 0;
+    public static double shiftHoldTime = 0;
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -49,7 +50,7 @@ public class UmbrellaItem extends WearableRelicItem {
                                 .stat(StatData.builder("speed")
                                         .icon(StatIcons.JUMP_HEIGHT)
                                         .initialValue(20D, 40D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.0625D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -57,7 +58,7 @@ public class UmbrellaItem extends WearableRelicItem {
                                 .stat(StatData.builder("knockback")
                                         .icon(StatIcons.DISTANCE)
                                         .initialValue(0.25D, 1D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.4D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -66,7 +67,6 @@ public class UmbrellaItem extends WearableRelicItem {
                 .build();
     }
 
-    // 0.2 - максимально возможная скорость падения с зонта (-0.13)
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         if (!(entity instanceof Player player)) return;
@@ -74,22 +74,27 @@ public class UmbrellaItem extends WearableRelicItem {
         if (player.onGround() || !isHoldingUmbrellaUpright(player))
             fallDistanceTick = 0;
 
+        if (!player.isShiftKeyDown())
+            shiftHoldTime = 0.0;
+
         if (!player.onGround() && !player.isInWater()
                 && player.getDeltaMovement().y < 0
                 && !player.hasEffect(MobEffects.SLOW_FALLING)
                 && isHoldingUmbrellaUpright(player)) {
             fallDistanceTick++;
-            System.out.println(player.getDeltaMovement().y);
             Vec3 motion = player.getDeltaMovement();
+
             double modifyVal = ((UmbrellaItem) stack.getItem()).getStatValue(stack, "glider", "speed") / 100.0;
-
             double fallDistanceRatio = fallDistanceTick / 130.0;
-
             double logFactor = Math.min(Math.log1p(modifyVal * fallDistanceRatio), 0.33);
 
             double newFallSpeed = motion.y * (1.0 - logFactor);
-// -0.39461410894084625 - min
-            // -0.2283051969238161 - new min
+
+            if (player.isShiftKeyDown()) {
+                shiftHoldTime += 0.002;
+                newFallSpeed -= Math.max(shiftHoldTime * 0.02, 0.1);
+            }
+
             player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
         }
     }
@@ -106,6 +111,24 @@ public class UmbrellaItem extends WearableRelicItem {
         return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
 
+    @Override
+    public void releaseUsing(ItemStack p_41412_, Level p_41413_, LivingEntity entity, int p_41415_) {
+        if (entity instanceof Player player)
+            player.getCooldowns().addCooldown(this, 60);
+
+        super.releaseUsing(p_41412_, p_41413_, entity, p_41415_);
+    }
+
+    @Override
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.BLOCK;
+    }
+
+    @Override
+    public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
+        return 72000;
+    }
+
     public boolean pushAwayEntity(Player player, LivingEntity attacker) {
         if (player.level().isClientSide) return false;
 
@@ -118,16 +141,6 @@ public class UmbrellaItem extends WearableRelicItem {
         }
 
         return false;
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BLOCK;
-    }
-
-    @Override
-    public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
-        return 72000;
     }
 
     public static boolean isHoldingUmbrellaUpright(LivingEntity entity, InteractionHand hand) {
