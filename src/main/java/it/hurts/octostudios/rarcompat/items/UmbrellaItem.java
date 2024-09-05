@@ -14,8 +14,16 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import lombok.Setter;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
@@ -71,6 +79,7 @@ public class UmbrellaItem extends WearableRelicItem {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         if (!(entity instanceof Player player)) return;
+        System.out.println(player.fallDistance);
 
         if (player.onGround() || !isHoldingUmbrellaUpright(player))
             fallDistanceTick = 0;
@@ -87,14 +96,17 @@ public class UmbrellaItem extends WearableRelicItem {
 
             double modifyVal = ((UmbrellaItem) stack.getItem()).getStatValue(stack, "glider", "speed") / 100.0;
             double fallDistanceRatio = fallDistanceTick / 130.0;
-            double logFactor = Math.min(Math.log1p(modifyVal * fallDistanceRatio), 0.33);
+            double logFactor = Math.min(Math.log1p(modifyVal * fallDistanceRatio), 0.3);
 
             double newFallSpeed = motion.y * (1.0 - logFactor);
 
             if (player.isShiftKeyDown()) {
-                shiftHoldTime += 0.002;
-                newFallSpeed -= Math.max(shiftHoldTime * 0.02, 0.1);
+                shiftHoldTime += 0.3;
+                newFallSpeed -= Math.min(shiftHoldTime * 0.02, 0.4);
             }
+
+            if (logFactor == 0.3)
+                player.fallDistance = 0;
 
             player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
         }
@@ -107,6 +119,7 @@ public class UmbrellaItem extends WearableRelicItem {
         level.getEntitiesOfClass(LivingEntity.class, new AABB(center.x - 0.5, center.y - 0.5, center.z - 0.5, center.x + 0.5, center.y + 0.5, center.z + 0.5),
                 entity -> entity != null && entity != player).forEach(entity -> pushAwayEntity(player, entity));
 
+        player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
         player.startUsingItem(hand);
 
         return InteractionResultHolder.consume(player.getItemInHand(hand));
@@ -137,7 +150,6 @@ public class UmbrellaItem extends WearableRelicItem {
 
         if (player.getLookAngle().normalize().dot(toTarget) > 0) {
             attacker.setDeltaMovement(attacker.getDeltaMovement().add(toTarget.scale(getStatValue(player.getUseItem(), "shield", "knockback"))));
-
             return true;
         }
 
@@ -193,8 +205,10 @@ public class UmbrellaItem extends WearableRelicItem {
                     && player.isUsingItem()
                     && event.getSource().getEntity() instanceof LivingEntity attacker) {
 
-                if (relic.pushAwayEntity(player, attacker))
+                if (relic.pushAwayEntity(player, attacker)) {
                     event.setCanceled(true);
+                    player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 0.3f, 1 + (player.getRandom().nextFloat() * 0.25F));
+                }
             }
         }
 
