@@ -1,8 +1,5 @@
 package it.hurts.octostudios.rarcompat.items;
 
-import artifacts.registry.ModItems;
-import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -10,31 +7,21 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import lombok.Setter;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -42,10 +29,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import org.jetbrains.annotations.Nullable;
-import top.theillusivec4.curios.api.SlotContext;
 
 public class UmbrellaItem extends WearableRelicItem {
     public static double fallDistanceTick = 0;
@@ -79,8 +63,8 @@ public class UmbrellaItem extends WearableRelicItem {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         if (!(entity instanceof Player player)) return;
-        System.out.println(player.fallDistance);
 
+        // Обработка падения с зонтом
         if (player.onGround() || !isHoldingUmbrellaUpright(player))
             fallDistanceTick = 0;
 
@@ -91,6 +75,9 @@ public class UmbrellaItem extends WearableRelicItem {
                 && player.getDeltaMovement().y < 0
                 && !player.hasEffect(MobEffects.SLOW_FALLING)
                 && isHoldingUmbrellaUpright(player)) {
+
+            createParticle(level, player);
+
             fallDistanceTick++;
             Vec3 motion = player.getDeltaMovement();
 
@@ -101,14 +88,46 @@ public class UmbrellaItem extends WearableRelicItem {
             double newFallSpeed = motion.y * (1.0 - logFactor);
 
             if (player.isShiftKeyDown()) {
-                shiftHoldTime += 0.3;
-                newFallSpeed -= Math.min(shiftHoldTime * 0.02, 0.4);
+                shiftHoldTime += 0.03;
+
+                if (logFactor >= 0.2)
+                    newFallSpeed -= Math.min(shiftHoldTime * 0.02, 0.3);
             }
 
             if (logFactor == 0.3)
                 player.fallDistance = 0;
 
             player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
+        }
+    }
+
+    public void createParticle(Level level, Player player) {
+        if (level.isClientSide) return;
+
+        for (int i = 0; i < 2; i++) {
+
+            Vec3 armPosition;
+            if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof UmbrellaItem)
+                armPosition = player.getEyePosition(1.0F)
+                        .add(player.getLookAngle().scale(0.5))
+                        .add(player.getUpVector(1.0F).scale(-0.25))
+                        .add(player.getLookAngle().cross(new Vec3(0, 1, 0)).scale(0.3));
+            else
+                armPosition = player.getEyePosition(1.0F)
+                        .add(player.getLookAngle().scale(0.5))
+                        .add(player.getUpVector(1.0F).scale(-0.25))
+                        .add(player.getLookAngle().cross(new Vec3(0, 1, 0)).scale(-0.3));
+
+
+            ((ServerLevel) level).sendParticles(
+                    ParticleTypes.CLOUD,
+                    armPosition.x,
+                    player.getY() + 2.8,
+                    armPosition.z,
+                    1,
+                    0, 0, 0,
+                    player.getDeltaMovement().y
+            );
         }
     }
 
@@ -149,7 +168,24 @@ public class UmbrellaItem extends WearableRelicItem {
         Vec3 toTarget = new Vec3(attacker.getX() - player.getX(), 0, attacker.getZ() - player.getZ()).normalize();
 
         if (player.getLookAngle().normalize().dot(toTarget) > 0) {
-            attacker.setDeltaMovement(attacker.getDeltaMovement().add(toTarget.scale(getStatValue(player.getUseItem(), "shield", "knockback"))));
+            Vec3 knockbackDirection = toTarget.scale(getStatValue(player.getUseItem(), "shield", "knockback"));
+            attacker.setDeltaMovement(attacker.getDeltaMovement().add(knockbackDirection));
+
+            Vec3 startPosition = attacker.position().add(new Vec3(0, attacker.getBbHeight() / 2.0, 0));
+
+            Vec3 particleVelocity = knockbackDirection.normalize().scale(0.5);
+
+            ((ServerLevel) player.level()).sendParticles(
+                    ParticleTypes.CLOUD,
+                    startPosition.x,
+                    startPosition.y,
+                    startPosition.z,
+                    10,
+                    particleVelocity.x,
+                    particleVelocity.y,
+                    particleVelocity.z,
+                    0.1
+            );
             return true;
         }
 
