@@ -9,9 +9,4 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public abstract class WearableRelicItem extends RelicItem implements IRelicItem, ICurioItem {
 
-    @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
-    }
-
 }

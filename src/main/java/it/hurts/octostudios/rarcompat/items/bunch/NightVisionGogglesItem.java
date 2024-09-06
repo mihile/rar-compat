@@ -40,9 +40,9 @@ public class    NightVisionGogglesItem extends WearableRelicItem {
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        super.onUnequip(slotContext, newStack, stack);
+        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
 
-        slotContext.entity().removeEffect(MobEffects.NIGHT_VISION);
+        player.removeEffect(MobEffects.NIGHT_VISION);
     }
 
     @Override
