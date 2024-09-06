@@ -71,11 +71,15 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player))
             return;
-        System.out.println(player.getKnownMovement().x);
+
         if (stack.getOrDefault(DataComponentRegistry.TOGGLED, true)) {
-            if (player.getSpeed() <= getStatValue(stack, "invisible", "threshold"))
+            double thresholdValue = getStatValue(stack, "invisible", "threshold");
+
+            if (Math.abs(player.getKnownMovement().y) > thresholdValue) return;
+
+            if (player.getSpeed() <= thresholdValue)
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
-            else if (player.isShiftKeyDown() && getStatValue(stack, "invisible", "threshold") < 0.9F)
+            else if (player.isShiftKeyDown() && thresholdValue < 0.9F)
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
             else if (Math.abs(player.getKnownMovement().x) <= 0.01D && Math.abs(player.getKnownMovement().z) <= 0.01D && player.getSpeed() == 0.1F)
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
