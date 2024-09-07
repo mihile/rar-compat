@@ -21,12 +21,19 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
@@ -101,34 +108,73 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
     private static void checkDistance(Player playerOwner, double radius) {
         ItemStack stack = EntityUtils.findEquippedCurio(playerOwner, ModItems.SCARF_OF_INVISIBILITY.value());
+        int offset = 16;
 
-        if (getBlockPos(stack).distanceTo(playerOwner.position()) > radius) {
-            Level level = playerOwner.level();
-            RandomSource random = playerOwner.getRandom();
+        if (getBlockPos(stack).distanceTo(playerOwner.position()) <= radius) return;
 
-            int particleCount = (int) (radius * 75);
-            double angleStep = 2 * Math.PI / particleCount;
+        Level level = playerOwner.level();
+        RandomSource random = playerOwner.getRandom();
 
-            for (int i = 0; i < particleCount; i++) {
-                double angle = i * angleStep;
-                double x = radius * Math.cos(angle);
-                double z = radius * Math.sin(angle);
+        int particleCount = (int) (radius * 75);
 
-                Vec3 particlePosition = getBlockPos(stack).add(x, 0, z);
+        for (int i = 0; i < particleCount; i++) {
+            double angle = i * (2 * Math.PI / particleCount);
+            double x = (radius * Math.cos(angle)) + getBlockPos(stack).x;
+            double y = getBlockPos(stack).y;
+            double z = (radius * Math.sin(angle)) + getBlockPos(stack).z;
 
+            boolean foundPos = false;
+            int tries;
+
+            for (tries = 0; tries < offset * 2; tries++) {
+                Vec3 vec = new Vec3(x, y, z);
+                BlockPos pos = new BlockPos(Mth.floor(x), Mth.floor(y), Mth.floor(z));
+
+                BlockState state = level.getBlockState(pos);
+                VoxelShape shape = state.getCollisionShape(level, pos);
+
+                if (state.getBlock() instanceof LiquidBlock)
+                    shape = Shapes.block();
+
+                if (shape.isEmpty()) {
+                    if (!foundPos) {
+                        y -= 1;
+
+                        continue;
+                    }
+                } else
+                    foundPos = true;
+
+                if (shape.isEmpty())
+                    break;
+
+                AABB aabb = shape.bounds();
+
+                if (!aabb.move(pos).contains(vec)) {
+                    if (aabb.maxY >= 1F) {
+                        y += 1;
+
+                        continue;
+                    }
+
+                    break;
+                }
+
+                y += 0.1F;
+
+            }
+
+            if (tries < offset * 2)
                 level.addParticle(ParticleUtils.constructSimpleSpark(
                                 new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)),
-                                0.5F, (int) (radius * (40 / radius)), 1),
-                        particlePosition.x,
-                        particlePosition.y,
-                        particlePosition.z,
+                                0.5F, (int) (radius * (40 / radius)), 0.9F), x, y, z,
                         0.0,
                         0.02 + (random.nextDouble() * 0.02),
                         0.0
                 );
-            }
-            stack.set(DataComponentRegistry.WORLD_POSITION, null);
         }
+
+        stack.set(DataComponentRegistry.WORLD_POSITION, null);
     }
 
     private static Vec3 getBlockPos(ItemStack stack) {
@@ -174,8 +220,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
                 level.addParticle(ParticleUtils.constructSimpleSpark(
                                 new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)),
-                                0.5F, (int) (radius * (17 / radius)), 1
-                        ),
+                                0.5F, (int) (radius * (17 / radius)), 0.9F),
                         getBlockPos(stack).x,
                         getBlockPos(stack).y + 1,
                         getBlockPos(stack).z,
