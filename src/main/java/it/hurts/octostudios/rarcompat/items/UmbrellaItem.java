@@ -30,12 +30,14 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.level.NoteBlockEvent;
 
 import java.util.List;
 
 public class UmbrellaItem extends WearableRelicItem {
+    public static double logFactor;
     public static double fallDistanceTick = 0;
     public static double shiftHoldTime = 0;
 
@@ -96,9 +98,8 @@ public class UmbrellaItem extends WearableRelicItem {
 
             double modifyVal = ((UmbrellaItem) stack.getItem()).getStatValue(stack, "glider", "speed") / 100.0;
             double fallDistanceRatio = fallDistanceTick / 130.0;
-            double logFactor = Math.min(Math.log1p(modifyVal * fallDistanceRatio), 0.3);
-
             double newFallSpeed = motion.y * (1.0 - logFactor);
+            logFactor = Math.min(Math.log1p(modifyVal * fallDistanceRatio), 0.3);
 
             if (player.isShiftKeyDown()) {
                 shiftHoldTime += 0.03;
@@ -211,6 +212,12 @@ public class UmbrellaItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class Events {
+
+        @SubscribeEvent
+        public static void onLivingFall(LivingFallEvent event) {
+            if (!isHoldingUmbrellaUpright(event.getEntity())) return;
+            event.setDamageMultiplier((float) (1 - (logFactor / 0.3)));
+        }
 
         @SubscribeEvent
         public static void onPlayerJump(LivingEvent.LivingJumpEvent event) {
