@@ -34,8 +34,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.InputEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -184,7 +187,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
         return stack.get(DataComponentRegistry.WORLD_POSITION).getPos();
     }
 
-    @EventBusSubscriber
+    @EventBusSubscriber(value = Dist.CLIENT)
     public static class Events {
 
         @SubscribeEvent
@@ -201,7 +204,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                     && Minecraft.getInstance().screen == null) {
 
                 NetworkHandler.sendToServer(new PacketCreateZone(Minecraft.getInstance().player.getUUID().toString()));
-                createBallParticles(playerClient, stack, relic.getStatValue(stack, "invisible", "radius"));
+                  createBallParticles(playerClient, stack, relic.getStatValue(stack, "invisible", "radius"));
             }
 
         }

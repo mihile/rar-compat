@@ -43,6 +43,7 @@ public class PacketCreateZone implements CustomPacketPayload {
             ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(UUID.fromString(playerUUID));
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SCARF_OF_INVISIBILITY.value());
+
             if (stack.get(DataComponentRegistry.WORLD_POSITION) == null) {
                 stack.set(DataComponentRegistry.WORLD_POSITION, new WorldPosition(player));
             }

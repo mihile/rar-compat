@@ -118,29 +118,38 @@ public class UmbrellaItem extends WearableRelicItem {
     public void createParticle(Level level, Player player) {
         if (level.isClientSide) return;
 
-        for (int i = 0; i < 2; i++) {
+        double fallingSpeed = -player.getDeltaMovement().y;
+        int particleCount = Math.max(1, (int) (fallingSpeed * 25)/4);
+        System.out.println(particleCount);
+        Vec3 basePosition;
+        if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof UmbrellaItem) {
+            basePosition = player.getEyePosition(1.0F)
+                    .add(player.getLookAngle().scale(0.5))
+                    .add(player.getUpVector(1.0F).scale(-0.25))
+                    .add(player.getLookAngle().cross(new Vec3(0, 1, 0)).scale(0.3));
+        } else {
+            basePosition = player.getEyePosition(1.0F)
+                    .add(player.getLookAngle().scale(0.5))
+                    .add(player.getUpVector(1.0F).scale(-0.25))
+                    .add(player.getLookAngle().cross(new Vec3(0, 1, 0)).scale(-0.3));
+        }
 
-            Vec3 armPosition;
-            if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof UmbrellaItem)
-                armPosition = player.getEyePosition(1.0F)
-                        .add(player.getLookAngle().scale(0.5))
-                        .add(player.getUpVector(1.0F).scale(-0.25))
-                        .add(player.getLookAngle().cross(new Vec3(0, 1, 0)).scale(0.3));
-            else
-                armPosition = player.getEyePosition(1.0F)
-                        .add(player.getLookAngle().scale(0.5))
-                        .add(player.getUpVector(1.0F).scale(-0.25))
-                        .add(player.getLookAngle().cross(new Vec3(0, 1, 0)).scale(-0.3));
+        Vec3[] offsets = new Vec3[]{
+                new Vec3(0.5, 0, 0.5),
+                new Vec3(0.5, 0, -0.5),
+                new Vec3(-0.5, 0, 0.5),
+                new Vec3(-0.5, 0, -0.5)
+        };
 
-
+        for (Vec3 offset : offsets) {
+            Vec3 particlePosition = basePosition.add(offset);
             ((ServerLevel) level).sendParticles(
                     ParticleTypes.CLOUD,
-                    armPosition.x,
-                    player.getY() + 2.8,
-                    armPosition.z,
-                    1,
-                    0, 0, 0,
-                    player.getDeltaMovement().y
+                    particlePosition.x,
+                    player.getY() + 3,
+                    particlePosition.z,
+                    particleCount,
+                    0, 0, 0, 0.01
             );
         }
     }
