@@ -21,8 +21,8 @@ public class ModItemsMixin {
     @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;wearableItem(Ljava/lang/String;Ljava/util/function/Consumer;)Lnet/minecraft/core/Holder;"))
     private static Holder<Item> redirectWearableItem(String name, Consumer<WearableArtifactItem.Builder> builderConsumer) {
         return switch (name) {
-            case "plastic_drinking_hat" -> register(name, PlasticDrinkingHatItem::new);
-            case "novelty_drinking_hat" -> register(name, PlasticDrinkingHatItem::new);
+            case "plastic_drinking_hat" -> register(name, DrinkingHatItem::new);
+            case "novelty_drinking_hat" -> register(name, DrinkingHatItem::new);
             case "snorkel" -> register(name, SnorkelItem::new);
             //   case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
             case "villager_hat" -> register(name, VillagerHatItem::new);

@@ -22,6 +22,8 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,6 +42,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.InputEvent;
+import org.apache.logging.log4j.core.jmx.Server;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
@@ -102,20 +105,78 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
         if (player == null)
             return;
 
-        checkDistance(player, radius);
         RandomSource random = player.getRandom();
 
-        ParticleUtils.createCyl(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.5F, 1, 1),
+        if (level.isClientSide) return;
+        checkDistance(player, radius);
+        createCyl(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.5F, 1, 1),
                 getBlockPos(itemStack), level, radius, 0.1F);
     }
 
+    public static void createCyl(ParticleOptions particle, Vec3 center, Level level, double radius, float step) {
+        int offset = 16;
+        double len = 6.283185307179586 * radius;
+        int num = (int) (len / (double) step);
+
+        for (int i = 0; i < num; ++i) {
+            double angle = Math.toRadians((double) (360.0F / (float) num * (float) i) + 360.0 * ((len / (double) step - (double) num) / (double) num / len));
+            double extraX = radius * Math.sin(angle) + center.x();
+            double extraZ = radius * Math.cos(angle) + center.z();
+            double extraY = center.y();
+            boolean foundPos = false;
+
+            int tries;
+            for (tries = 0; tries < offset * 2; ++tries) {
+                Vec3 vec = new Vec3(extraX, extraY, extraZ);
+                BlockPos pos = new BlockPos(Mth.floor(extraX), Mth.floor(extraY), Mth.floor(extraZ));
+                BlockState state = level.getBlockState(pos);
+                VoxelShape shape = state.getCollisionShape(level, pos);
+                if (state.getBlock() instanceof LiquidBlock) {
+                    shape = Shapes.block();
+                }
+
+                if (shape.isEmpty()) {
+                    if (!foundPos) {
+                        --extraY;
+                        continue;
+                    }
+                } else {
+                    foundPos = true;
+                }
+
+                if (shape.isEmpty()) {
+                    break;
+                }
+
+                AABB aabb = shape.bounds();
+                if (!aabb.move(pos).contains(vec)) {
+                    if (!(aabb.maxY >= 1.0)) {
+                        break;
+                    }
+
+                    ++extraY;
+                } else {
+                    extraY += step;
+                }
+            }
+
+            if (tries < offset * 2) {
+                ((ServerLevel) level).sendParticles(particle, extraX, extraY + 0.10000000149011612, extraZ, 0, 0.0, 0.0, 0, 0);
+            }
+        }
+
+    }
+
     private static void checkDistance(Player playerOwner, double radius) {
+        Level level = playerOwner.level();
+
+        if (level.isClientSide) return;
+
         ItemStack stack = EntityUtils.findEquippedCurio(playerOwner, ModItems.SCARF_OF_INVISIBILITY.value());
         int offset = 16;
 
         if (getBlockPos(stack).distanceTo(playerOwner.position()) <= radius) return;
 
-        Level level = playerOwner.level();
         RandomSource random = playerOwner.getRandom();
 
         int particleCount = (int) (radius * 75);
@@ -164,16 +225,16 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                 }
 
                 y += 0.1F;
-
             }
 
             if (tries < offset * 2)
-                level.addParticle(ParticleUtils.constructSimpleSpark(
+                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(
                                 new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)),
-                                0.5F, (int) (radius * (40 / radius)), 0.9F), x, y, z,
-                        0.0,
-                        0.02 + (random.nextDouble() * 0.02),
-                        0.0
+                                0.5F, (int) (radius * (40 / radius)), 0.9F),
+                        x, y, z,
+                        2,
+                        0,
+                        0.02 + (random.nextDouble() * 0.02), 0, 0.1
                 );
         }
 
@@ -204,7 +265,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                     && Minecraft.getInstance().screen == null) {
 
                 NetworkHandler.sendToServer(new PacketCreateZone(Minecraft.getInstance().player.getUUID().toString()));
-                  createBallParticles(playerClient, stack, relic.getStatValue(stack, "invisible", "radius"));
+                createBallParticles(playerClient, stack, relic.getStatValue(stack, "invisible", "radius"));
             }
 
         }

@@ -13,19 +13,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
-import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
-import top.theillusivec4.curios.api.SlotContext;
 
-public class PlasticDrinkingHatItem extends WearableRelicItem {
+public class DrinkingHatItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -67,8 +63,10 @@ public class PlasticDrinkingHatItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof Player player) || player.level().isClientSide) return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PLASTIC_DRINKING_HAT.value());
+            if (stack.getItem() == Items.AIR)
+                stack = EntityUtils.findEquippedCurio(player, ModItems.NOVELTY_DRINKING_HAT.value());
 
-            if (!(stack.getItem() instanceof PlasticDrinkingHatItem relic) || event.getItem().getUseAnimation() != UseAnim.DRINK)
+            if (!(stack.getItem() instanceof DrinkingHatItem relic) || event.getItem().getUseAnimation() != UseAnim.DRINK)
                 return;
 
             int hunger = (int) relic.getStatValue(stack, "nutrition", "hunger");

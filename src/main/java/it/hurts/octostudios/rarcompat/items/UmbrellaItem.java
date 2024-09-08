@@ -120,7 +120,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
         double fallingSpeed = -player.getDeltaMovement().y;
         int particleCount = Math.max(1, (int) (fallingSpeed * 25)/4);
-        System.out.println(particleCount);
+
         Vec3 basePosition;
         if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof UmbrellaItem) {
             basePosition = player.getEyePosition(1.0F)
@@ -149,7 +149,7 @@ public class UmbrellaItem extends WearableRelicItem {
                     player.getY() + 3,
                     particlePosition.z,
                     particleCount,
-                    0, 0, 0, 0.01
+                    0, 0, 0, 0
             );
         }
     }
