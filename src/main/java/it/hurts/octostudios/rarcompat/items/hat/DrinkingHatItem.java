@@ -15,14 +15,12 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 
 public class DrinkingHatItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -56,21 +54,24 @@ public class DrinkingHatItem extends WearableRelicItem {
     }
 
     @EventBusSubscriber
-    public static class Event {
-
+    public static class DrinkingHatEvents {
         @SubscribeEvent
         public static void onUseItem(LivingEntityUseItemEvent.Finish event) {
-            if (!(event.getEntity() instanceof Player player) || player.level().isClientSide) return;
+            if (!(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
+                return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PLASTIC_DRINKING_HAT.value());
-            if (stack.getItem() == Items.AIR)
+
+            if (stack.isEmpty())
                 stack = EntityUtils.findEquippedCurio(player, ModItems.NOVELTY_DRINKING_HAT.value());
 
             if (!(stack.getItem() instanceof DrinkingHatItem relic) || event.getItem().getUseAnimation() != UseAnim.DRINK)
                 return;
 
+            relic.spreadRelicExperience(player, stack, (int) Math.ceil(event.getDuration() / 20F));
+
             int hunger = (int) relic.getStatValue(stack, "nutrition", "hunger");
-            float saturation = (float) relic.getStatValue(stack, "nutrition", "hunger");
+            float saturation = hunger / 2F;
 
             player.getFoodData().eat(hunger, saturation);
         }
