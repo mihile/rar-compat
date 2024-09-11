@@ -65,15 +65,5 @@
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.threshold.title": "Maximum Speed:",
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.threshold.value": "%1$s blocks per second.",
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.title": "Area Radius",
-  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.value": "%1$s blocks.",
-
-  "tooltip.relics.panic_necklace.description": "При достаточно осторожном передвижении делает игрока незаметным для окружающих.",
-  "tooltip.relics.panic_necklace.ability.panic": "Тихий шаг",
-  "tooltip.relics.panic_necklace.ability.panic.description": "Если скорость передвижения игрока падает ниже порогового значения, он получает эффект исчезновения. При взаимодействии с объектом в мире появляется область, внутри которой невидимость больше не действует до момента выхода игрока за её пределы.",
-  "tooltip.relics.panic_necklace.ability.panic.stat.speed.title": "Максимальная скорость:",
-  "tooltip.relics.panic_necklace.ability.panic.stat.speed.value": "%1$s блоков в секунду.",
-  "tooltip.relics.panic_necklace.ability.panic.stat.attackSpeed.title": "Радиус области",
-  "tooltip.relics.panic_necklace.ability.panic.stat.attackSpeed.value": "%1$s блоков.",
-  "tooltip.relics.panic_necklace.ability.panic.stat.radius.title": "Радиус области",
-  "tooltip.relics.panic_necklace.ability.panic.stat.radius.value": "%1$s блоков."
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.value": "%1$s blocks."
 }
