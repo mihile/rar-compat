@@ -39,6 +39,12 @@ public class SuperstitiousHatItem extends WearableRelicItem {
 
     @Override
     public int getLootingLevel(SlotContext slotContext, @Nullable LootContext lootContext, ItemStack stack) {
-        return MathUtils.multicast(slotContext.entity().getRandom(), getStatValue(stack, "looting", "chance"), 1F);
+        var entity = slotContext.entity();
+
+        var amount = MathUtils.multicast(entity.getRandom(), getStatValue(stack, "looting", "chance"), 1F);
+
+        spreadRelicExperience(entity, stack, amount);
+
+        return amount;
     }
 }

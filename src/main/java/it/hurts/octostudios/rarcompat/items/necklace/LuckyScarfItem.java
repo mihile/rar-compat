@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class LuckyScarfItem extends WearableRelicItem {
@@ -38,6 +39,12 @@ public class LuckyScarfItem extends WearableRelicItem {
 
     @Override
     public int getFortuneLevel(SlotContext slotContext, LootContext lootContext, ItemStack stack) {
-        return MathUtils.multicast(slotContext.entity().getRandom(), getStatValue(stack, "luck", "chance"), 1);
+        var entity = slotContext.entity();
+
+        var amount = MathUtils.multicast(entity.getRandom(), getStatValue(stack, "luck", "chance"), 1F);
+
+        spreadRelicExperience(entity, stack, amount);
+
+        return amount;
     }
 }
