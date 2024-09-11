@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
@@ -15,10 +16,10 @@ public class RARCompat {
     public static final String MODID = "rarcompat";
 
     public RARCompat(IEventBus bus) {
+        bus.addListener(this::fillCreativeTabs);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void fillCreativeTabs(BuildCreativeModeTabContentsEvent event) {
+    public void fillCreativeTabs(final BuildCreativeModeTabContentsEvent event) {
         if (event.getTab() == ModItems.CREATIVE_TAB.get()) {
             for (Item item : BuiltInRegistries.ITEM.stream().toList()) {
                 if (item instanceof WearableRelicItem)

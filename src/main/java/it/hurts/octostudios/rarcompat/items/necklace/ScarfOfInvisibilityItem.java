@@ -89,14 +89,19 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
             if (Math.abs(player.getKnownMovement().y) > thresholdValue) return;
 
-            if (player.getSpeed() <= thresholdValue)
+            if (player.getSpeed() <= thresholdValue) {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
-            else if (player.isShiftKeyDown() && thresholdValue < 0.9F)
+                if (player.tickCount % 20 == 0)
+                    addRelicExperience(stack, +1);
+            } else if (player.isShiftKeyDown() && thresholdValue < 0.9F) {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
-            else if (Math.abs(player.getKnownMovement().x) <= 0.01D && Math.abs(player.getKnownMovement().z) <= 0.01D && player.getSpeed() == 0.1F)
+                if (player.tickCount % 20 == 0)
+                    addRelicExperience(stack, +1);
+            } else if (Math.abs(player.getKnownMovement().x) <= 0.01D && Math.abs(player.getKnownMovement().z) <= 0.01D && player.getSpeed() == 0.1F)
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));
         } else
             updateInvisibilityZone(player.level(), player, getStatValue(stack, "invisible", "radius"), stack);
+
     }
 
     @Override

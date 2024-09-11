@@ -5,9 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "rarcompat.refmap.json",
   "mixins": [
-    "GameRendererMixin",
-    "MerchantOfferMixin",
     "AbstractVillagerMixin",
+    "GameRendererMixin",
+    "LootModifiersMixin",
     "init.ModItemsMixin"
   ],
   "client": [
