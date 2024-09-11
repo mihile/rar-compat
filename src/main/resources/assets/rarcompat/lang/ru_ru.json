@@ -65,5 +65,5 @@
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.threshold.title": "Максимальная скорость:",
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.threshold.value": "%1$s блоков в секунду.",
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.title": "Радиус области",
-  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.value": "%1$s блоков.",
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.value": "%1$s блоков."
 }
