@@ -37,7 +37,7 @@ public class ModItemsMixin {
             //   case "flame_pendant" -> register(name, FlamePendantItem::new);
             //   case "shock_pendant" -> register(name, ShockPendantItem::new);
             //   case "thorn_pendant" -> register(name, ThornPendantItem::new);
-             case "panic_necklace" -> register(name, PanicNecklaceItem::new);
+           //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);
             //    case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
             //     case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             //     case "cloud_in_a_bottle" -> register(name, CloudInBottleItem::new);
