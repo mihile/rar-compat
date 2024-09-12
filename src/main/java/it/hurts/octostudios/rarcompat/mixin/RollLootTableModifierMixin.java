@@ -17,10 +17,10 @@ import org.spongepowered.asm.mixin.Shadow;
 public class RollLootTableModifierMixin {
     @Final
     @Shadow
-    private final ResourceKey<LootTable> lootTable = null;
+    private ResourceKey<LootTable> lootTable;
     @Final
     @Shadow
-    private final boolean replace = false;
+    private boolean replace;
 
     /**
      * @author SSKirillSS
@@ -28,6 +28,9 @@ public class RollLootTableModifierMixin {
      */
     @Overwrite
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+        if (lootTable == null)
+            return generatedLoot;
+
         if (replace)
             generatedLoot.clear();
 
