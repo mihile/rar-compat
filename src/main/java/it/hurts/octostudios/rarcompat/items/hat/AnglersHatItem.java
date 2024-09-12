@@ -72,6 +72,9 @@ public class AnglersHatItem extends WearableRelicItem {
 
             int rolls = MathUtils.multicast(random, relic.getStatValue(stack, "catch", "chance"), 1F);
 
+            if (rolls > 0)
+                relic.spreadRelicExperience(player, stack, random.nextInt(rolls) + 1);
+
             LootTable loottable = serverLevel.getServer().reloadableRegistries().getLootTable(BuiltInLootTables.FISHING);
 
             LootParams lootparams = new LootParams.Builder(serverLevel)
@@ -82,8 +85,6 @@ public class AnglersHatItem extends WearableRelicItem {
 
             for (int i = 0; i < rolls; i++) {
                 List<ItemStack> drop = loottable.getRandomItems(lootparams);
-
-                relic.spreadRelicExperience(player, stack, drop.size());
 
                 for (ItemStack itemstack : drop) {
                     ItemEntity itementity = new ItemEntity(serverLevel, fishingHook.getX(), fishingHook.getY(), fishingHook.getZ(), itemstack);
