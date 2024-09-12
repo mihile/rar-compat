@@ -7,7 +7,7 @@
   "mixins": [
     "AbstractVillagerMixin",
     "GameRendererMixin",
-    "LootModifiersMixin",
+    "RollLootTableModifierMixin",
     "init.ModItemsMixin"
   ],
   "client": [
