@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -26,6 +27,11 @@ public class LuckyScarfItem extends WearableRelicItem {
                                         .initialValue(0.1D, 0.2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 14, 6).star(1, 6, 12).star(2, 16, 15)
+                                        .star(3, 9, 20).star(4, 3, 21).star(5, 14, 23)
+                                        .link(0, 1).link(0, 2).link(1, 3).link(2, 3).link(3, 4).link(3, 5)
                                         .build())
                                 .build())
                         .build())

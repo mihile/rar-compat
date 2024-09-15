@@ -10,18 +10,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.item.trading.MerchantOffers;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.TradeWithVillagerEvent;
-import net.neoforged.neoforge.event.village.VillageSiegeEvent;
-import net.neoforged.neoforge.event.village.VillagerTradesEvent;
-
-import java.util.List;
 
 public class VillagerHatItem extends WearableRelicItem {
     @Override
@@ -34,6 +24,12 @@ public class VillagerHatItem extends WearableRelicItem {
                                         .initialValue(10D, 20D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
                                         .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 3, 25).star(1, 12, 23).star(2, 12, 19)
+                                        .star(3, 9, 15).star(4, 9, 7).star(5, 15, 7)
+                                        .star(6, 15, 15)
+                                        .link(0, 1).link(0, 2).link(0, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 3)
                                         .build())
                                 .build())
                         .build())

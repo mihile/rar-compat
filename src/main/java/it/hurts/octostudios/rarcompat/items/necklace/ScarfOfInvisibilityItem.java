@@ -18,6 +18,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -39,12 +40,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.InputEvent;
-import org.apache.logging.log4j.core.jmx.Server;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
@@ -72,6 +70,11 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                                         .initialValue(8D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
                                         .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 11, 27).star(1, 11, 12).star(2, 11, 8)
+                                        .star(3, 17, 12).star(4, 6, 12).star(5, 6, 17)
+                                        .link(0, 1).link(1, 2).link(1, 3).link(1, 4).link(4, 5)
                                         .build())
                                 .build())
                         .build())

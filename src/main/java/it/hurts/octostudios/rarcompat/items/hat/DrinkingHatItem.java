@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
@@ -34,6 +35,12 @@ public class DrinkingHatItem extends WearableRelicItem {
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 14, 4).star(1, 19, 9).star(2, 5, 11)
+                                        .star(3, 13, 17).star(4, 8, 16).star(5, 4, 25)
+                                        .star(6, 12, 26)
+                                        .link(0, 1).link(0, 2).link(1, 3).link(4, 2).link(4, 3).link(4, 5).link(4, 6)
+                                        .build())
                                 .build())
                         .ability(AbilityData.builder("nutrition")
                                 .stat(StatData.builder("hunger")
@@ -41,6 +48,12 @@ public class DrinkingHatItem extends WearableRelicItem {
                                         .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 14, 2).star(1, 13, 9).star(2, 19, 13)
+                                        .star(3, 10, 16).star(4, 19, 20).star(5, 13, 25)
+                                        .star(6, 4, 23).star(7, 4, 29)
+                                        .link(0, 1).link(1, 2).link(1, 3).link(2, 4).link(4, 5).link(6, 3).link(6, 5).link(6, 7)
                                         .build())
                                 .build())
                         .build())
