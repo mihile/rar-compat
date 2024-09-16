@@ -43,6 +43,7 @@ public class DrinkingHatItem extends WearableRelicItem {
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("nutrition")
+                                .requiredLevel(5)
                                 .stat(StatData.builder("hunger")
                                         .icon(StatIcons.SATURATION)
                                         .initialValue(1D, 3D)
@@ -57,7 +58,7 @@ public class DrinkingHatItem extends WearableRelicItem {
                                         .build())
                                 .build())
                         .build())
-                .leveling(new LevelingData(100, 10, 100))
+                .leveling(new LevelingData(100, 15, 100))
                 .loot(LootData.builder()
                         .entry(LootCollections.ANTHROPOGENIC)
                         .build())
@@ -87,6 +88,9 @@ public class DrinkingHatItem extends WearableRelicItem {
                 return;
 
             relic.spreadRelicExperience(player, stack, (int) Math.ceil(event.getDuration() / 20F));
+
+            if (!relic.canPlayerUseAbility(player, stack, "nutrition"))
+                return;
 
             int hunger = (int) relic.getStatValue(stack, "nutrition", "hunger");
             float saturation = hunger / 2F;
