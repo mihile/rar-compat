@@ -65,5 +65,32 @@
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.threshold.title": "Максимальная скорость:",
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.threshold.value": "%1$s блоков в секунду.",
   "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.title": "Радиус области",
-  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.value": "%1$s блоков."
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.stat.radius.value": "%1$s блоков.",
+
+  "tooltip.relics.flame_pendant.description": "X",
+  "tooltip.relics.flame_pendant.ability.fire": "x",
+  "tooltip.relics.flame_pendant.ability.fire.description": "x",
+  "tooltip.relics.flame_pendant.ability.fire.stat.time.title": "x",
+  "tooltip.relics.flame_pendant.ability.fire.stat.time.value": "x",
+  "tooltip.relics.flame_pendant.ability.fire.stat.chance.title": "x",
+  "tooltip.relics.flame_pendant.ability.fire.stat.chance.value": "x",
+
+  "tooltip.relics.shock_pendant.description": "X",
+  "tooltip.relics.shock_pendant.ability.lightning": "x",
+  "tooltip.relics.shock_pendant.ability.lightning.description": "x",
+  "tooltip.relics.shock_pendant.ability.lightning.stat.damage.title": "x",
+  "tooltip.relics.shock_pendant.ability.lightning.stat.damage.value": "x",
+  "tooltip.relics.shock_pendant.ability.lightning.stat.chance.title": "x",
+  "tooltip.relics.shock_pendant.ability.lightning.stat.chance.value": "x",
+
+  "tooltip.relics.thorn_pendant.description": "X",
+  "tooltip.relics.thorn_pendant.ability.poison": "x",
+  "tooltip.relics.thorn_pendant.ability.poison.description": "x",
+  "tooltip.relics.thorn_pendant.ability.poison.stat.multiplier.title": "x",
+  "tooltip.relics.thorn_pendant.ability.poison.stat.multiplier.value": "x",
+  "tooltip.relics.thorn_pendant.ability.poison.stat.time.title": "x",
+  "tooltip.relics.thorn_pendant.ability.poison.stat.time.value": "x",
+  "tooltip.relics.thorn_pendant.ability.poison.stat.chance.title": "x",
+  "tooltip.relics.thorn_pendant.ability.poison.stat.chance.value": "x"
+
 }
