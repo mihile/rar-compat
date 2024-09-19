@@ -1,11 +1,25 @@
+buildscript {
+    repositories {
+        mavenCentral()
+
+        maven { url = 'https://maven.parchmentmc.org' }
+    }
+    dependencies {
+        classpath 'org.parchmentmc:librarian:1.+'
+    }
+}
+
 plugins {
-    id 'java-library'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.142'
+    id 'net.neoforged.gradle' version '[6.0.13, 6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
     id 'io.freefair.lombok' version '8.4'
 }
+
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+apply plugin: 'java'
 
 tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
@@ -18,25 +32,52 @@ base {
     archivesName = mod_id
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+
+mixin {
+    add sourceSets.main, "rarcompat.refmap.json"
+    config "rarcompat.mixins.json"
+
+    debug.verbose = true
+    debug.export = true
+}
 
 minecraft {
+    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    copyIdeResources = true
+
     runs {
-        configureEach {
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-            systemProperty 'forge.logging.console.level', 'debug'
-
-            modSource project.sourceSets.main
-        }
-
         client {
-            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', mod_id
+
+            arg "-mixin.config=" + mod_id + ".mixins.json"
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
         }
 
         server {
-            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            workingDirectory project.file('run')
 
-            programArgument '--nogui'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', mod_id
+
+            arg "-mixin.config=" + mod_id + ".mixins.json"
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
         }
     }
 }
@@ -78,13 +119,20 @@ repositories {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neoforge_version}"
+    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
+
+    if (System.getProperty("idea.sync.active") != "true") {
+        annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    }
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    implementation 'top.theillusivec4.curios:curios-neoforge:9.0.9+1.21'
+    implementation fg.deobf("it.hurts.octostudios.octolib:octolib-forge:0.4.2+1.20.1")
 
-    implementation "dev.architectury:architectury-neoforge:13.0.6"
+    implementation fg.deobf("dev.architectury:architectury-forge:9.2.14")
+
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+${minecraft_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.7.0+${minecraft_version}:api")
 
     if (file("libs").isDirectory()) {
         file("libs").eachFile { file ->
