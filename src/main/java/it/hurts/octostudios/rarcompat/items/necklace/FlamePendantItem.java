@@ -33,15 +33,15 @@ public class FlamePendantItem extends WearableRelicItem {
                         .ability(AbilityData.builder("fire")
                                 .stat(StatData.builder("time")
                                         .icon(StatIcons.DURATION)
-                                        .initialValue(1D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 2D)
+                                        .initialValue(2D, 3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
                                         .icon(StatIcons.CHANCE)
-                                        .initialValue(1D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(0.2D, 0.3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
+                                        .formatValue(value -> MathUtils.round(value, 1) * 100)
                                         .build())
                                 .build())
                         .build())
@@ -56,22 +56,22 @@ public class FlamePendantItem extends WearableRelicItem {
         public static void onReceivingDamage(LivingIncomingDamageEvent event) {
             Entity attacker = event.getSource().getEntity();
 
-            if (!(event.getEntity() instanceof Player player) || attacker == null )
+            if (!(event.getEntity() instanceof Player player) || attacker == null)
                 return;
 
             Level level = attacker.level();
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FLAME_PENDANT.value());
 
-            if (!(stack.getItem() instanceof FlamePendantItem relic) || level.isClientSide) return;
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FLAME_PENDANT.value());
 
             Random random = new Random();
 
-            if (random.nextInt(100) < relic.getStatValue(stack, "fire", "chance")) {
-                attacker.setRemainingFireTicks((int) relic.getStatValue(stack, "fire", "time"));
+            if (!(stack.getItem() instanceof FlamePendantItem relic) || level.isClientSide
+                    || random.nextInt(90) > (relic.getStatValue(stack, "fire", "chance") * 100)) return;
 
-                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.4F, 20, 0.95F),
-                        attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
-            }
+            attacker.setRemainingFireTicks((int) relic.getStatValue(stack, "fire", "time") * 20);
+
+            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200, 150 + random.nextInt(50), random.nextInt(50)), 0.4F, 20, 0.95F),
+                    attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
         }
     }
 }
