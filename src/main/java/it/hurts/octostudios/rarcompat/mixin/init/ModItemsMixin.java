@@ -29,8 +29,8 @@ public class ModItemsMixin {
             case "lucky_scarf" -> register(name, LuckyScarfItem::new);
             case "scarf_of_invisibility" -> register(name, ScarfOfInvisibilityItem::new);
             case "flame_pendant" -> register(name, FlamePendantItem::new);
-            case "shock_pendant" -> register(name, ThornPendantItem::new);
-            case "thorn_pendant" -> register(name, ShockPendantItem::new);
+            case "shock_pendant" -> register(name, ShockPendantItem::new);
+            case "thorn_pendant" -> register(name, ThornPendantItem::new);
             //case "cowboy_hat" -> register(name, CowboyHatItem::new);
             //case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
             //  case "cross_necklace" -> register(name, CrossNecklaceItem::new);
