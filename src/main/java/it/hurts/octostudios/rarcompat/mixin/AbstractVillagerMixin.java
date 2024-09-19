@@ -1,6 +1,7 @@
 package it.hurts.octostudios.rarcompat.mixin;
 
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.RARCompat;
 import it.hurts.octostudios.rarcompat.items.hat.VillagerHatItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -31,7 +32,8 @@ public abstract class AbstractVillagerMixin {
 
         int discounted = (int) Math.floor(p_35274_.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
 
-        hat.addRelicExperience(relicStack, 1 + tradingPlayer.getRandom().nextInt(discounted) + 1);
+        if (discounted > 1)
+            hat.addRelicExperience(relicStack, 1 + tradingPlayer.getRandom().nextInt(discounted) + 1);
     }
 
     @Inject(method = "getOffers", at = @At(value = "HEAD"))
@@ -39,10 +41,10 @@ public abstract class AbstractVillagerMixin {
         ItemStack relicStack = EntityUtils.findEquippedCurio(tradingPlayer, ModItems.VILLAGER_HAT.value());
         if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null) return;
 
-        for (MerchantOffer offer : this.offers) {
+        for (MerchantOffer offer : offers) {
+
             int discounted = (int) Math.floor(offer.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
             offer.addToSpecialPriceDiff(-discounted);
         }
-
     }
 }
