@@ -13,7 +13,6 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -42,9 +41,9 @@ public class ShockPendantItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("chance")
                                         .icon(StatIcons.CHANCE)
-                                        .initialValue(0.2D, 0.3D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
-                                        .formatValue(value -> MathUtils.round(value, 1) * 100)
+                                        .initialValue(0.15D, 0.25D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value * 100, 2))
                                         .build())
                                 .build())
                         .build())
