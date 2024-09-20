@@ -73,7 +73,7 @@ public class ThornPendantItem extends WearableRelicItem {
             Random random = new Random();
 
             if (!(stack.getItem() instanceof ThornPendantItem relic) || level.isClientSide
-                    || random.nextInt(100) < relic.getStatValue(stack, "poison", "chance")) return;
+                    || random.nextInt(100) > relic.getStatValue(stack, "poison", "chance") * 100) return;
 
             float multiplier = (float) relic.getStatValue(stack, "poison", "multiplier");
             int time = (int) (relic.getStatValue(stack, "poison", "time") * 20);

@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.bunch.CrystalHeartItem;
 import it.hurts.octostudios.rarcompat.items.necklace.*;
 import it.hurts.octostudios.rarcompat.items.hat.*;
 import net.minecraft.core.Holder;
@@ -34,7 +35,7 @@ public class ModItemsMixin {
             //case "cowboy_hat" -> register(name, CowboyHatItem::new);
             //case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
             //  case "cross_necklace" -> register(name, CrossNecklaceItem::new);
-            //  case "crystal_heart" -> register(name, CrystalHeartItem::new);
+            //      case "crystal_heart" -> register(name, CrystalHeartItem::new);
             //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);
             //    case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
             //     case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);

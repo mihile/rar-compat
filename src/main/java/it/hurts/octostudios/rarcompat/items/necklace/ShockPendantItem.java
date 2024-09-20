@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -66,14 +67,16 @@ public class ShockPendantItem extends WearableRelicItem {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value());
 
             if (!(stack.getItem() instanceof ShockPendantItem relic) || level.isClientSide
-                    || random.nextInt(100) < relic.getStatValue(stack, "lightning", "chance")) return;
+                    || random.nextInt(100) > relic.getStatValue(stack, "lightning", "chance") * 100) return;
 
             LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
 
+            lightningBolt.setVisualOnly(true);
             lightningBolt.setPos(attacker.position());
-            lightningBolt.setDamage((float) relic.getStatValue(stack, "lightning", "damage"));
 
             level.addFreshEntity(lightningBolt);
+
+            attacker.hurt(lightningBolt.damageSources().lightningBolt(), (float) relic.getStatValue(stack, "lightning", "damage"));
 
             ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.4F, 20, 0.95F),
                     attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
