@@ -8,6 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -38,7 +40,7 @@ public class ThornPendantItem extends WearableRelicItem {
                                         .icon(StatIcons.MULTIPLIER)
                                         .initialValue(0.05D, 0.1D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value  * 100, 1))
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .stat(StatData.builder("time")
                                         .icon(StatIcons.DURATION)
@@ -55,6 +57,9 @@ public class ThornPendantItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.JUNGLE)
+                        .build())
                 .build();
     }
 
@@ -65,7 +70,7 @@ public class ThornPendantItem extends WearableRelicItem {
         public static void onReceivingDamage(LivingIncomingDamageEvent event) {
             Entity entityAttacker = event.getSource().getEntity();
 
-            if (!(event.getEntity() instanceof Player player) || !(entityAttacker instanceof LivingEntity attacker))
+            if (!(event.getEntity() instanceof Player player) || !(entityAttacker instanceof LivingEntity attacker) || attacker == player)
                 return;
 
             Level level = attacker.level();
@@ -78,10 +83,12 @@ public class ThornPendantItem extends WearableRelicItem {
             float multiplier = (float) relic.getStatValue(stack, "poison", "multiplier");
             int time = (int) (relic.getStatValue(stack, "poison", "time") * 20);
 
+            relic.addRelicExperience(stack, 1);
+
             attacker.hurt(event.getSource(), event.getAmount() * multiplier);
             attacker.addEffect(new MobEffectInstance(MobEffects.POISON, time, 1));
 
-            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + random.nextInt(50), 200 + random.nextInt(55), 50 + random.nextInt(50)), 0.4F, 20, 0.95F),
+            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + random.nextInt(50), 200 + random.nextInt(55), 50 + random.nextInt(50)), 0.4F, 30, 0.95F),
                     attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
         }
 
