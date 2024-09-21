@@ -6,12 +6,10 @@
   "refmap": "rarcompat.refmap.json",
   "mixins": [
     "AbstractVillagerMixin",
-    "GameRendererMixin",
     "RollLootTableModifierMixin",
     "init.ModItemsMixin"
   ],
   "client": [
-    "HumanoidModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1
