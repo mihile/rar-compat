@@ -277,10 +277,9 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                     && !playerClient.hasContainerOpen()
                     && Minecraft.getInstance().screen == null) {
 
-                NetworkHandler.sendToServer(new PacketCreateZone(Minecraft.getInstance().player.getUUID().toString()));
+                NetworkHandler.sendToServer(new PacketCreateZone());
                 createBallParticles(playerClient, stack, relic.getStatValue(stack, "invisible", "radius"));
             }
-
         }
 
         public static void createBallParticles(Player player, ItemStack stack, double radius) {
