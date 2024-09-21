@@ -4,7 +4,6 @@ import artifacts.registry.ModItems;
 import artifacts.registry.RegistrySupplier;
 import it.hurts.octostudios.rarcompat.items.necklace.*;
 import it.hurts.octostudios.rarcompat.items.hat.*;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,7 +31,7 @@ public class ModItemsMixin {
     }
 
     @Shadow
-    private static <T extends Item> RegistrySupplier<T> register(String name, Supplier<T> supplier) {
+    private static <T extends Item> RegistrySupplier register(String name, Supplier<T> supplier) {
         return null;
     }
 }

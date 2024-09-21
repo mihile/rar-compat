@@ -9,8 +9,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
-import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -42,10 +40,10 @@ public class SuperstitiousHatItem extends WearableRelicItem {
         var entity = slotContext.entity();
         var random = entity.getRandom();
 
-        var amount = MathUtils.multicast(random, getStatValue(stack, "looting", "chance"), 1F);
+        var amount = MathUtils.multicast(random, getStatQuality(stack, "looting", "chance"), 1F);
 
         if (amount > 0)
-            spreadRelicExperience(entity, stack, random.nextInt(amount) + 1);
+            addExperience(entity, stack, random.nextInt(amount) + 1);
 
         return amount;
     }

@@ -10,8 +10,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
-import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -27,9 +25,9 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
+import net.minecraftforge.event.entity.player.ItemFishedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class AnglersHatItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+    @Mod.EventBusSubscriber
     public static class AnglersHatEvents {
         @SubscribeEvent
         public static void onItemFished(ItemFishedEvent event) {
@@ -62,7 +60,7 @@ public class AnglersHatItem extends WearableRelicItem {
 
             FishingHook fishingHook = event.getHookEntity();
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ANGLERS_HAT.value());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ANGLERS_HAT.get());
 
             if (!(stack.getItem() instanceof AnglersHatItem relic) || level.isClientSide())
                 return;
@@ -70,12 +68,12 @@ public class AnglersHatItem extends WearableRelicItem {
             ServerLevel serverLevel = (ServerLevel) level;
             RandomSource random = serverLevel.getRandom();
 
-            int rolls = MathUtils.multicast(random, relic.getStatValue(stack, "catch", "chance"), 1F);
+            int rolls = MathUtils.multicast(random, relic.getStatQuality(stack, "catch", "chance"), 1F);
 
             if (rolls > 0)
-                relic.spreadRelicExperience(player, stack, random.nextInt(rolls) + 1);
+                relic.addExperience(player, stack, random.nextInt(rolls) + 1);
 
-            LootTable loottable = serverLevel.getServer().reloadableRegistries().getLootTable(BuiltInLootTables.FISHING);
+            LootTable loottable = serverLevel.getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
 
             LootParams lootparams = new LootParams.Builder(serverLevel)
                     .withParameter(LootContextParams.ORIGIN, player.position())
