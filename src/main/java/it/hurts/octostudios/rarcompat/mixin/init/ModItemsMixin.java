@@ -2,7 +2,6 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.bunch.CrystalHeartItem;
 import it.hurts.octostudios.rarcompat.items.necklace.*;
 import it.hurts.octostudios.rarcompat.items.hat.*;
 import net.minecraft.core.Holder;

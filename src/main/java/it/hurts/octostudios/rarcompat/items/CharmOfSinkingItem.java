@@ -1,6 +1,5 @@
-package it.hurts.octostudios.rarcompat.items.bunch;
+package it.hurts.octostudios.rarcompat.items;
 
-import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;

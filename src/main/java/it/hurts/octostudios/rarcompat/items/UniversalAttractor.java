@@ -1,6 +1,5 @@
-package it.hurts.octostudios.rarcompat.items.bunch;
+package it.hurts.octostudios.rarcompat.items;
 
-import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
@@ -17,10 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.level.NoteBlockEvent;
 import top.theillusivec4.curios.api.SlotContext;
-
-import java.util.List;
 
 public class UniversalAttractor extends WearableRelicItem {
 
