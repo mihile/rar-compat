@@ -1,6 +1,7 @@
 package it.hurts.octostudios.rarcompat.items.necklace;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.utils.MathBaseUtils;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -39,7 +40,7 @@ public class LuckyScarfItem extends WearableRelicItem {
         var entity = slotContext.entity();
         var random = entity.getRandom();
 
-        var amount = MathUtils.multicast(entity.getRandom(), getStatQuality(stack, "luck", "chance"), 1F);
+        var amount = MathBaseUtils.multicast(entity.getRandom(), getStatQuality(stack, "luck", "chance"), 1F);
 
         if (amount > 0)
             addExperience(entity, stack, random.nextInt(amount) + 1);

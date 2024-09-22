@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.items.hat;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.utils.MathBaseUtils;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -68,7 +69,7 @@ public class AnglersHatItem extends WearableRelicItem {
             ServerLevel serverLevel = (ServerLevel) level;
             RandomSource random = serverLevel.getRandom();
 
-            int rolls = MathUtils.multicast(random, relic.getStatQuality(stack, "catch", "chance"), 1F);
+            int rolls = MathBaseUtils.multicast(random, relic.getStatQuality(stack, "catch", "chance"), 1F);
 
             if (rolls > 0)
                 relic.addExperience(player, stack, random.nextInt(rolls) + 1);

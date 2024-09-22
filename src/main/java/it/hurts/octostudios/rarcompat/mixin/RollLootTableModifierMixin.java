@@ -27,7 +27,7 @@ public class RollLootTableModifierMixin {
      * @author Amiri163
      * @reason Temp solution til the end of development
      */
-    @Overwrite
+    @Overwrite(remap = false)
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if (lootTable == null)
             return generatedLoot;
