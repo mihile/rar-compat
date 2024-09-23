@@ -35,16 +35,16 @@ public class LuckyScarfItem extends WearableRelicItem {
                 .build();
     }
 
-    @Override
-    public int getFortuneLevel(SlotContext slotContext, LootContext lootContext, ItemStack stack) {
-        var entity = slotContext.entity();
-        var random = entity.getRandom();
-
-        var amount = MathBaseUtils.multicast(entity.getRandom(), getStatQuality(stack, "luck", "chance"), 1F);
-
-        if (amount > 0)
-            addExperience(entity, stack, random.nextInt(amount) + 1);
-
-        return amount;
-    }
+//    @Override
+//    public int getFortuneLevel(SlotContext slotContext, LootContext lootContext, ItemStack stack) {
+//        var entity = slotContext.entity();
+//        var random = entity.getRandom();
+//
+//        var amount = MathBaseUtils.multicast(entity.getRandom(), getStatQuality(stack, "luck", "chance"), 1F);
+//
+//        if (amount > 0)
+//            addExperience(entity, stack, random.nextInt(amount) + 1);
+//
+//        return amount;
+//    }
 }
