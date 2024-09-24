@@ -4,6 +4,8 @@ package it.hurts.octostudios.rarcompat;
 import artifacts.item.wearable.WearableArtifactItem;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.network.NetworkHandler;
+import it.hurts.sskirillss.relics.init.DispenserBehaviorRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,7 +17,10 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(RARCompat.MODID)
 public class RARCompat {
@@ -24,6 +29,7 @@ public class RARCompat {
     public RARCompat() {
         IEventBus bus = MinecraftForge.EVENT_BUS;
 
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupCommon);
         bus.addListener(this::fillCreativeTabs);
     }
 
@@ -42,6 +48,10 @@ public class RARCompat {
         //   generatedLoot.removeIf(item -> item.getItem() instanceof IRelicItem);
 
         return generatedLoot;
+    }
+
+    private void setupCommon(final FMLCommonSetupEvent event) {
+        NetworkHandler.register();
     }
 
     public void fillCreativeTabs(final BuildCreativeModeTabContentsEvent event) {

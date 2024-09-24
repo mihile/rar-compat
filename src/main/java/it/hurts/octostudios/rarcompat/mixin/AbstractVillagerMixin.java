@@ -30,7 +30,7 @@ public abstract class AbstractVillagerMixin {
         ItemStack relicStack = EntityUtils.findEquippedCurio(tradingPlayer, ModItems.VILLAGER_HAT.get());
         if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null) return;
 
-        int discounted = (int) Math.floor(offer.getCostA().getCount()) * hat.getStatQuality(relicStack, "discount", "multiplier") / 100;
+        int discounted = (int) (Math.floor(offer.getCostA().getCount()) * hat.getAbilityValue(relicStack, "discount", "multiplier") / 100);
 
         if (discounted > 1)
             hat.addExperience(relicStack, 1 + tradingPlayer.getRandom().nextInt(discounted) + 1);
@@ -42,7 +42,7 @@ public abstract class AbstractVillagerMixin {
         if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null) return;
 
         for (MerchantOffer offer : offers) {
-            int discounted = (int) Math.floor(offer.getCostA().getCount()) * hat.getStatQuality(relicStack, "discount", "multiplier") / 100;
+            int discounted = (int) (Math.floor(offer.getCostA().getCount()) * hat.getAbilityValue(relicStack, "discount", "multiplier") / 100);
 
             offer.addToSpecialPriceDiff(-discounted);
         }

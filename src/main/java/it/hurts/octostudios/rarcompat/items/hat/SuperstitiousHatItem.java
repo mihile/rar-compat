@@ -41,7 +41,7 @@
 //        var entity = slotContext.entity();
 //        var random = entity.getRandom();
 //
-//        var amount = MathBaseUtils.multicast(random, getStatQuality(stack, "looting", "chance"), 1F);
+//        var amount = MathBaseUtils.multicast(random, getAbilityValue(stack, "looting", "chance"), 1F);
 //
 //        if (amount > 0)
 //            addExperience(entity, stack, random.nextInt(amount) + 1);

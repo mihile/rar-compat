@@ -51,7 +51,7 @@
 //    @Override
 //    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
 //        return RelicAttributeModifier.builder()
-//                .attribute(new RelicAttributeModifier.Modifier(.DRINKING_SPEED, (float) getStatQuality(stack, "drinking", "speed") - 1F))
+//                .attribute(new RelicAttributeModifier.Modifier(.DRINKING_SPEED, (float) getAbilityValue(stack, "drinking", "speed") - 1F))
 //                .build();
 //    }
 //
@@ -75,7 +75,7 @@
 //            if (!relic.canUseAbility(stack, "nutrition"))
 //                return;
 //
-//            int hunger = (int) relic.getStatQuality(stack, "nutrition", "hunger");
+//            int hunger = (int) relic.getAbilityValue(stack, "nutrition", "hunger");
 //            float saturation = hunger / 2F;
 //
 //            player.getFoodData().eat(hunger, saturation);

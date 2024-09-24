@@ -50,7 +50,7 @@
 //                var effect = player.getEffect(MobEffects.WATER_BREATHING);
 //
 //                var currentDuration = effect != null ? effect.getDuration() : 0;
-//                var resultDuration = (int) getStatQuality(stack, "diving", "duration");
+//                var resultDuration = (int) getAbilityValue(stack, "diving", "duration");
 //
 //                if (resultDuration > currentDuration) {
 //                    addExperience(player, stack, (int) Math.ceil((resultDuration - currentDuration) / 20F));

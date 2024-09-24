@@ -1,6 +1,7 @@
 package it.hurts.octostudios.rarcompat.network;
 
 import it.hurts.octostudios.rarcompat.RARCompat;
+import it.hurts.octostudios.rarcompat.network.packets.PacketCreateZone;
 import it.hurts.sskirillss.relics.utils.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,18 +22,18 @@ public class NetworkHandler {
     private static int nextID() {
         return ID++;
     }
+
     public static void register() {
         INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(RARCompat.MODID, "network"),
                 () -> "1.0",
                 s -> true,
                 s -> true);
 
-//        INSTANCE.messageBuilder(PacketPlayerMotion.class, nextID())
-//                .encoder(PacketPlayerMotion::toBytes)
-//                .decoder(PacketPlayerMotion::new)
-//                .consumerMainThread(PacketPlayerMotion::handle)
-//                .add();
-
+        INSTANCE.messageBuilder(PacketCreateZone.class, nextID())
+                .encoder(PacketCreateZone::toBytes)
+                .decoder(PacketCreateZone::new)
+                .consumerMainThread(PacketCreateZone::handle)
+                .add();
     }
 
     public static void sendToClient(Object packet, ServerPlayer player) {

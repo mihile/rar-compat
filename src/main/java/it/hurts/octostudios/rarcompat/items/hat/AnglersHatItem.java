@@ -70,7 +70,7 @@ public class AnglersHatItem extends WearableRelicItem {
             ServerLevel serverLevel = (ServerLevel) level;
             RandomSource random = serverLevel.getRandom();
 
-            int rolls = MathBaseUtils.multicast(random, relic.getStatQuality(stack, "catch", "chance"), 1F);
+            int rolls = MathBaseUtils.multicast(random, relic.getAbilityValue(stack, "catch", "chance"), 1F);
 
             if (rolls > 0)
                 relic.addExperience(player, stack, random.nextInt(rolls) + 1);
