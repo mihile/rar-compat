@@ -99,18 +99,17 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
                 if (player.tickCount % 20 == 0)
                     addExperience(stack, +1);
-            } else if (!player.isSprinting())
+            } else if (!player.isSprinting() && player.isCrouching())
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
         } else
             updateInvisibilityZone(player.level(), player, getAbilityValue(stack, "invisible", "radius"), stack);
     }
-//
-//    @Override
-//    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-//        super.onUnequip(slotContext, newStack, stack);
-//
-//        setWorldPos(stack, Vec3.ZERO);
-//    }
+
+    @Override
+    public void onUnequip(LivingEntity entity, ItemStack stack) {
+        super.onUnequip(entity, stack);
+        setWorldPos(stack, Vec3.ZERO);
+    }
 
     public static void updateInvisibilityZone(Level level, Player player, double radius, ItemStack itemStack) {
         if (player == null)

@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.hat;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.octostudios.rarcompat.utils.MathBaseUtils;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -10,15 +11,23 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraftforge.event.level.NoteBlockEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class SuperstitiousHatItem extends WearableRelicItem {
+
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -38,17 +47,25 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                 .build();
     }
 
-//    @Override
-//    public int getLootingLevel(SlotContext slotContext, DamageSource source, LivingEntity target, int baseLooting, ItemStack stack) {
-//        var entity = slotContext.entity();
-//        var random = entity.getRandom();
-//
-//        var amount = MathBaseUtils.multicast(random, getAbilityValue(stack, "looting", "chance"), 1F);
-//
-//        if (amount > 0)
-//            addExperience(entity, stack, random.nextInt(amount) + 1);
-//
-//        return amount;
-//    }
+    @Override
+    public int getFortuneLevel() {
+        Player clientPlayer = Minecraft.getInstance().player;
+
+        if (clientPlayer == null ) return 0;
+
+        ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
+
+        ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SUPERSTITIOUS_HAT.get());
+
+        var random = player.getRandom();
+
+        var amount = MathBaseUtils.multicast(random, getAbilityValue(stack, "looting", "chance"), 1F);
+
+        if (amount > 0)
+            addExperience(player, stack, random.nextInt(amount) + 1);
+
+        return amount;
+    }
+
 
 }

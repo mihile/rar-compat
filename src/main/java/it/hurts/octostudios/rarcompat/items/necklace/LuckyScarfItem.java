@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.necklace;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.octostudios.rarcompat.utils.MathBaseUtils;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -10,9 +11,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class LuckyScarfItem extends WearableRelicItem {
@@ -35,16 +41,24 @@ public class LuckyScarfItem extends WearableRelicItem {
                 .build();
     }
 
-//    @Override
-//    public int getFortuneLevel(SlotContext slotContext, LootContext lootContext, ItemStack stack) {
-//        var entity = slotContext.entity();
-//        var random = entity.getRandom();
-//
-//        var amount = MathBaseUtils.multicast(entity.getRandom(), getAbilityValue(stack, "luck", "chance"), 1F);
-//
-//        if (amount > 0)
-//            addExperience(entity, stack, random.nextInt(amount) + 1);
-//
-//        return amount;
-//    }
+    @Override
+    public int getFortuneLevel() {
+        Player clientPlayer = Minecraft.getInstance().player;
+
+        if (clientPlayer == null ) return 0;
+
+        ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
+
+        ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.LUCKY_SCARF.get());
+
+        var random = player.getRandom();
+
+        var amount = MathBaseUtils.multicast(player.getRandom(), getAbilityValue(stack, "luck", "chance"), 1F);
+
+        if (amount > 0)
+            addExperience(player, stack, random.nextInt(amount) + 1);
+
+        return amount;
+    }
+
 }
