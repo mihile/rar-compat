@@ -25,10 +25,14 @@ import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,6 +52,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.awt.*;
 
 public class ScarfOfInvisibilityItem extends WearableRelicItem {
+    protected static final EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BYTE);
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -82,22 +87,19 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ScarfOfInvisibilityItem.getBlockPos(stack).equals(Vec3.ZERO)) {
             double thresholdValue = getAbilityValue(stack, "invisible", "threshold");
-
-            double speedX = Math.abs(player.getDeltaMovement().x);
             double roundedSpeed = Math.abs(player.getDeltaMovement().y);
-            double speedZ = Math.abs(player.getDeltaMovement().z);
 
-            if (roundedSpeed > thresholdValue) return;
+//            if (roundedSpeed > thresholdValue) return;
 
-            if (roundedSpeed <= thresholdValue) {
+            if (player.getSpeed() <= thresholdValue) {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
                 if (player.tickCount % 20 == 0)
                     addExperience(stack, +1);
-            } else if (player.isShiftKeyDown() && thresholdValue < 0.9F) {
+            } else if (!player.isSprinting() && player.isCrouching() && thresholdValue < 0.9F) {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
                 if (player.tickCount % 20 == 0)
                     addExperience(stack, +1);
-            } else if (speedX <= 0.01D && speedZ <= 0.01D && player.getSpeed() == 0.1F)
+            } else if (!player.isSprinting())
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
         } else
             updateInvisibilityZone(player.level(), player, getAbilityValue(stack, "invisible", "radius"), stack);
