@@ -32,6 +32,17 @@ public class RollLootTableModifierMixin {
      */
     @Overwrite(remap = false)
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        return RARCompat.doApplys(generatedLoot, context, lootTable, replace);
+        if (lootTable == null)
+            return generatedLoot;
+
+        if (replace)
+            generatedLoot.clear();
+
+        context.getResolver().getLootTable(lootTable).getRandomItemsRaw(context, stack -> {
+            if (!(stack.getItem() instanceof IRelicItem))
+                generatedLoot.add(stack);
+        });
+
+        return generatedLoot;
     }
 }
