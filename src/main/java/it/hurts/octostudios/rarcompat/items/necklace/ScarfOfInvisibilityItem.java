@@ -50,6 +50,7 @@ import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class ScarfOfInvisibilityItem extends WearableRelicItem {
     protected static final EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BYTE);
@@ -83,16 +84,12 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                 .build();
     }
 
-    private Vec3 lastPose = Vec3.ZERO;
-
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (ScarfOfInvisibilityItem.getBlockPos(stack).equals(Vec3.ZERO)) {
-            Vec3 actualPose = player.position();
+        if (ScarfOfInvisibilityItem.getBlockPos(stack).equals(Vec3.ZERO) && !player.level().isClientSide) {
 
-            if (player.tickCount % 40 == 0) {
-                lastPose = player.position();
-            }
+            if (player.tickCount % 5 == 0)
+                saveWorldPos(stack, player.position());
 
             double thresholdValue = getAbilityValue(stack, "invisible", "threshold");
 
@@ -104,7 +101,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
                 if (player.tickCount % 20 == 0)
                     addExperience(stack, +1);
-            } else if (actualPose.equals(lastPose) && thresholdValue < 0.9F) {
+            } else if (player.position().toString().equals(stack.getTag().getString("position")) && thresholdValue < 0.9F && !player.isSprinting()) {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
             }
         } else {
@@ -129,6 +126,16 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
         checkDistance(player, radius);
         createCyl(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.5F, 1, 1),
                 getBlockPos(itemStack), level, radius, 0.1F);
+    }
+
+    public static void saveWorldPos(ItemStack stack, Vec3 pose) {
+        String[] parts = pose.toString().replace("(", "").replace(")", "").split(",\\s*");
+
+        double x = Double.parseDouble(parts[0]);
+        double y = Double.parseDouble(parts[1]);
+        double z = Double.parseDouble(parts[2]);
+
+        NBTUtils.setString(stack, "position", "(" + x + ", " + y + ", " + z + ")");
     }
 
     public static void createCyl(ParticleOptions particle, Vec3 center, Level level, double radius, float step) {
