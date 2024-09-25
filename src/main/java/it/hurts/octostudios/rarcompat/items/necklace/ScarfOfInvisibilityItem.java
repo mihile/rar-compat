@@ -86,6 +86,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ScarfOfInvisibilityItem.getBlockPos(stack).equals(Vec3.ZERO)) {
+            //NBTUtils.setDouble(stack,"position", );
             double thresholdValue = getAbilityValue(stack, "invisible", "threshold");
             double roundedSpeed = Math.abs(player.getDeltaMovement().y);
 

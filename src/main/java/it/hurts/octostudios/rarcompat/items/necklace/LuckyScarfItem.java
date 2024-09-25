@@ -14,12 +14,16 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.util.List;
 
 public class LuckyScarfItem extends WearableRelicItem {
     @Override
@@ -45,7 +49,7 @@ public class LuckyScarfItem extends WearableRelicItem {
     public int getFortuneLevel() {
         Player clientPlayer = Minecraft.getInstance().player;
 
-        if (clientPlayer == null ) return 0;
+        if (clientPlayer == null) return 0;
 
         ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
 

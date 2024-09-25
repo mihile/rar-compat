@@ -1,10 +1,7 @@
 package it.hurts.octostudios.rarcompat.items.hat;
 
-import artifacts.item.wearable.ArtifactAttributeModifier;
 import artifacts.registry.ModItems;
-import com.google.common.collect.Multimap;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -15,18 +12,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class DrinkingHatItem extends WearableRelicItem {
     @Override
@@ -35,9 +26,9 @@ public class DrinkingHatItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("drinking")
                                 .stat(StatData.builder("speed")
-                                        .initialValue(0.25D, 0.75D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .initialValue(0.3D, 0.35D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.045D)
+                                        .formatValue(value -> MathUtils.round(value * 100, 0))
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("nutrition")
@@ -56,15 +47,24 @@ public class DrinkingHatItem extends WearableRelicItem {
                 .build();
     }
 
-//    @Override
-//    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
-//        return RelicAttributeModifier.builder()
-//                .attribute(new RelicAttributeModifier.Modifier(.DRINKING_SPEED, (float) getAbilityValue(stack, "drinking", "speed") - 1F))
-//                .build();
-//    }
-
     @Mod.EventBusSubscriber
     public static class DrinkingHatEvents {
+        @SubscribeEvent
+        public static void onUseItemStart(LivingEntityUseItemEvent.Start event) {
+            if (!(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PLASTIC_DRINKING_HAT.get());
+
+            if (stack.isEmpty())
+                stack = EntityUtils.findEquippedCurio(player, ModItems.NOVELTY_DRINKING_HAT.get());
+
+            if (!(stack.getItem() instanceof DrinkingHatItem relic) || event.getItem().getUseAnimation() != UseAnim.DRINK)
+                return;
+
+            event.setDuration((int) (event.getDuration() * (1 - relic.getAbilityValue(stack, "drinking", "speed"))));
+        }
+
         @SubscribeEvent
         public static void onUseItem(LivingEntityUseItemEvent.Finish event) {
             if (!(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
@@ -84,9 +84,8 @@ public class DrinkingHatItem extends WearableRelicItem {
                 return;
 
             int hunger = (int) relic.getAbilityValue(stack, "nutrition", "hunger");
-            float saturation = hunger / 2F;
 
-            player.getFoodData().eat(hunger, saturation);
+            player.getFoodData().eat(hunger, hunger / 2F);
         }
     }
 }

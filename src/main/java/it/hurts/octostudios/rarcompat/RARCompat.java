@@ -1,28 +1,19 @@
 package it.hurts.octostudios.rarcompat;
 
 
-import artifacts.item.wearable.WearableArtifactItem;
-import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.octostudios.rarcompat.network.NetworkHandler;
-import it.hurts.sskirillss.relics.init.CreativeTabRegistry;
-import it.hurts.sskirillss.relics.init.DispenserBehaviorRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.util.List;
 
 @Mod(RARCompat.MODID)
 public class RARCompat {
@@ -30,11 +21,25 @@ public class RARCompat {
 
     public RARCompat() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupCommon);
+        MinecraftForge.EVENT_BUS.addListener(RARCompat::onItemTooltip);
     }
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         NetworkHandler.register();
     }
 
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        ItemStack itemStack = event.getItemStack();
+
+        if (itemStack.getItem() instanceof WearableRelicItem) {
+            List<Component> tooltip = event.getToolTip();
+
+            tooltip.add(Component.empty());
+            tooltip.add(Component.literal("Hold [Shift] to research...").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.empty());
+
+            tooltip.remove(1);
+        }
+    }
 
 }
