@@ -83,14 +83,18 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                 .build();
     }
 
+    private Vec3 lastPose = Vec3.ZERO;
+
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ScarfOfInvisibilityItem.getBlockPos(stack).equals(Vec3.ZERO)) {
-            //NBTUtils.setDouble(stack,"position", );
-            double thresholdValue = getAbilityValue(stack, "invisible", "threshold");
-            double roundedSpeed = Math.abs(player.getDeltaMovement().y);
+            Vec3 actualPose = player.position();
 
-//            if (roundedSpeed > thresholdValue) return;
+            if (player.tickCount % 40 == 0) {
+                lastPose = player.position();
+            }
+
+            double thresholdValue = getAbilityValue(stack, "invisible", "threshold");
 
             if (player.getSpeed() <= thresholdValue) {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
@@ -100,10 +104,12 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
                 if (player.tickCount % 20 == 0)
                     addExperience(stack, +1);
-            } else if (!player.isSprinting() && player.isCrouching())
+            } else if (actualPose.equals(lastPose) && thresholdValue < 0.9F) {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING.get(), 5, 0, false, false));
-        } else
+            }
+        } else {
             updateInvisibilityZone(player.level(), player, getAbilityValue(stack, "invisible", "radius"), stack);
+        }
     }
 
     @Override

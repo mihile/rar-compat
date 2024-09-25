@@ -48,7 +48,7 @@ public class SuperstitiousHatItem extends WearableRelicItem {
     }
 
     @Override
-    public int getFortuneLevel() {
+    public int getLootingLevel() {
         Player clientPlayer = Minecraft.getInstance().player;
 
         if (clientPlayer == null ) return 0;
