@@ -39,7 +39,7 @@ public class ModItemsMixin {
             case "cowboy_hat" -> register(name, CowboyHatItem::new);
             case "universal_attractor" -> register(name, UniversalAttractor::new);
             case "crystal_heart" -> register(name, CrystalHeartItem::new);
-            case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
+         //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             case "cross_necklace" -> register(name, CrossNecklaceItem::new);
             //case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
             //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);

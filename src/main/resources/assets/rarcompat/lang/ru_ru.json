@@ -120,8 +120,8 @@
   "tooltip.relics.universal_attractor.ability.attractor.stat.radius.value": "%1$s",
 
   "tooltip.relics.cross_necklace.description": "x",
-  "tooltip.relics.cross_necklace.ability.cross": "x",
-  "tooltip.relics.cross_necklace.ability.cross.description": "x",
-  "tooltip.relics.cross_necklace.ability.cross.stat.tick.title": "x",
-  "tooltip.relics.cross_necklace.ability.cross.stat.tick.value": "%1$s"
+  "tooltip.relics.cross_necklace.ability.invulnerability": "x",
+  "tooltip.relics.cross_necklace.ability.invulnerability.description": "x",
+  "tooltip.relics.cross_necklace.ability.invulnerability.stat.multiplier.title": "x",
+  "tooltip.relics.cross_necklace.ability.invulnerability.stat.multiplier.value": "%1$s"
 }

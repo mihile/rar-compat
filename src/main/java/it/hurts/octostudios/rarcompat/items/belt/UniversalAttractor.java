@@ -11,6 +11,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,13 +34,17 @@ public class UniversalAttractor extends WearableRelicItem {
                                         .build())
                                 .icon((player, stack, ability) -> ability + (stack.getOrDefault(DataComponentRegistry.TOGGLED, true) ? "_attract" : "_repel"))
                                 .stat(StatData.builder("radius")
-                                        .initialValue(1D, 2D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .icon(StatIcons.SIZE)
+                                        .initialValue(2D, 3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.AQUATIC)
+                        .build())
                 .build();
     }
 
@@ -49,7 +56,7 @@ public class UniversalAttractor extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player)) return;
+        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide) return;
 
         int range = 5;
         int amountItem = 0;

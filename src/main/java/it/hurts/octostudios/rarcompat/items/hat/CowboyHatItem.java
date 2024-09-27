@@ -8,6 +8,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.Entity;
@@ -30,6 +33,7 @@ public class CowboyHatItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("cowboy")
                                 .stat(StatData.builder("speed")
+                                        .icon(StatIcons.SPEED)
                                         .initialValue(0.4D, 0.45D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.4D)
                                         .formatValue(value -> MathUtils.round(value, 1) * 100)
@@ -37,6 +41,9 @@ public class CowboyHatItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.VILLAGE)
+                        .build())
                 .build();
     }
 

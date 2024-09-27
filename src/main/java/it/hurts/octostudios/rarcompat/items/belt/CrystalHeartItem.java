@@ -7,6 +7,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -23,13 +27,21 @@ public class CrystalHeartItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("heart")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(1D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 2D)
+                                        .icon(StatIcons.CAPACITY)
+                                        .initialValue(6D, 8D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 6, 12).star(1, 16, 12).star(2, 11, 22)
+                                        .link(0, 1).link(1, 2).link(2, 0).link(1, 0)
                                         .build())
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.BASTION)
+                        .build())
                 .build();
     }
 
@@ -37,7 +49,7 @@ public class CrystalHeartItem extends WearableRelicItem {
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player)) return;
 
-        EntityUtils.applyAttribute(player, stack, Attributes.MAX_HEALTH, (float) getStatValue(stack, "heart", "amount"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.applyAttribute(player, stack, Attributes.MAX_HEALTH, (float) getStatValue(stack, "heart", "amount"), AttributeModifier.Operation.ADD_VALUE);
     }
 
     @Override
@@ -46,7 +58,7 @@ public class CrystalHeartItem extends WearableRelicItem {
                 || stack.getItem() == newStack.getItem())
             return;
 
-        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MAX_HEALTH, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MAX_HEALTH, AttributeModifier.Operation.ADD_VALUE);
     }
 
 }
