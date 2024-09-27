@@ -2,6 +2,11 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.necklace.CrossNecklaceItem;
+import it.hurts.octostudios.rarcompat.items.necklace.CharmOfSinkingItem;
+import it.hurts.octostudios.rarcompat.items.hat.CowboyHatItem;
+import it.hurts.octostudios.rarcompat.items.belt.CrystalHeartItem;
+import it.hurts.octostudios.rarcompat.items.belt.UniversalAttractor;
 import it.hurts.octostudios.rarcompat.items.necklace.*;
 import it.hurts.octostudios.rarcompat.items.hat.*;
 import net.minecraft.core.Holder;
@@ -31,13 +36,14 @@ public class ModItemsMixin {
             case "flame_pendant" -> register(name, FlamePendantItem::new);
             case "shock_pendant" -> register(name, ShockPendantItem::new);
             case "thorn_pendant" -> register(name, ThornPendantItem::new);
-            //case "cowboy_hat" -> register(name, CowboyHatItem::new);
+            case "cowboy_hat" -> register(name, CowboyHatItem::new);
+            case "universal_attractor" -> register(name, UniversalAttractor::new);
+            case "crystal_heart" -> register(name, CrystalHeartItem::new);
+            case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
+            case "cross_necklace" -> register(name, CrossNecklaceItem::new);
             //case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
-            //  case "cross_necklace" -> register(name, CrossNecklaceItem::new);
-            //      case "crystal_heart" -> register(name, CrystalHeartItem::new);
             //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);
             //    case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
-            //     case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             //     case "cloud_in_a_bottle" -> register(name, CloudInBottleItem::new);
             //     case "vampiric_glove" -> register(name, VampiricGloveItem::new);
             //     case "golden_hook" -> register(name, GoldenHookItem::new);
@@ -45,7 +51,6 @@ public class ModItemsMixin {
             //     case "digging_claws" -> register(name, DiggingClawsItem::new);
             //     case "feral_claws" -> register(name, FeralClawsItem::new);
             //     case "antidote_vessel" -> register(name, AntidoteVesselItem::new);
-            //     case "universal_attractor" -> register(name, UniversalAttractor::new);
             default -> wearableItem(name, builderConsumer);
         };
     }

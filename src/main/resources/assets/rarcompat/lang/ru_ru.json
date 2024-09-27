@@ -91,5 +91,37 @@
   "tooltip.relics.thorn_pendant.ability.poison.stat.time.title": "Длительность отравления:",
   "tooltip.relics.thorn_pendant.ability.poison.stat.time.value": "%1$s секунд.",
   "tooltip.relics.thorn_pendant.ability.poison.stat.chance.title": "Шанс срабатывания:",
-  "tooltip.relics.thorn_pendant.ability.poison.stat.chance.value": "%1$s%%"
+  "tooltip.relics.thorn_pendant.ability.poison.stat.chance.value": "%1$s%%",
+
+  "tooltip.relics.charm_of_sinking.description": "x",
+  "tooltip.relics.charm_of_sinking.ability.immersion": "x",
+  "tooltip.relics.charm_of_sinking.ability.immersion.description": "x",
+  "tooltip.relics.charm_of_sinking.ability.immersion.stat.air.title": "x",
+  "tooltip.relics.charm_of_sinking.ability.immersion.stat.air.value": "%1$s%%",
+
+  "tooltip.relics.cowboy_hat.description": "x",
+  "tooltip.relics.cowboy_hat.ability.cowboy": "x",
+  "tooltip.relics.cowboy_hat.ability.cowboy.description": "x",
+  "tooltip.relics.cowboy_hat.ability.cowboy.stat.speed.title": "x",
+  "tooltip.relics.cowboy_hat.ability.cowboy.stat.speed.value": "%1$s",
+
+  "tooltip.relics.crystal_heart.description": "x",
+  "tooltip.relics.crystal_heart.ability.heart": "x",
+  "tooltip.relics.crystal_heart.ability.heart.description": "x",
+  "tooltip.relics.crystal_heart.ability.heart.stat.amount.title": "x",
+  "tooltip.relics.crystal_heart.ability.heart.stat.amount.value": "%1$s",
+
+  "tooltip.relics.universal_attractor.description": "x",
+  "tooltip.relics.universal_attractor.ability.attractor": "x",
+  "tooltip.relics.universal_attractor.ability.attractor.description": "x",
+  "tooltip.relics.universal_attractor.ability.attractor.stat.amount.title": "x",
+  "tooltip.relics.universal_attractor.ability.attractor.stat.amount.value": "%1$s",
+  "tooltip.relics.universal_attractor.ability.attractor.stat.radius.title": "x",
+  "tooltip.relics.universal_attractor.ability.attractor.stat.radius.value": "%1$s",
+
+  "tooltip.relics.cross_necklace.description": "x",
+  "tooltip.relics.cross_necklace.ability.cross": "x",
+  "tooltip.relics.cross_necklace.ability.cross.description": "x",
+  "tooltip.relics.cross_necklace.ability.cross.stat.tick.title": "x",
+  "tooltip.relics.cross_necklace.ability.cross.stat.tick.value": "%1$s"
 }

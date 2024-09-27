@@ -1,5 +1,6 @@
-package it.hurts.octostudios.rarcompat.items;
+package it.hurts.octostudios.rarcompat.items.belt;
 
+import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
