@@ -39,8 +39,8 @@ public class CrossNecklaceItem extends WearableRelicItem {
                                 .research(ResearchData.builder()
                                         .star(0, 4, 6).star(1, 11, 6).star(2, 4, 20).star(3, 10, 19)
                                         .star(4, 20, 15).star(5, 20, 21).star(6, 11, 25).star(7, 20, 6)
-                                        .link(0, 2).link(2, 6).link(6, 5).link(5, 4)
-                                        .link(4, 1).link(1, 3).link(6, 4)
+                                        .link(0, 2).link(2, 6).link(6, 5).link(5, 4).link(7, 4)
+                                        .link(4, 1).link(1, 3)
                                         .build())
                                 .build())
                         .build())
@@ -55,7 +55,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
 
-        player.invulnerableTime = 20;
+        player.invulnerableTime -= (int) getStatValue(stack, "invulnerability", "modifier");
     }
 
     @EventBusSubscriber
@@ -69,7 +69,9 @@ public class CrossNecklaceItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof CrossNecklaceItem relic)) return;
 
-            player.invulnerableTime = (int) (20 + (30 * relic.getStatValue(stack, "invulnerability", "modifier")));
+            relic.addRelicExperience(stack, 1);
+
+            player.invulnerableTime += (int) relic.getStatValue(stack, "invulnerability", "modifier");
         }
     }
 }

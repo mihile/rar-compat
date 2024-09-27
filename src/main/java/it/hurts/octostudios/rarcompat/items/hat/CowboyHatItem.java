@@ -19,6 +19,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
@@ -57,6 +58,11 @@ public class CowboyHatItem extends WearableRelicItem {
 
         EntityUtils.applyAttribute(beingMounted, stack, Attributes.MOVEMENT_SPEED,
                 (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
+        if (mountedEntity.getKnownMovement().x != 0 || mountedEntity.getKnownMovement().z != 0)
+            if (mountedEntity.getRandom().nextFloat() < 0.5F && mountedEntity.tickCount % 20 == 0) {
+                addRelicExperience(stack, 1);
+            }
 
     }
 

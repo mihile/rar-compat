@@ -67,6 +67,7 @@ public class UniversalAttractor extends WearableRelicItem {
                 pos.x + range, pos.y + range, pos.z + range))) {
             if (item.position().y > pos.y) continue;
 
+
             if (stack.getOrDefault(DataComponentRegistry.TOGGLED, true) && item.isAlive() && !item.hasPickUpDelay()) {
                 if (amountItem++ > 50)
                     break;
@@ -76,8 +77,15 @@ public class UniversalAttractor extends WearableRelicItem {
                 if (Math.sqrt(motion.x * motion.x + motion.y * motion.y + motion.z * motion.z) > 1)
                     motion = motion.normalize();
 
-                item.setDeltaMovement(motion.scale(0.6));
+                ItemStack itemStack = item.getItem();
 
+                int currentAmount = itemStack.getCount();
+                int maxAmount = itemStack.getMaxStackSize();
+
+                if (item.getRandom().nextFloat() <= (double) currentAmount / maxAmount)
+                    addRelicExperience(stack, 1);
+
+                item.setDeltaMovement(motion.scale(0.6));
             } else {
                 if (item.isAlive() && !item.hasPickUpDelay()) {
                     if (amountItem++ > 50)

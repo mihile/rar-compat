@@ -1,6 +1,8 @@
 package it.hurts.octostudios.rarcompat.items.belt;
 
+import artifacts.registry.ModAttributes;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -46,19 +48,9 @@ public class CrystalHeartItem extends WearableRelicItem {
     }
 
     @Override
-    public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player)) return;
-
-        EntityUtils.applyAttribute(player, stack, Attributes.MAX_HEALTH, (float) getStatValue(stack, "heart", "amount"), AttributeModifier.Operation.ADD_VALUE);
+    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+        return RelicAttributeModifier.builder()
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.MAX_HEALTH, (float) getStatValue(stack, "heart", "amount"), AttributeModifier.Operation.ADD_VALUE))
+                .build();
     }
-
-    @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide()
-                || stack.getItem() == newStack.getItem())
-            return;
-
-        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MAX_HEALTH, AttributeModifier.Operation.ADD_VALUE);
-    }
-
 }
