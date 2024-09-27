@@ -49,9 +49,10 @@ public class LuckyScarfItem extends WearableRelicItem {
     public int getFortuneLevel() {
         Player clientPlayer = Minecraft.getInstance().player;
 
-        if (clientPlayer == null) return 0;
+        if (clientPlayer == null)
+            return 0;
 
-        ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(Minecraft.getInstance().player.getUUID());
+        ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(clientPlayer.getUUID());
 
         ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.LUCKY_SCARF.get());
 
