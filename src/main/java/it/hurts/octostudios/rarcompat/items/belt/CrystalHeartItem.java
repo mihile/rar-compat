@@ -28,7 +28,7 @@ public class CrystalHeartItem extends WearableRelicItem {
                         .ability(AbilityData.builder("heart")
                                 .stat(StatData.builder("amount")
                                         .icon(StatIcons.CAPACITY)
-                                        .initialValue(6D, 8D)
+                                        .initialValue(2D, 6D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())

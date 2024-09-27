@@ -30,11 +30,11 @@ public class CrossNecklaceItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("invulnerability")
-                                .stat(StatData.builder("multiplier")
-                                        .icon(StatIcons.MULTIPLIER)
-                                        .initialValue(0.25D, 0.3D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1) * 100)
+                                .stat(StatData.builder("modifier")
+                                        .icon(StatIcons.MODIFIER)
+                                        .initialValue(0.1D, 0.25D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
+                                        .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 4, 6).star(1, 11, 6).star(2, 4, 20)
@@ -69,7 +69,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof CrossNecklaceItem relic)) return;
 
-            player.invulnerableTime = (int) (20 + (30 * relic.getStatValue(stack, "invulnerability", "multiplier")));
+            player.invulnerableTime = (int) (20 + (30 * relic.getStatValue(stack, "invulnerability", "modifier")));
         }
     }
 }
