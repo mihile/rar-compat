@@ -8,6 +8,7 @@
     "AbstractVillagerMixin",
     "DrinkingHatItemMixin",
     "RollLootTableModifierMixin",
+    "WearableArtifactCurioMixin",
     "init.ModItemsMixin"
   ],
   "client": [

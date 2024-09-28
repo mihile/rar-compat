@@ -21,7 +21,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.level.NoteBlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
@@ -47,26 +50,25 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                 .build();
     }
 
-    @Override
-    public int getLootingLevel() {
-        Player clientPlayer = Minecraft.getInstance().player;
+    @Mod.EventBusSubscriber
+    public static class SuperstitiousHatEvent {
 
-        if (clientPlayer == null )
-            return 0;
+        @SubscribeEvent
+        public static void onLootingLevelEvent(LootingLevelEvent event) {
+            if (!(event.getDamageSource().getEntity() instanceof Player player)) return;
 
-        ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(clientPlayer.getUUID());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SUPERSTITIOUS_HAT.get());
 
-        ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SUPERSTITIOUS_HAT.get());
+            if (!(stack.getItem() instanceof SuperstitiousHatItem relic))
+                return;
 
-        var random = player.getRandom();
+            var random = player.getRandom();
+            var amount = MathBaseUtils.multicast(random, relic.getAbilityValue(stack, "looting", "chance"), 1F);
 
-        var amount = MathBaseUtils.multicast(random, getAbilityValue(stack, "looting", "chance"), 1F);
+            event.setLootingLevel(amount);
 
-        if (amount > 0)
-            addExperience(player, stack, random.nextInt(amount) + 1);
-
-        return amount;
+            if (amount > 0)
+                relic.addExperience(player, stack, random.nextInt(amount) + 1);
+        }
     }
-
-
 }
