@@ -1,7 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.necklace;
 
-import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.IRelicArtifactsFortune;
+import it.hurts.octostudios.rarcompat.items.IRelicArtifact;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.octostudios.rarcompat.utils.MathBaseUtils;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -12,18 +11,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
-public class LuckyScarfItem extends WearableRelicItem implements IRelicArtifactsFortune {
+public class LuckyScarfItem extends WearableRelicItem implements IRelicArtifact {
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -44,18 +39,16 @@ public class LuckyScarfItem extends WearableRelicItem implements IRelicArtifacts
     }
 
     @Override
-    public int getFortuneLevel(SlotContext slotContext, @Nullable LootContext lootContext) {
+    public int getFortuneLevel(ItemStack stack, SlotContext slotContext, @Nullable LootContext lootContext) {
         if (!(slotContext.entity() instanceof Player player))
             return 0;
-
-        ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.LUCKY_SCARF.get());
 
         var random = player.getRandom();
 
         var amount = MathBaseUtils.multicast(player.getRandom(), getAbilityValue(stack, "luck", "chance"), 1F);
 
         if (amount > 0)
-            addExperience(player, stack, random.nextInt(amount) + 1);
+            spreadExperience(player, stack, random.nextInt(amount) + 1);
 
         return amount;
     }
