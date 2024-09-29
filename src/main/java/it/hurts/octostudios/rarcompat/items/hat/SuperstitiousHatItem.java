@@ -46,7 +46,7 @@ public class SuperstitiousHatItem extends WearableRelicItem implements IRelicArt
 
         var random = player.getRandom();
 
-        var amount = MathBaseUtils.multicast(player.getRandom(), getAbilityValue(stack, "luck", "chance"), 1F);
+        var amount = MathBaseUtils.multicast(player.getRandom(), getAbilityValue(stack, "looting", "chance"), 1F);
 
         if (amount > 0)
             spreadExperience(player, stack, random.nextInt(amount) + 1);
