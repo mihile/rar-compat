@@ -1,6 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.belt;
 
-import artifacts.registry.ModAttributes;
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -19,7 +19,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import top.theillusivec4.curios.api.SlotContext;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 
 public class CrystalHeartItem extends WearableRelicItem {
 
@@ -52,5 +54,24 @@ public class CrystalHeartItem extends WearableRelicItem {
         return RelicAttributeModifier.builder()
                 .attribute(new RelicAttributeModifier.Modifier(Attributes.MAX_HEALTH, (float) getStatValue(stack, "heart", "amount"), AttributeModifier.Operation.ADD_VALUE))
                 .build();
+    }
+
+    @EventBusSubscriber
+    public static class CrystalHeartEvent {
+
+        @SubscribeEvent
+        public static void onLivingHealEvent(LivingHealEvent event) {
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ModItems.CRYSTAL_HEART.value());
+
+            if (!(stack.getItem() instanceof CrystalHeartItem relic) || !(event.getEntity() instanceof Player player))
+                return;
+
+            float currentHealth = player.getHealth();
+            float maxHealth = player.getMaxHealth();
+
+            if (Math.random() < Math.max(0.1, (maxHealth - currentHealth) / maxHealth))
+                relic.spreadRelicExperience(player, stack, 1);
+
+        }
     }
 }

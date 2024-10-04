@@ -83,7 +83,7 @@ public class ThornPendantItem extends WearableRelicItem {
             float multiplier = (float) relic.getStatValue(stack, "poison", "multiplier");
             int time = (int) (relic.getStatValue(stack, "poison", "time") * 20);
 
-            relic.addRelicExperience(stack, 1);
+            relic.spreadRelicExperience(player, stack, 1);
 
             attacker.hurt(event.getSource(), event.getAmount() * multiplier);
             attacker.addEffect(new MobEffectInstance(MobEffects.POISON, time, 1));

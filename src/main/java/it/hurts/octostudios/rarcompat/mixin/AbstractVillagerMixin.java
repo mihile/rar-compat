@@ -33,7 +33,7 @@ public abstract class AbstractVillagerMixin {
         int discounted = (int) Math.floor(p_35274_.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
 
         if (discounted > 1)
-            hat.addRelicExperience(relicStack, 1 + tradingPlayer.getRandom().nextInt(discounted) + 1);
+            hat.spreadRelicExperience(tradingPlayer, relicStack, 1 + tradingPlayer.getRandom().nextInt(discounted) + 1);
     }
 
     @Inject(method = "getOffers", at = @At(value = "HEAD"))

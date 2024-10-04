@@ -83,7 +83,7 @@ public class UniversalAttractor extends WearableRelicItem {
                 int maxAmount = itemStack.getMaxStackSize();
 
                 if (item.getRandom().nextFloat() <= (double) currentAmount / maxAmount)
-                    addRelicExperience(stack, 1);
+                    spreadRelicExperience(player, stack, 1);
 
                 item.setDeltaMovement(motion.scale(0.6));
             } else {

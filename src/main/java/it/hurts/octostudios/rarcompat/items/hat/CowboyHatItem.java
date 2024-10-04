@@ -61,7 +61,7 @@ public class CowboyHatItem extends WearableRelicItem {
 
         if (mountedEntity.getKnownMovement().x != 0 || mountedEntity.getKnownMovement().z != 0)
             if (mountedEntity.getRandom().nextFloat() < 0.5F && mountedEntity.tickCount % 20 == 0) {
-                addRelicExperience(stack, 1);
+                spreadRelicExperience(player, stack, 1);
             }
 
     }

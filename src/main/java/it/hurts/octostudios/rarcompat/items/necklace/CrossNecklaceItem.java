@@ -69,7 +69,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof CrossNecklaceItem relic)) return;
 
-            relic.addRelicExperience(stack, 1);
+            relic.spreadRelicExperience(player, stack, 1);
 
             player.invulnerableTime += (int) relic.getStatValue(stack, "invulnerability", "modifier");
         }

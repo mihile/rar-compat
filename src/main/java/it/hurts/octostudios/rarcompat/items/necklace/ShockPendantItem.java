@@ -74,7 +74,7 @@ public class ShockPendantItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof ShockPendantItem relic) || level.isClientSide
                     || random.nextInt(100) > relic.getStatValue(stack, "lightning", "chance") * 100) return;
 
-            relic.addRelicExperience(stack, 1);
+            relic.spreadRelicExperience(player, stack, 1);
 
             LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
 
