@@ -115,5 +115,63 @@
   "tooltip.relics.cross_necklace.ability.invulnerability": "Неприкосновенность",
   "tooltip.relics.cross_necklace.ability.invulnerability.description": "Увеличивает длительность неуязвимости после получения урона (базовая длительность - 1 секунда).",
   "tooltip.relics.cross_necklace.ability.invulnerability.stat.modifier.title": "Дополнительное время неуязвимости:",
-  "tooltip.relics.cross_necklace.ability.invulnerability.stat.modifier.value": "%1$s секунд."
+  "tooltip.relics.cross_necklace.ability.invulnerability.stat.modifier.value": "%1$s секунд.",
+
+  "tooltip.relics.night_vision_goggles.description": "",
+  "tooltip.relics.night_vision_goggles.ability.vision": "",
+  "tooltip.relics.night_vision_goggles.ability.vision.description": "",
+  "tooltip.relics.night_vision_goggles.ability.vision.stat.amount.title": "",
+  "tooltip.relics.night_vision_goggles.ability.vision.stat.amount.value": "+%1$s",
+
+  "tooltip.relics.cloud_in_a_bottle.description": "",
+  "tooltip.relics.cloud_in_a_bottle.ability.jump": "",
+  "tooltip.relics.cloud_in_a_bottle.ability.jump.description": "",
+  "tooltip.relics.cloud_in_a_bottle.ability.jump.stat.count.title": "",
+  "tooltip.relics.cloud_in_a_bottle.ability.jump.stat.count.value": "+%1$s",
+
+  "tooltip.relics.vampiric_glove.description": "",
+  "tooltip.relics.vampiric_glove.ability.vampire": "",
+  "tooltip.relics.vampiric_glove.ability.vampire.description": "",
+  "tooltip.relics.vampiric_glove.ability.vampire.stat.amount.title": "",
+  "tooltip.relics.vampiric_glove.ability.vampire.stat.amount.value": "+%1$s",
+
+  "tooltip.relics.golden_hook.description": "",
+  "tooltip.relics.golden_hook.ability.hook": "",
+  "tooltip.relics.golden_hook.ability.hook.description": "",
+  "tooltip.relics.golden_hook.ability.hook.stat.amount.title": "",
+  "tooltip.relics.golden_hook.ability.hook.stat.amount.value": "+%1$s",
+
+  "tooltip.relics.onion_ring.description": "",
+  "tooltip.relics.onion_ring.ability.onion": "",
+  "tooltip.relics.onion_ring.ability.onion.description": "",
+  "tooltip.relics.onion_ring.ability.onion.stat.amount.title": "",
+  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s",
+
+  "tooltip.relics.digging_claws.description": "",
+  "tooltip.relics.digging_claws.ability.claws": "",
+  "tooltip.relics.digging_claws.ability.claws.description": "",
+  "tooltip.relics.digging_claws.ability.claws.stat.amount.title": "",
+  "tooltip.relics.digging_claws.ability.claws.stat.amount.value": "+%1$s",
+
+  "tooltip.relics.feral_claws.description": "",
+  "tooltip.relics.feral_claws.ability.claws": "",
+  "tooltip.relics.feral_claws.ability.claws.description": "",
+  "tooltip.relics.feral_claws.ability.claws.stat.amount.title": "",
+  "tooltip.relics.feral_claws.ability.claws.stat.amount.value": "+%1$s",
+
+  "tooltip.relics.antidote_vessel.description": "",
+  "tooltip.relics.antidote_vessel.ability.antidote": "",
+  "tooltip.relics.antidote_vessel.ability.antidote.description": "",
+  "tooltip.relics.antidote_vessel.ability.antidote.stat.amount.title": "",
+  "tooltip.relics.antidote_vessel.ability.antidote.stat.amount.value": "+%1$s",
+
+  "tooltip.relics.power_glove.description": "",
+  "tooltip.relics.power_glove.ability.power": "",
+  "tooltip.relics.power_glove.ability.power.description": "",
+  "tooltip.relics.power_glove.ability.power.stat.amount.title": "",
+  "tooltip.relics.power_glove.ability.power.stat.amount.value": "+%1$s",
+  "tooltip.relics.night_vision_goggles.ability.vision": "",
+  "tooltip.relics.night_vision_goggles.ability.vision.description": "",
+  "tooltip.relics.night_vision_goggles.ability.vision.stat.brightness_amount.title": "",
+  "tooltip.relics.night_vision_goggles.ability.vision.stat.brightness_amount.value": "+%1$s"
 }
