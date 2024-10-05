@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.bunch;
+package it.hurts.octostudios.rarcompat.items.hands;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
@@ -13,16 +13,15 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 
-public class OnionRingItem extends WearableRelicItem {
+public class GoldenHookItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("onion")
+                        .ability(AbilityData.builder("hook")
                                 .stat(StatData.builder("amount")
                                         .initialValue(10D, 90D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 9D)
@@ -34,19 +33,23 @@ public class OnionRingItem extends WearableRelicItem {
                 .build();
     }
 
-    // @EventBusSubscriber
+    //  @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent
-        public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-            Player player = event.getEntity();
+        public static void onLivingExperienceDrop(LivingExperienceDropEvent event) {
+            if (!(event.getEntity() instanceof Player player)) return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ONION_RING.value());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.GOLDEN_HOOK.value());
 
-            if (!(stack.getItem() instanceof OnionRingItem relic)) return;
+            if (!(stack.getItem() instanceof GoldenHookItem relic)) return;
 
-            event.setNewSpeed((float) (event.getNewSpeed() * (relic.getStatValue(stack, "onion", "amount") + ( player.getFoodData().getFoodLevel() / 20.0F))));
+            int originalExperience = event.getDroppedExperience();
+            int boostedExperience = (int) Math.round(originalExperience * relic.getStatValue(stack, "hook", "amount"));
+
+            event.setDroppedExperience(boostedExperience);
         }
 
     }
+
 }

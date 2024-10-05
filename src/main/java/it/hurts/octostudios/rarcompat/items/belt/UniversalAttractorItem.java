@@ -22,7 +22,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
 
-public class UniversalAttractor extends WearableRelicItem {
+public class UniversalAttractorItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {

@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.bunch;
+package it.hurts.octostudios.rarcompat.items.hands;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
@@ -10,27 +10,20 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import top.theillusivec4.curios.api.SlotContext;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
-public class PowerGloveItem extends WearableRelicItem {
-    @Getter
-    @Setter
-    private long powerTimer;
+public class DiggingClawsItem extends WearableRelicItem {
 
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("power")
+                        .ability(AbilityData.builder("claws")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(1D, 1D)
+                                        .initialValue(2D, 10D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
@@ -40,28 +33,19 @@ public class PowerGloveItem extends WearableRelicItem {
                 .build();
     }
 
-    @Override
-    public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0)
-            return;
-
-        this.powerTimer++;
-    }
-
-    // @EventBusSubscriber
+    //  @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent
-        public static void onPlayerAttack(LivingIncomingDamageEvent event) {
-            if (!(event.getSource().getEntity() instanceof Player player)) return;
+        public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
+            Player player = event.getEntity();
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POWER_GLOVE.value());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-            if (!(stack.getItem() instanceof PowerGloveItem relic) || relic.getPowerTimer() < 5) return;
+            if (!(stack.getItem() instanceof DiggingClawsItem relic)) return;
 
-            event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "power", "amount")));
-            relic.setPowerTimer(0);
+            event.setNewSpeed((float) (event.getNewSpeed() + relic.getStatValue(stack, "claws", "amount")));
         }
-
     }
+
 }
