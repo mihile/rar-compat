@@ -19,6 +19,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -58,8 +59,8 @@ public class FeralClawsItem extends WearableRelicItem {
         EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
-    //  @EventBusSubscriber
-    public static class Event {
+    @EventBusSubscriber
+    public static class FeralClawsEvent {
 
         @SubscribeEvent
         public static void onPlayerAttack(AttackEntityEvent event) {

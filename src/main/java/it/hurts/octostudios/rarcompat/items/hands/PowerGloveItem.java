@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.items.hands;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -10,18 +11,25 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
+import java.awt.*;
+
 public class PowerGloveItem extends WearableRelicItem {
-    @Getter
-    @Setter
-    private long powerTimer;
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -44,10 +52,10 @@ public class PowerGloveItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
-        this.powerTimer++;
+        stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
     }
 
-    // @EventBusSubscriber
+    @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent
@@ -56,10 +64,28 @@ public class PowerGloveItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POWER_GLOVE.value());
 
-            if (!(stack.getItem() instanceof PowerGloveItem relic) || relic.getPowerTimer() < 5) return;
+            if (!(stack.getItem() instanceof PowerGloveItem relic) || stack.getOrDefault(DataComponentRegistry.COUNT, 0) < 5)
+                return;
 
             event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "power", "amount")));
-            relic.setPowerTimer(0);
+
+            stack.set(DataComponentRegistry.COUNT, 0);
+            RandomSource random = player.getRandom();
+
+            for (int i = 0; i < 20; i++) {
+                ((ServerLevel) player.level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200 + random.nextInt(55), 100 + random.nextInt(100), random.nextInt(50)),
+                                0.7F, 60, 0.9F),
+                        player.getX(),
+                        player.getY() + 1.0,
+                        player.getZ(),
+                        1,
+                        0.0,
+                        0.5,
+                        0.0,
+                        0.05
+                );
+            }
+
         }
 
     }

@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 public class DiggingClawsItem extends WearableRelicItem {
@@ -23,9 +24,9 @@ public class DiggingClawsItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("claws")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(2D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(0.2D, 0.3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
                         .build())
@@ -33,8 +34,8 @@ public class DiggingClawsItem extends WearableRelicItem {
                 .build();
     }
 
-    //  @EventBusSubscriber
-    public static class Event {
+    @EventBusSubscriber
+    public static class DiggingClawsEvent {
 
         @SubscribeEvent
         public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
@@ -42,9 +43,10 @@ public class DiggingClawsItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-            if (!(stack.getItem() instanceof DiggingClawsItem relic)) return;
+            if (!(stack.getItem() instanceof DiggingClawsItem relic))
+                return;
 
-            event.setNewSpeed((float) (event.getNewSpeed() + relic.getStatValue(stack, "claws", "amount")));
+            event.setNewSpeed((float) (event.getOriginalSpeed() + (event.getOriginalSpeed() * relic.getStatValue(stack, "claws", "amount")) * 1.5));
         }
     }
 
