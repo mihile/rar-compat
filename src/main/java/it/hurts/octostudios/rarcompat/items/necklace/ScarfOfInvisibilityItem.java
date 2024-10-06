@@ -2,7 +2,7 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
-import it.hurts.octostudios.rarcompat.network.packets.PacketCreateZone;
+import it.hurts.octostudios.rarcompat.network.packets.CreateZonePacket;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.init.HotkeyRegistry;
@@ -277,7 +277,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                     && !playerClient.hasContainerOpen()
                     && Minecraft.getInstance().screen == null) {
 
-                NetworkHandler.sendToServer(new PacketCreateZone());
+                NetworkHandler.sendToServer(new CreateZonePacket());
                 createBallParticles(playerClient, stack, relic.getStatValue(stack, "invisible", "radius"));
             }
         }

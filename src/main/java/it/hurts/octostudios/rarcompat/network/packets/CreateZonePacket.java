@@ -11,30 +11,28 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 
 @Data
 @AllArgsConstructor
-public class PacketCreateZone implements CustomPacketPayload {
+public class CreateZonePacket implements CustomPacketPayload {
 
-    public static final Type<PacketCreateZone> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(RARCompat.MODID, "create_visibility_zone"));
+    public static final Type<CreateZonePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(RARCompat.MODID, "create_visibility_zone"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, PacketCreateZone> STREAM_CODEC = new StreamCodec<>() {
+    public static final StreamCodec<RegistryFriendlyByteBuf, CreateZonePacket> STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public void encode(RegistryFriendlyByteBuf p_320158_, PacketCreateZone p_320396_) {
+        public void encode(RegistryFriendlyByteBuf p_320158_, CreateZonePacket p_320396_) {
 
         }
 
         @Nonnull
         @Override
-        public PacketCreateZone decode(@Nonnull RegistryFriendlyByteBuf buf) {
-            return new PacketCreateZone();
+        public CreateZonePacket decode(@Nonnull RegistryFriendlyByteBuf buf) {
+            return new CreateZonePacket();
         }
 
     };

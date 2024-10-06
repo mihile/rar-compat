@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +48,8 @@ public class AntidoteVesselItem extends WearableRelicItem {
         public static void onMobEffect(MobEffectEvent.Added event) {
             MobEffectInstance effectInstance = event.getEffectInstance();
 
-            if (effectInstance.getEffect().value().isBeneficial() || !(event.getEntity() instanceof Player player) || player.level().isClientSide)
+            if (effectInstance == MobEffects.BAD_OMEN || effectInstance == MobEffects.TRIAL_OMEN
+                    || effectInstance.getEffect().value().isBeneficial() || !(event.getEntity() instanceof Player player) || player.level().isClientSide)
                 return;
 
             ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.ANTIDOTE_VESSEL.value());

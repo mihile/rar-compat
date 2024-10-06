@@ -1,6 +1,8 @@
 package it.hurts.octostudios.rarcompat.items.belt;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.network.packets.DoubleJumpPacket;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -8,20 +10,25 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import top.theillusivec4.curios.api.SlotContext;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 
 import java.util.Objects;
 
 public class CloudInBottleItem extends WearableRelicItem {
-    private boolean hasJumped = false;
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -29,9 +36,9 @@ public class CloudInBottleItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("jump")
                                 .stat(StatData.builder("count")
-                                        .initialValue(2, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(2D, 3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
                                 .build())
                         .build())
@@ -39,45 +46,20 @@ public class CloudInBottleItem extends WearableRelicItem {
                 .build();
     }
 
+    @EventBusSubscriber(value = Dist.CLIENT)
+    public static class CloudInBottleEvent {
 
-    @Override
-    public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player)) return;
+        @SubscribeEvent
+        public static void onMouseInput(InputEvent.Key event) {
+            Minecraft minecraft = Minecraft.getInstance();
 
-        LocalPlayer localPlayer = Minecraft.getInstance().player;
+            Player playerClient = minecraft.player;
+            ItemStack stack = EntityUtils.findEquippedCurio(playerClient, ModItems.CLOUD_IN_A_BOTTLE.value());
 
-        if (player.onGround()) {
-            stack.set(DataComponentRegistry.COUNT, 0);
-            hasJumped = false;
-        }
+            if (event.getAction() == 1 && stack.getItem() instanceof CloudInBottleItem && playerClient != null
+                    && event.getKey() == minecraft.options.keyJump.getKey().getValue()) {
 
-        if (localPlayer != null && !player.onGround()) {
-            if (localPlayer.input.jumping && !hasJumped && stack.getOrDefault(DataComponentRegistry.COUNT, 0) <= getStatValue(stack, "jump", "count")) {
-                hasJumped = true;
-                stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
-
-                if (stack.getOrDefault(DataComponentRegistry.COUNT, 0) > 1) {
-                    player.fallDistance = 0.0F;
-                    double upwardsMotion = 0.7;
-
-                    if (player.hasEffect(MobEffects.JUMP)) {
-                        upwardsMotion += 0.1 * (double) (Objects.requireNonNull(player.getEffect(MobEffects.JUMP)).getAmplifier() + 1);
-                    }
-
-                    float direction = (float) ((double) player.getYRot() * Math.PI / 180.0);
-                    double horizontalFactor = 3.5;
-
-                    player.setDeltaMovement(player.getDeltaMovement().add(
-                            -Mth.sin(direction) / horizontalFactor,
-                            upwardsMotion - player.getDeltaMovement().y,
-                            Mth.cos(direction) / horizontalFactor
-                    ));
-
-                    player.hasImpulse = true;
-                    player.awardStat(Stats.JUMP);
-                }
-            } else if (!localPlayer.input.jumping) {
-                hasJumped = false;
+                NetworkHandler.sendToServer(new DoubleJumpPacket());
             }
         }
     }
