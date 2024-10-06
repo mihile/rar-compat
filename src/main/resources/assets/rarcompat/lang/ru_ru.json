@@ -157,7 +157,7 @@
   "tooltip.relics.feral_claws.ability.claws": "",
   "tooltip.relics.feral_claws.ability.claws.description": "",
   "tooltip.relics.feral_claws.ability.claws.stat.amount.title": "",
-  "tooltip.relics.feral_claws.ability.claws.stat.amount.value": "+%1$s",
+  "tooltip.relics.feral_claws.ability.claws.stat.amount.value": "+%1$s скорости за удар по мобу",
 
   "tooltip.relics.antidote_vessel.description": "",
   "tooltip.relics.antidote_vessel.ability.antidote": "",
@@ -169,9 +169,5 @@
   "tooltip.relics.power_glove.ability.power": "",
   "tooltip.relics.power_glove.ability.power.description": "",
   "tooltip.relics.power_glove.ability.power.stat.amount.title": "",
-  "tooltip.relics.power_glove.ability.power.stat.amount.value": "+%1$s",
-  "tooltip.relics.night_vision_goggles.ability.vision": "",
-  "tooltip.relics.night_vision_goggles.ability.vision.description": "",
-  "tooltip.relics.night_vision_goggles.ability.vision.stat.brightness_amount.title": "",
-  "tooltip.relics.night_vision_goggles.ability.vision.stat.brightness_amount.value": "+%1$s"
+  "tooltip.relics.power_glove.ability.power.stat.amount.value": "+%1$s"
 }

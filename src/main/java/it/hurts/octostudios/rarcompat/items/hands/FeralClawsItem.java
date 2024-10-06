@@ -24,9 +24,6 @@ import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class FeralClawsItem extends WearableRelicItem {
-    @Getter
-    @Setter
-    private long resetTimer;
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -34,8 +31,8 @@ public class FeralClawsItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("claws")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(2D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 1D)
+                                        .initialValue(0.2D, 0.4D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -46,10 +43,10 @@ public class FeralClawsItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0 || !stack.getOrDefault(DataComponentRegistry.TOGGLED, false))
+        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
-        this.resetTimer++;
+        stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
     }
 
     @Override
@@ -66,20 +63,17 @@ public class FeralClawsItem extends WearableRelicItem {
         public static void onPlayerAttack(AttackEntityEvent event) {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FERAL_CLAWS.value());
+            int interval = stack.getOrDefault(DataComponentRegistry.COUNT, 0);
 
             if (!(stack.getItem() instanceof FeralClawsItem relic)) return;
 
-            if (relic.getResetTimer() <= 3)
-                EntityUtils.applyAttribute(player, stack, Attributes.ATTACK_SPEED, (float) relic.getStatValue(stack, "claws", "amount"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+            if (interval <= 3)
+                EntityUtils.applyAttribute(player, stack, Attributes.ATTACK_SPEED, (float) relic.getStatValue(stack, "claws", "amount"), AttributeModifier.Operation.ADD_VALUE);
             else {
-                stack.set(DataComponentRegistry.TOGGLED, false);
-                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE);
+                stack.set(DataComponentRegistry.COUNT, 0);
             }
 
-            stack.set(DataComponentRegistry.TOGGLED, true);
-            relic.setResetTimer(0);
-
-            player.displayClientMessage(Component.literal(String.valueOf(player.getAttribute(Attributes.ATTACK_SPEED).getValue())), true);
         }
 
     }
