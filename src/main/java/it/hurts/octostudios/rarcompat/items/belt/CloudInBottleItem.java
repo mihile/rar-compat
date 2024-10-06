@@ -56,7 +56,7 @@ public class CloudInBottleItem extends WearableRelicItem {
             Player playerClient = minecraft.player;
             ItemStack stack = EntityUtils.findEquippedCurio(playerClient, ModItems.CLOUD_IN_A_BOTTLE.value());
 
-            if (event.getAction() == 1 && stack.getItem() instanceof CloudInBottleItem && playerClient != null
+            if (minecraft.screen == null && event.getAction() == 1 && stack.getItem() instanceof CloudInBottleItem && playerClient != null
                     && event.getKey() == minecraft.options.keyJump.getKey().getValue()) {
 
                 NetworkHandler.sendToServer(new DoubleJumpPacket());

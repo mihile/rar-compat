@@ -37,9 +37,9 @@ public class PowerGloveItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("power")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(1D, 1D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(0.2D, 0.4D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
                         .build())
@@ -60,16 +60,18 @@ public class PowerGloveItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onPlayerAttack(LivingIncomingDamageEvent event) {
-            if (!(event.getSource().getEntity() instanceof Player player)) return;
+            if (!(event.getSource().getEntity() instanceof Player player))
+                return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POWER_GLOVE.value());
 
             if (!(stack.getItem() instanceof PowerGloveItem relic) || stack.getOrDefault(DataComponentRegistry.COUNT, 0) < 5)
                 return;
 
-            event.setAmount((float) (event.getAmount() * relic.getStatValue(stack, "power", "amount")));
+            event.setAmount((float) (event.getAmount() + (event.getAmount() * relic.getStatValue(stack, "power", "amount"))));
 
             stack.set(DataComponentRegistry.COUNT, 0);
+
             RandomSource random = player.getRandom();
 
             for (int i = 0; i < 20; i++) {
@@ -85,7 +87,6 @@ public class PowerGloveItem extends WearableRelicItem {
                         0.05
                 );
             }
-
         }
 
     }

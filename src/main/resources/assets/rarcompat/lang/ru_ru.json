@@ -145,7 +145,7 @@
   "tooltip.relics.onion_ring.ability.onion": "",
   "tooltip.relics.onion_ring.ability.onion.description": "",
   "tooltip.relics.onion_ring.ability.onion.stat.amount.title": "",
-  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s",
+  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s даёт за одну сытость",
 
   "tooltip.relics.digging_claws.description": "",
   "tooltip.relics.digging_claws.ability.claws": "",

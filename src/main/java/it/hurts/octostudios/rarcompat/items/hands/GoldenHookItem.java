@@ -13,7 +13,9 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
 public class GoldenHookItem extends WearableRelicItem {
 
@@ -23,9 +25,9 @@ public class GoldenHookItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("hook")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(10D, 90D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 9D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(0.2D, 0.4D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
                         .build())
@@ -33,21 +35,21 @@ public class GoldenHookItem extends WearableRelicItem {
                 .build();
     }
 
-    //  @EventBusSubscriber
+    @EventBusSubscriber
     public static class Event {
 
         @SubscribeEvent
-        public static void onLivingExperienceDrop(LivingExperienceDropEvent event) {
-            if (!(event.getEntity() instanceof Player player)) return;
+        public static void onLivingExperienceDrop(PlayerXpEvent.XpChange event) {
+            Player player = event.getEntity();
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.GOLDEN_HOOK.value());
 
-            if (!(stack.getItem() instanceof GoldenHookItem relic)) return;
+            if (!(stack.getItem() instanceof GoldenHookItem relic))
+                return;
 
-            int originalExperience = event.getDroppedExperience();
-            int boostedExperience = (int) Math.round(originalExperience * relic.getStatValue(stack, "hook", "amount"));
+            double boostedExperience = event.getAmount() * relic.getStatValue(stack, "hook", "amount");
 
-            event.setDroppedExperience(boostedExperience);
+            event.setAmount((int) (event.getAmount() + boostedExperience));
         }
 
     }
