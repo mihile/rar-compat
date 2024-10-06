@@ -169,5 +169,11 @@
   "tooltip.relics.power_glove.ability.power": "",
   "tooltip.relics.power_glove.ability.power.description": "",
   "tooltip.relics.power_glove.ability.power.stat.amount.title": "",
-  "tooltip.relics.power_glove.ability.power.stat.amount.value": "+%1$s"
+  "tooltip.relics.power_glove.ability.power.stat.amount.value": "+%1$s",
+
+  "tooltip.relics.withered_bracelet.description": "",
+  "tooltip.relics.withered_bracelet.ability.withered": "",
+  "tooltip.relics.withered_bracelet.ability.withered.description": "",
+  "tooltip.relics.withered_bracelet.ability.withered.stat.chance.title": "",
+  "tooltip.relics.withered_bracelet.ability.withered.stat.chance.value": "+%1$s"
 }
