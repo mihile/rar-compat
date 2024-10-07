@@ -9,6 +9,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -37,6 +40,7 @@ public class PowerGloveItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("power")
                                 .stat(StatData.builder("amount")
+                                        .icon(StatIcons.MULTIPLIER)
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
@@ -44,6 +48,9 @@ public class PowerGloveItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.JUNGLE)
+                        .build())
                 .build();
     }
 

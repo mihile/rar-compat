@@ -9,6 +9,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import lombok.Getter;
@@ -31,6 +34,7 @@ public class FeralClawsItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("claws")
                                 .stat(StatData.builder("amount")
+                                        .icon(StatIcons.MULTIPLIER)
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
                                         .formatValue(value -> MathUtils.round(value, 1))
@@ -38,6 +42,9 @@ public class FeralClawsItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.NETHER)
+                        .build())
                 .build();
     }
 
@@ -63,15 +70,19 @@ public class FeralClawsItem extends WearableRelicItem {
         public static void onPlayerAttack(AttackEntityEvent event) {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FERAL_CLAWS.value());
-            int interval = stack.getOrDefault(DataComponentRegistry.COUNT, 0);
 
             if (!(stack.getItem() instanceof FeralClawsItem relic)) return;
+            int currentStacks = stack.getOrDefault(DataComponentRegistry.COUNT, 0);
 
-            if (interval <= 3)
+            if (player.getAttackStrengthScale(0.5F) >= 1.0F || currentStacks <= 3) {
+                stack.set(DataComponentRegistry.COUNT, currentStacks + 1);
+
+                relic.spreadRelicExperience(player, stack, 1);
+
                 EntityUtils.applyAttribute(player, stack, Attributes.ATTACK_SPEED, (float) relic.getStatValue(stack, "claws", "amount"), AttributeModifier.Operation.ADD_VALUE);
-            else {
-                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE);
+            } else {
                 stack.set(DataComponentRegistry.COUNT, 0);
+                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE);
             }
 
         }

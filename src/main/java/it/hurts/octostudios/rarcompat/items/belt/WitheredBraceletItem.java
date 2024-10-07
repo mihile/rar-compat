@@ -79,6 +79,7 @@ public class WitheredBraceletItem extends WearableRelicItem {
                 return;
 
             attacker.addEffect(new MobEffectInstance(MobEffects.WITHER, 160, 1));
+            relic.spreadRelicExperience(player, stack, 1);
 
             ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(75, 0, 130), 0.9F, 60, 0.95F),
                     attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);

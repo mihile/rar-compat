@@ -9,13 +9,19 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LightLayer;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.util.Random;
 
 public class NightVisionGogglesItem extends WearableRelicItem {
 
@@ -28,6 +34,7 @@ public class NightVisionGogglesItem extends WearableRelicItem {
                                         .type(CastType.TOGGLEABLE)
                                         .build())
                                 .stat(StatData.builder("amount")
+                                        .icon(StatIcons.COUNT)
                                         .initialValue(0.02D, 0.05)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 1000, 1))
@@ -38,9 +45,11 @@ public class NightVisionGogglesItem extends WearableRelicItem {
                                         .link(0, 6).link(6, 3).link(3, 1).link(1, 2).link(2, 4).link(4, 5).link(4, 0).link(7, 6).link(7, 1).link(5, 1)
                                         .build())
                                 .build())
-
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.SCULK)
+                        .build())
                 .build();
     }
 
@@ -56,9 +65,19 @@ public class NightVisionGogglesItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        if (isAbilityTicking(stack, "vision"))
+        if (isAbilityTicking(stack, "vision")) {
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 200, 0, false, false));
-        else
+
+            int blockLightLevel = player.level().getBrightness(LightLayer.BLOCK, player.blockPosition());
+            int skyLightLevel = player.level().getBrightness(LightLayer.SKY, player.blockPosition());
+
+            int lightLevel = Math.max(blockLightLevel, skyLightLevel);
+
+            double lightPercentage = (lightLevel / (double) 15);
+
+            if (player.getKnownMovement().x > 0 || player.getKnownMovement().z > 0 && new Random().nextFloat(1) <= lightPercentage)
+                spreadRelicExperience(player, stack, 1);
+        } else
             player.removeEffect(MobEffects.NIGHT_VISION);
     }
 }

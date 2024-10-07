@@ -66,6 +66,8 @@ public class DoubleJumpPacket implements CustomPacketPayload {
                         float direction = (float) ((double) player.getYRot() * Math.PI / 180.0);
                         double horizontalFactor = 4;
 
+                        relic.spreadRelicExperience(player, stack, 1);
+
                         player.hasImpulse = true;
                         player.awardStat(Stats.JUMP);
 

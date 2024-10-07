@@ -8,6 +8,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +18,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+
+import java.util.Random;
 
 public class OnionRingItem extends WearableRelicItem {
 
@@ -24,6 +29,7 @@ public class OnionRingItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("onion")
                                 .stat(StatData.builder("amount")
+                                        .icon(StatIcons.CAPACITY)
                                         .initialValue(0.2D, 0.6D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
                                         .formatValue(value -> MathUtils.round(value, 1))
@@ -31,6 +37,9 @@ public class OnionRingItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.VILLAGE)
+                        .build())
                 .build();
     }
 
@@ -46,6 +55,11 @@ public class OnionRingItem extends WearableRelicItem {
 
             int currentHunger = player.getFoodData().getFoodLevel();
             double modifier = relic.getStatValue(stack, "onion", "amount");
+
+            float hardness = event.getState().getDestroySpeed(player.level(), player.blockPosition());
+
+            if (hardness >= 1 && (hardness / 20) >= new Random().nextFloat(1))
+                relic.spreadRelicExperience(player, stack, 1);
 
             event.setNewSpeed((float) (event.getOriginalSpeed() + (currentHunger + modifier)));
         }
