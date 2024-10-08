@@ -17,6 +17,7 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -53,17 +54,22 @@ public class FeralClawsItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0)
             return;
 
-        stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
+        if (stack.getOrDefault(DataComponentRegistry.TIME, 0) <= 1)
+            stack.set(DataComponentRegistry.TIME, stack.getOrDefault(DataComponentRegistry.TIME, 0) + 1);
+        else if (stack.getOrDefault(DataComponentRegistry.TIME, 0) >= 10) {
+            stack.set(DataComponentRegistry.TIME, 0);
+        }
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
+        if (newStack == stack || !(slotContext.entity() instanceof Player player))
+            return;
 
-        EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
-    @EventBusSubscriber
+    //@EventBusSubscriber
     public static class FeralClawsEvent {
 
         @SubscribeEvent
@@ -71,17 +77,25 @@ public class FeralClawsItem extends WearableRelicItem {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FERAL_CLAWS.value());
 
-            if (!(stack.getItem() instanceof FeralClawsItem relic)) return;
+            if (!(stack.getItem() instanceof FeralClawsItem relic))
+                return;
+
             int currentStacks = stack.getOrDefault(DataComponentRegistry.COUNT, 0);
 
-            if (player.getAttackStrengthScale(0.5F) >= 1.0F || currentStacks <= 3) {
+            if (stack.getOrDefault(DataComponentRegistry.COUNT, 0) == 0)
+                stack.set(DataComponentRegistry.TIME, stack.getOrDefault(DataComponentRegistry.TIME, 0) + 1);
+
+            if (player.getAttackStrengthScale(0) >= 1.0F && stack.getOrDefault(DataComponentRegistry.TIME, 0) <= 3) {
                 stack.set(DataComponentRegistry.COUNT, currentStacks + 1);
+                stack.set(DataComponentRegistry.TIME, 0);
 
                 relic.spreadRelicExperience(player, stack, 1);
 
-                EntityUtils.applyAttribute(player, stack, Attributes.ATTACK_SPEED, (float) relic.getStatValue(stack, "claws", "amount"), AttributeModifier.Operation.ADD_VALUE);
+            //    EntityUtils.applyAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (currentStacks * relic.getStatValue(stack, "claws", "amount")), AttributeModifier.Operation.ADD_VALUE);
+                EntityUtils.applyAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (currentStacks * relic.getStatValue(stack, "claws", "amount")), AttributeModifier.Operation.ADD_VALUE);
             } else {
                 stack.set(DataComponentRegistry.COUNT, 0);
+
                 EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE);
             }
 

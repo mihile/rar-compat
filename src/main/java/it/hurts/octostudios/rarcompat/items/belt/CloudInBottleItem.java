@@ -32,7 +32,7 @@ public class CloudInBottleItem extends WearableRelicItem {
                         .ability(AbilityData.builder("jump")
                                 .stat(StatData.builder("count")
                                         .icon(StatIcons.COUNT)
-                                        .initialValue(2D, 3D)
+                                        .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 0))
                                         .build())

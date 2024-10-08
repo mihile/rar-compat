@@ -175,5 +175,7 @@
   "tooltip.relics.withered_bracelet.ability.withered": "Иссушающее касание",
   "tooltip.relics.withered_bracelet.ability.withered.description": "С шансом накладывает на атакуемую цель эффект иссушения на 5 секунд.",
   "tooltip.relics.withered_bracelet.ability.withered.stat.chance.title": "Шанс срабатывания:",
-  "tooltip.relics.withered_bracelet.ability.withered.stat.chance.value": "%1$s%%"
+  "tooltip.relics.withered_bracelet.ability.withered.stat.chance.value": "%1$s%%",
+  "tooltip.relics.withered_bracelet.ability.withered.stat.time.title": "Длительность иссушения:",
+  "tooltip.relics.withered_bracelet.ability.withered.stat.time.value": "%1$s секунд."
 }

@@ -35,12 +35,12 @@ public class NightVisionGogglesItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("amount")
                                         .icon(StatIcons.COUNT)
-                                        .initialValue(0.02D, 0.05)
+                                        .initialValue(0.01D, 0.05)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 1000, 1))
                                         .build())
                                 .research(ResearchData.builder()
-                                        .star(0, 10, 25).star(1, 10, 12).star(2, 6, 7).star(3, 16, 7)
+                                        .star(0, 9, 26).star(1, 11, 13).star(2, 6, 7).star(3, 16, 7)
                                         .star(4, 2, 13).star(5, 6, 16).star(6, 20, 13).star(7, 16, 16)
                                         .link(0, 6).link(6, 3).link(3, 1).link(1, 2).link(2, 4).link(4, 5).link(4, 0).link(7, 6).link(7, 1).link(5, 1)
                                         .build())
@@ -66,7 +66,7 @@ public class NightVisionGogglesItem extends WearableRelicItem {
             return;
 
         if (isAbilityTicking(stack, "vision")) {
-            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 200, 0, false, false));
+            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 1000, 0, false, false));
 
             int blockLightLevel = player.level().getBrightness(LightLayer.BLOCK, player.blockPosition());
             int skyLightLevel = player.level().getBrightness(LightLayer.SKY, player.blockPosition());

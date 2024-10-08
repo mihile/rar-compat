@@ -59,7 +59,9 @@ public class VampiricGloveItem extends WearableRelicItem {
 
             double damageToHeal = event.getAmount() * relic.getStatValue(stack, "vampire", "amount");
 
-            if ((damageToHeal / player.getMaxHealth()) >= new Random().nextFloat(1))
+            System.out.println(damageToHeal * 5 / player.getMaxHealth());
+
+            if ((damageToHeal * 5 / player.getMaxHealth()) >= new Random().nextFloat(1))
                 relic.spreadRelicExperience(player, stack, 1);
 
             player.heal((float) damageToHeal);

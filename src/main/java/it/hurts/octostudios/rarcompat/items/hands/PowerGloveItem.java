@@ -75,6 +75,8 @@ public class PowerGloveItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof PowerGloveItem relic) || stack.getOrDefault(DataComponentRegistry.COUNT, 0) < 5)
                 return;
 
+            relic.spreadRelicExperience(player, stack, 1);
+
             event.setAmount((float) (event.getAmount() + (event.getAmount() * relic.getStatValue(stack, "power", "amount"))));
 
             stack.set(DataComponentRegistry.COUNT, 0);

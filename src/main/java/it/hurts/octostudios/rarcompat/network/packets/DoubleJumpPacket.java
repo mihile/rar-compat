@@ -57,13 +57,14 @@ public class DoubleJumpPacket implements CustomPacketPayload {
             if (stack.getItem() instanceof CloudInBottleItem relic) {
                 if (!player.onGround()) {
                     stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
-                    if (stack.getOrDefault(DataComponentRegistry.COUNT, 0) <= relic.getStatValue(stack, "jump", "count")) {
+
+                    if (stack.getOrDefault(DataComponentRegistry.COUNT, 0) <= Math.round(relic.getStatValue(stack, "jump", "count"))) {
                         double upwardsMotion = 0.9;
 
                         if (player.hasEffect(MobEffects.JUMP))
                             upwardsMotion += 0.1 * (double) (Objects.requireNonNull(player.getEffect(MobEffects.JUMP)).getAmplifier() + 1);
 
-                        float direction = (float) ((double) player.getYRot() * Math.PI / 180.0);
+                        float direction = (float) (player.getYRot() * Math.PI / 180.0);
                         double horizontalFactor = 4;
 
                         relic.spreadRelicExperience(player, stack, 1);

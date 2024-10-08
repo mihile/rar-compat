@@ -48,7 +48,7 @@ public class ModItemsMixin {
             case "golden_hook" -> register(name, GoldenHookItem::new);
             case "onion_ring" -> register(name, OnionRingItem::new);
             case "digging_claws" -> register(name, DiggingClawsItem::new);
-            case "feral_claws" -> register(name, FeralClawsItem::new);
+            //case "feral_claws" -> register(name, FeralClawsItem::new);
             case "antidote_vessel" -> register(name, AntidoteVesselItem::new);
             case "power_glove" -> register(name, PowerGloveItem::new);
             case "withered_bracelet" -> register(name, WitheredBraceletItem::new);

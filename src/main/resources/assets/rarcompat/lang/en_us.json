@@ -175,5 +175,7 @@
   "tooltip.relics.withered_bracelet.ability.withered": "Withering Touch",
   "tooltip.relics.withered_bracelet.ability.withered.description": "Has a chance to apply the Wither effect to the attacked target for 5 seconds.",
   "tooltip.relics.withered_bracelet.ability.withered.stat.chance.title": "Activation Chance:",
-  "tooltip.relics.withered_bracelet.ability.withered.stat.chance.value": "%1$s%%"
+  "tooltip.relics.withered_bracelet.ability.withered.stat.chance.value": "%1$s%%",
+  "tooltip.relics.withered_bracelet.ability.withered.stat.time.title": "Drying Duration:",
+  "tooltip.relics.withered_bracelet.ability.withered.stat.time.value": "%1$s seconds."
 }

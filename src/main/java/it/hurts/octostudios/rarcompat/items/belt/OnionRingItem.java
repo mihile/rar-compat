@@ -17,7 +17,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDestroyBlockEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.Random;
 
@@ -31,7 +33,7 @@ public class OnionRingItem extends WearableRelicItem {
                                 .stat(StatData.builder("amount")
                                         .icon(StatIcons.CAPACITY)
                                         .initialValue(0.2D, 0.6D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -51,18 +53,28 @@ public class OnionRingItem extends WearableRelicItem {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ONION_RING.value());
 
-            if (!(stack.getItem() instanceof OnionRingItem relic)) return;
+            if (!(stack.getItem() instanceof OnionRingItem relic))
+                return;
 
             int currentHunger = player.getFoodData().getFoodLevel();
             double modifier = relic.getStatValue(stack, "onion", "amount");
 
-            float hardness = event.getState().getDestroySpeed(player.level(), player.blockPosition());
-
-            if (hardness >= 1 && (hardness / 20) >= new Random().nextFloat(1))
-                relic.spreadRelicExperience(player, stack, 1);
-
-            event.setNewSpeed((float) (event.getOriginalSpeed() + (currentHunger + modifier)));
+            event.setNewSpeed((float) (event.getOriginalSpeed() + (event.getOriginalSpeed() * ((currentHunger * modifier) / 100))));
         }
 
+        @SubscribeEvent
+        public static void onBlockDestroy(BlockEvent.BreakEvent event) {
+            Player player = event.getPlayer();
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ONION_RING.value());
+
+            if (!(stack.getItem() instanceof OnionRingItem relic))
+                return;
+
+            float hardness = event.getState().getDestroySpeed(player.level(), player.blockPosition());
+            float currentHunger = player.getFoodData().getFoodLevel();
+
+            if (hardness >= 0.5 && currentHunger / 20 >= new Random().nextFloat(1))
+                relic.spreadRelicExperience(player, stack, 1);
+        }
     }
 }

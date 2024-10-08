@@ -1,6 +1,7 @@
 package it.hurts.octostudios.rarcompat.items.belt;
 
 import artifacts.registry.ModItems;
+import com.ibm.icu.impl.duration.impl.DataRecord;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -8,6 +9,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.network.chat.Component;
@@ -31,6 +35,7 @@ public class AntidoteVesselItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("antidote")
                                 .stat(StatData.builder("amount")
+                                        .icon(StatIcons.MULTIPLIER)
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
@@ -38,6 +43,9 @@ public class AntidoteVesselItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
+                .loot(LootData.builder()
+                        .entry(LootCollections.JUNGLE)
+                        .build())
                 .build();
     }
 
@@ -48,7 +56,7 @@ public class AntidoteVesselItem extends WearableRelicItem {
         public static void onMobEffect(MobEffectEvent.Added event) {
             MobEffectInstance effectInstance = event.getEffectInstance();
 
-            if (effectInstance == MobEffects.BAD_OMEN || effectInstance == MobEffects.TRIAL_OMEN
+            if (effectInstance == MobEffects.BAD_OMEN || effectInstance == MobEffects.TRIAL_OMEN || effectInstance == MobEffects.RAID_OMEN
                     || effectInstance.getEffect().value().isBeneficial() || !(event.getEntity() instanceof Player player) || player.level().isClientSide)
                 return;
 
@@ -58,6 +66,8 @@ public class AntidoteVesselItem extends WearableRelicItem {
                 return;
 
             int newDuration = (int) (effectInstance.getDuration() * (1 - relic.getStatValue(itemStack, "antidote", "amount")));
+
+            relic.spreadRelicExperience(player, itemStack, 1);
 
             try {
                 Field durationField = MobEffectInstance.class.getDeclaredField("duration");

@@ -48,6 +48,12 @@ public class WitheredBraceletItem extends WearableRelicItem {
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
+                                .stat(StatData.builder("time")
+                                        .icon(StatIcons.DURATION)
+                                        .initialValue(2D, 4D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
@@ -75,10 +81,12 @@ public class WitheredBraceletItem extends WearableRelicItem {
             Random random = new Random();
 
             if (!(stack.getItem() instanceof WitheredBraceletItem relic) || level.isClientSide
-                    || random.nextInt(100) > relic.getStatValue(stack, "withered", "chance") * 100)
+                    || random.nextInt(1) > relic.getStatValue(stack, "withered", "chance"))
                 return;
+            int duration = (int) relic.getStatValue(stack, "withered", "time");
 
-            attacker.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 1));
+            attacker.addEffect(new MobEffectInstance(MobEffects.WITHER, duration, 1));
+
             relic.spreadRelicExperience(player, stack, 1);
 
             ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(75, 0, 130), 0.9F, 60, 0.95F),

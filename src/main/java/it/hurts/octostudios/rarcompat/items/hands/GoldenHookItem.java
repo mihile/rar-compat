@@ -56,6 +56,8 @@ public class GoldenHookItem extends WearableRelicItem {
 
             double boostedExperience = event.getOriginalExperience() * relic.getStatValue(stack, "hook", "amount");
 
+            relic.spreadRelicExperience(player, stack, 1);
+
             event.setDroppedExperience((int) (event.getOriginalExperience() + boostedExperience));
         }
 
