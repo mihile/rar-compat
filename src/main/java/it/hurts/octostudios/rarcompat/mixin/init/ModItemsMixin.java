@@ -40,7 +40,7 @@ public class ModItemsMixin {
             case "crystal_heart" -> register(name, CrystalHeartItem::new);
             //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             case "cross_necklace" -> register(name, CrossNecklaceItem::new);
-            case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
+            //     case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
             //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);
             //    case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
             case "cloud_in_a_bottle" -> register(name, CloudInBottleItem::new);

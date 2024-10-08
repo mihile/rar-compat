@@ -81,9 +81,10 @@ public class WitheredBraceletItem extends WearableRelicItem {
             Random random = new Random();
 
             if (!(stack.getItem() instanceof WitheredBraceletItem relic) || level.isClientSide
-                    || random.nextInt(1) > relic.getStatValue(stack, "withered", "chance"))
+                    || random.nextFloat(1) > relic.getStatValue(stack, "withered", "chance"))
                 return;
-            int duration = (int) relic.getStatValue(stack, "withered", "time");
+
+            int duration = (int) relic.getStatValue(stack, "withered", "time") * 20;
 
             attacker.addEffect(new MobEffectInstance(MobEffects.WITHER, duration, 1));
 

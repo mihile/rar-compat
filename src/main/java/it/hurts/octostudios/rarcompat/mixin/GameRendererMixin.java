@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 
-    @ModifyReturnValue(method = "getNightVisionScale", at = @At("RETURN"))
+    //@ModifyReturnValue(method = "getNightVisionScale", at = @At("RETURN"))
     private static float getNightVisionScale(float scale, LivingEntity entity, float p_109110_) {
         if (!(entity instanceof Player player) || !player.hasEffect(MobEffects.NIGHT_VISION))
             return scale;

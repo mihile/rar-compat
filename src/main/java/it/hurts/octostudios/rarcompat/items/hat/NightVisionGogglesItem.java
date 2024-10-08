@@ -60,7 +60,7 @@ public class NightVisionGogglesItem extends WearableRelicItem {
         player.removeEffect(MobEffects.NIGHT_VISION);
     }
 
-    @Override
+     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player))
             return;
