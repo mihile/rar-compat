@@ -78,7 +78,7 @@ public class WitheredBraceletItem extends WearableRelicItem {
                     || random.nextInt(100) > relic.getStatValue(stack, "withered", "chance") * 100)
                 return;
 
-            attacker.addEffect(new MobEffectInstance(MobEffects.WITHER, 160, 1));
+            attacker.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 1));
             relic.spreadRelicExperience(player, stack, 1);
 
             ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(75, 0, 130), 0.9F, 60, 0.95F),
