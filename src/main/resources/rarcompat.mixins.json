@@ -6,7 +6,6 @@
   "refmap": "rarcompat.refmap.json",
   "mixins": [
     "AbstractVillagerMixin",
-    "GameRendererMixin",
     "RollLootTableModifierMixin",
     "init.ModItemsMixin"
   ],

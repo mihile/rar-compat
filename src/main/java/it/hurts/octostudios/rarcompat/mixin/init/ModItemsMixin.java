@@ -38,20 +38,20 @@ public class ModItemsMixin {
             case "cowboy_hat" -> register(name, CowboyHatItem::new);
             case "universal_attractor" -> register(name, UniversalAttractorItem::new);
             case "crystal_heart" -> register(name, CrystalHeartItem::new);
-            //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             case "cross_necklace" -> register(name, CrossNecklaceItem::new);
-            //     case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
-            //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);
-            //    case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
             case "cloud_in_a_bottle" -> register(name, CloudInBottleItem::new);
             case "vampiric_glove" -> register(name, VampiricGloveItem::new);
             case "golden_hook" -> register(name, GoldenHookItem::new);
             case "onion_ring" -> register(name, OnionRingItem::new);
             case "digging_claws" -> register(name, DiggingClawsItem::new);
-            //case "feral_claws" -> register(name, FeralClawsItem::new);
             case "antidote_vessel" -> register(name, AntidoteVesselItem::new);
             case "power_glove" -> register(name, PowerGloveItem::new);
             case "withered_bracelet" -> register(name, WitheredBraceletItem::new);
+            //case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
+            //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);
+            //    case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
+            //case "feral_claws" -> register(name, FeralClawsItem::new);
+            //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
