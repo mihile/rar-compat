@@ -14,6 +14,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +39,11 @@ public class UniversalAttractorItem extends WearableRelicItem {
                                         .initialValue(2D, 4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
                                         .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 8, 12).star(1, 11, 5).star(2, 18, 6).star(3, 15, 16)
+                                        .star(4, 18, 11)
+                                        .link(0, 1).link(1, 2).link(2, 4).link(4, 3)
                                         .build())
                                 .build())
                         .build())

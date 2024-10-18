@@ -47,11 +47,11 @@ public class ModItemsMixin {
             case "antidote_vessel" -> register(name, AntidoteVesselItem::new);
             case "power_glove" -> register(name, PowerGloveItem::new);
             case "withered_bracelet" -> register(name, WitheredBraceletItem::new);
+            //case "feral_claws" -> register(name, FeralClawsItem::new);
+            //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             //case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
             //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);
             //    case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
-            //case "feral_claws" -> register(name, FeralClawsItem::new);
-            //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
