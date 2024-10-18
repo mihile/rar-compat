@@ -1,6 +1,5 @@
-package it.hurts.octostudios.rarcompat.items.hat;
+package it.hurts.octostudios.rarcompat.items.bunch;
 
-import com.mojang.authlib.minecraft.client.MinecraftClient;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
@@ -17,15 +16,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.LightLayer;
 import top.theillusivec4.curios.api.SlotContext;
-
-import java.util.Random;
 
 public class NightVisionGogglesItem extends WearableRelicItem {
 
