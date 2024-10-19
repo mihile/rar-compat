@@ -13,16 +13,22 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.awt.*;
 
 public class RootedBootsItem extends WearableRelicItem {
 
@@ -54,15 +60,25 @@ public class RootedBootsItem extends WearableRelicItem {
                 || player.level().isClientSide || !isAbilityTicking(stack, "devouring"))
             return;
 
+        Level level = player.level();
         BlockPos blockPos = player.blockPosition().below();
         BlockState blockState = player.level().getBlockState(blockPos);
+        RandomSource random = player.getRandom();
 
         if (blockState.is(Blocks.GRASS_BLOCK)) {
+            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(
+                            new Color(random.nextInt(50), 100 + random.nextInt(155), random.nextInt(50)),
+                            0.3F, 40, 0.9F),
+                    player.getX(), player.getY() + 0.2, player.getZ(),
+                    20,
+                    0.2,
+                    0, 0.2, 0.0);
+
             player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel() + 2);
 
-            player.level().setBlock(blockPos, Blocks.DIRT.defaultBlockState(), 3);
+            level.setBlock(blockPos, Blocks.DIRT.defaultBlockState(), 3);
 
-            player.level().playSound(null, player, SoundEvents.GRASS_BREAK, SoundSource.PLAYERS,
+            level.playSound(null, player, SoundEvents.GRASS_BREAK, SoundSource.PLAYERS,
                     1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
         }
     }
