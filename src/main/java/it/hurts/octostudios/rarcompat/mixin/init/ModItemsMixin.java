@@ -53,6 +53,7 @@ public class ModItemsMixin {
             case "snowshoes" -> register(name, SnowshoesItem::new);
             case "steadfast_spikes" -> register(name, SteadfastSpikesItem::new);
             case "rooted_boots" -> register(name, RootedBootsItem::new);
+            case "warp_drive" -> register(name, WarpDriveItem::new);
             //case "feral_claws" -> register(name, FeralClawsItem::new);
             //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             //case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
