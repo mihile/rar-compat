@@ -10,8 +10,7 @@
     "init.ModItemsMixin"
   ],
   "client": [
-    "HumanoidModelMixin",
-    "LightTextureMixin"
+    "HumanoidModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

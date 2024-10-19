@@ -3,8 +3,9 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.belt.*;
+import it.hurts.octostudios.rarcompat.items.feet.SteadfastSpikesItem;
 import it.hurts.octostudios.rarcompat.items.hands.*;
-import it.hurts.octostudios.rarcompat.items.legs.SnowshoesItem;
+import it.hurts.octostudios.rarcompat.items.feet.SnowshoesItem;
 import it.hurts.octostudios.rarcompat.items.necklace.CrossNecklaceItem;
 import it.hurts.octostudios.rarcompat.items.hat.CowboyHatItem;
 import it.hurts.octostudios.rarcompat.items.necklace.*;
@@ -49,6 +50,7 @@ public class ModItemsMixin {
             case "power_glove" -> register(name, PowerGloveItem::new);
             case "withered_bracelet" -> register(name, WitheredBraceletItem::new);
             case "snowshoes" -> register(name, SnowshoesItem::new);
+            case "steadfast_spikes" -> register(name, SteadfastSpikesItem::new);
             //case "feral_claws" -> register(name, FeralClawsItem::new);
             //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             //case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);

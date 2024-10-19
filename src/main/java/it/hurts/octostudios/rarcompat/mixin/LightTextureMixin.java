@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(LightTexture.class)
+//@Mixin(LightTexture.class)
 public class LightTextureMixin {
-    @ModifyVariable(method = "updateLightTexture", at = @At(value = "STORE", ordinal = 0), ordinal = 5)
+  //  @ModifyVariable(method = "updateLightTexture", at = @At(value = "STORE", ordinal = 0), ordinal = 5)
     private float getLightModifier(float original) {
         var player = Minecraft.getInstance().player;
 
