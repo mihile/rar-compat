@@ -39,7 +39,7 @@ public class SteadfastSpikesItem extends WearableRelicItem {
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
                 .loot(LootData.builder()
-                        .entry(LootCollections.COLD)
+                        .entry(LootCollections.JUNGLE)
                         .build())
                 .build();
     }
