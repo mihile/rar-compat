@@ -2,13 +2,9 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.WhoopeeCushionItem;
 import it.hurts.octostudios.rarcompat.items.belt.*;
-import it.hurts.octostudios.rarcompat.items.bunch.NightVisionGogglesItem;
-import it.hurts.octostudios.rarcompat.items.feet.RootedBootsItem;
-import it.hurts.octostudios.rarcompat.items.feet.SteadfastSpikesItem;
+import it.hurts.octostudios.rarcompat.items.hat.NightVisionGogglesItem;
 import it.hurts.octostudios.rarcompat.items.hands.*;
-import it.hurts.octostudios.rarcompat.items.feet.SnowshoesItem;
 import it.hurts.octostudios.rarcompat.items.necklace.CrossNecklaceItem;
 import it.hurts.octostudios.rarcompat.items.hat.CowboyHatItem;
 import it.hurts.octostudios.rarcompat.items.necklace.*;

@@ -1,8 +1,10 @@
 package it.hurts.octostudios.rarcompat;
 
-import net.minecraft.core.Registry;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
+import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.hat.NightVisionGogglesItem;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 

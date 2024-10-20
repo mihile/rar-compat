@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.bunch;
+package it.hurts.octostudios.rarcompat.items.hat;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -51,27 +51,10 @@ public class NightVisionGogglesItem extends WearableRelicItem {
                 .build();
     }
 
- //   @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
-
-        player.removeEffect(MobEffects.NIGHT_VISION);
-    }
-
-   // @Override
+    @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ability.equals("vision"))
             NBTUtils.setBoolean(stack, "toggled", !NBTUtils.getBoolean(stack, "toggled", true));
     }
 
-  //  @Override
-    public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
-            return;
-//        if (isAbilityTicking(stack, "vision")) {
-//            //   player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 1000, 0, false, false));
-//            Minecraft.getInstance().options.gamma().set(10.6D);
-//        } else
-//            Minecraft.getInstance().options.gamma().set(0.5);
-    }
 }
