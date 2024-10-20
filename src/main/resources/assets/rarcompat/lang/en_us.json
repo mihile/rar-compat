@@ -145,13 +145,13 @@
   "tooltip.relics.onion_ring.ability.onion": "Miner's Hunger",
   "tooltip.relics.onion_ring.ability.onion.description": "Increases mining speed based on the player's hunger.",
   "tooltip.relics.onion_ring.ability.onion.stat.amount.title": "Mining Speed Modifier:",
-  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s%% per hunger point.",
+  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+1$s per hunger point.",
 
   "tooltip.relics.digging_claws.description": "Strengthens the relic holder's hands, allowing for more efficient block breaking.",
   "tooltip.relics.digging_claws.ability.claws": "Speed Mining",
   "tooltip.relics.digging_claws.ability.claws.description": "Increases block mining speed.",
   "tooltip.relics.digging_claws.ability.claws.stat.amount.title": "Mining Speed Modifier:",
-  "tooltip.relics.digging_claws.ability.claws.stat.amount.value": "+%1$s%%",
+  "tooltip.relics.digging_claws.ability.claws.stat.amount.value": "+1$s",
 
   "tooltip.relics.feral_claws.description": "Awakens the bloodlust within the relic holder, causing them to attack faster with each subsequent strike.",
   "tooltip.relics.feral_claws.ability.claws": "Beast's Fury",

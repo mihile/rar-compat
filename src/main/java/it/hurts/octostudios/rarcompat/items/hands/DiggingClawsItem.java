@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.items.hands;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.items.belt.OnionRingItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.Random;
 
@@ -30,9 +32,9 @@ public class DiggingClawsItem extends WearableRelicItem {
                         .ability(AbilityData.builder("claws")
                                 .stat(StatData.builder("amount")
                                         .icon(StatIcons.COUNT)
-                                        .initialValue(0.2D, 0.35D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2334D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .initialValue(5D, 7D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
@@ -55,14 +57,22 @@ public class DiggingClawsItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof DiggingClawsItem relic))
                 return;
 
+            event.setNewSpeed((float) (event.getOriginalSpeed() + relic.getStatValue(stack, "claws", "amount")));
+        }
+
+        @SubscribeEvent
+        public static void onBlockDestroy(BlockEvent.BreakEvent event) {
+            Player player = event.getPlayer();
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
+
+            if (!(stack.getItem() instanceof DiggingClawsItem relic))
+                return;
+
             float hardness = event.getState().getDestroySpeed(player.level(), player.blockPosition());
             Random random = new Random();
 
             if (random.nextFloat(1) <= (hardness / 20))
                 relic.spreadRelicExperience(player, stack, 1);
-
-            event.setNewSpeed((float) (event.getOriginalSpeed() + (event.getOriginalSpeed() * relic.getStatValue(stack, "claws", "amount")) * 1.5));
         }
     }
-
 }

@@ -74,7 +74,9 @@ public class FlamePendantItem extends WearableRelicItem {
             Random random = new Random();
 
             if (!(stack.getItem() instanceof FlamePendantItem relic) || level.isClientSide
-                    || random.nextInt(100) > (relic.getStatValue(stack, "fire", "chance") * 100)) return;
+                    || random.nextInt(100) > (relic.getStatValue(stack, "fire", "chance") * 100))
+                return;
+
             relic.spreadRelicExperience(player, stack, 1);
 
             attacker.setRemainingFireTicks((int) relic.getStatValue(stack, "fire", "time") * 20);

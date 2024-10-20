@@ -52,7 +52,7 @@ public class SteadfastSpikesItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
+ //   @EventBusSubscriber
     public static class SteadfastSpikesEvent {
 
         @SubscribeEvent
