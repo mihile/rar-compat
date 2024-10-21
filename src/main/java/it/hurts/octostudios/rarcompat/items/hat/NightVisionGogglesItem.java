@@ -19,7 +19,10 @@ import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.util.Random;
 
 public class NightVisionGogglesItem extends WearableRelicItem {
 
@@ -49,6 +52,20 @@ public class NightVisionGogglesItem extends WearableRelicItem {
                         .entry(LootCollections.SCULK)
                         .build())
                 .build();
+    }
+
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player))
+            return;
+
+        float percent = (Math.abs(1 - (player.level().getMaxLocalRawBrightness(player.blockPosition()) / 15.0F)));
+
+        if (isAbilityTicking(stack, "vision")) {
+            if (player.getRandom().nextFloat() <= percent && player.tickCount % 100 == 0 && !(Math.abs(player.getKnownMovement().x) <= 0.01D || Math.abs(player.getKnownMovement().z) <= 0.01D)) {
+                spreadRelicExperience(player, stack, 1);
+            }
+        }
     }
 
     @Override

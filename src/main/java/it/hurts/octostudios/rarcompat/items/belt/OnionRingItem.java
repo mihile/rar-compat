@@ -32,7 +32,7 @@ public class OnionRingItem extends WearableRelicItem {
                         .ability(AbilityData.builder("onion")
                                 .stat(StatData.builder("amount")
                                         .icon(StatIcons.CAPACITY)
-                                        .initialValue(0.4D, 0.6D)
+                                        .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
