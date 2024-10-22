@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -53,6 +54,11 @@ public class ThornPendantItem extends WearableRelicItem {
                                         .initialValue(0.25D, 0.35D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 100, 2))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 10, 18).star(1, 4, 14).star(2, 11, 13)
+                                        .star(3, 16, 16).star(4, 12, 29)
+                                        .link(1, 0).link(2, 0).link(3, 0).link(4, 0)
                                         .build())
                                 .build())
                         .build())
