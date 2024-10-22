@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.hat;
 
+import it.hurts.octostudios.rarcompat.init.SoundRegistry;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
@@ -16,6 +17,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -70,8 +73,14 @@ public class NightVisionGogglesItem extends WearableRelicItem {
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (ability.equals("vision"))
-            NBTUtils.setBoolean(stack, "toggled", !NBTUtils.getBoolean(stack, "toggled", true));
+        if (ability.equals("vision") && player.level().isClientSide && stage == CastStage.START) {
+            Random random = new Random();
+            double min = 0.75;
+            double max = 1.25;
+
+            player.playSound(SoundRegistry.NIGHT_VISION_TOGGLE.get(), 1F, (float) (min + (max - min) * random.nextDouble()));
+        }
+
     }
 
 }

@@ -58,6 +58,12 @@ public class UniversalAttractorItem extends WearableRelicItem {
     }
 
     @Override
+    public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
+        if (ability.equals("attractor"))
+            stack.set(DataComponentRegistry.TOGGLED, !stack.getOrDefault(DataComponentRegistry.TOGGLED, true));
+    }
+
+    @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide) return;
 
