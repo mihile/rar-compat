@@ -5,27 +5,33 @@ import it.hurts.octostudios.rarcompat.items.hat.NightVisionGogglesItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(LightTexture.class)
 public class LightTextureMixin {
-    @ModifyVariable(method = "updateLightTexture", at = @At(value = "STORE"), name = "f10")
-    private float modifyF10(float original) {
+    @ModifyArgs(method = "updateLightTexture", at = @At(value = "INVOKE", target = "Lorg/joml/Vector3f;set(FFF)Lorg/joml/Vector3f;"))
+    private void modifySetArguments(Args args) {
         var player = Minecraft.getInstance().player;
 
         if (player == null)
-            return original;
+            return;
 
         var stack = EntityUtils.findEquippedCurio(player, ModItems.NIGHT_VISION_GOGGLES.value());
 
         if (!(stack.getItem() instanceof NightVisionGogglesItem relic) || !relic.isAbilityTicking(stack, "vision"))
-            return original;
+            return;
 
-        double gamma = relic.getStatValue(stack, "vision", "amount");
+        var gamma = (float) relic.getStatValue(stack, "vision", "amount");
 
-        return (float) Mth.lerp(gamma, 0.2D, 5D);
+        float r = args.get(0);
+        float g = args.get(1);
+        float b = args.get(2);
+
+        args.set(0, Math.clamp(r - gamma / 2F, 0F, 1F));
+        args.set(1, Math.clamp(g + gamma, 0F, 1F));
+        args.set(2, Math.clamp(b - gamma / 2F, 0F, 1F));
     }
 }
