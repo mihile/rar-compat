@@ -145,7 +145,7 @@
   "tooltip.relics.onion_ring.ability.onion": "Miner's Hunger",
   "tooltip.relics.onion_ring.ability.onion.description": "Increases mining speed based on the player's hunger.",
   "tooltip.relics.onion_ring.ability.onion.stat.amount.title": "Mining Speed Modifier:",
-  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s per hunger point.",
+  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s%% per hunger point.",
 
   "tooltip.relics.digging_claws.description": "Strengthens the relic holder's hands, allowing for more efficient block breaking.",
   "tooltip.relics.digging_claws.ability.claws": "Speed Mining",
