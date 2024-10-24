@@ -74,11 +74,7 @@ public class NightVisionGogglesItem extends WearableRelicItem {
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (ability.equals("vision") && player.level().isClientSide && stage == CastStage.START) {
-            Random random = new Random();
-            double min = 0.75;
-            double max = 1.25;
-
-            player.playSound(SoundRegistry.NIGHT_VISION_TOGGLE.get(), 1F, (float) (min + (max - min) * random.nextDouble()));
+            player.playSound(SoundRegistry.NIGHT_VISION_TOGGLE.get(), 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
         }
 
     }

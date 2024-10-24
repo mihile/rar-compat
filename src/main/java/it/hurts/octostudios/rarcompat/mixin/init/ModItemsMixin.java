@@ -2,7 +2,11 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.WhoopeeCushionItem;
 import it.hurts.octostudios.rarcompat.items.belt.*;
+import it.hurts.octostudios.rarcompat.items.feet.RootedBootsItem;
+import it.hurts.octostudios.rarcompat.items.feet.SnowshoesItem;
+import it.hurts.octostudios.rarcompat.items.feet.SteadfastSpikesItem;
 import it.hurts.octostudios.rarcompat.items.hat.NightVisionGogglesItem;
 import it.hurts.octostudios.rarcompat.items.hands.*;
 import it.hurts.octostudios.rarcompat.items.necklace.CrossNecklaceItem;
@@ -50,12 +54,13 @@ public class ModItemsMixin {
             case "withered_bracelet" -> register(name, WitheredBraceletItem::new);
             case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
 
-           //case "snowshoes" -> register(name, SnowshoesItem::new);
-           // case "steadfast_spikes" -> register(name, SteadfastSpikesItem::new);
-          //  case "rooted_boots" -> register(name, RootedBootsItem::new);
-           // case "warp_drive" -> register(name, WarpDriveItem::new);
-          //  case "charm_of_shrinking" -> register(name, CharmOfShrinkingItem::new);
-           // case "whoopee_cushion" -> register(name, WhoopeeCushionItem::new);
+//            case "snowshoes" -> register(name, SnowshoesItem::new);
+//            case "steadfast_spikes" -> register(name, SteadfastSpikesItem::new);
+//            case "rooted_boots" -> register(name, RootedBootsItem::new);
+//            case "warp_drive" -> register(name, WarpDriveItem::new);
+//            case "charm_of_shrinking" -> register(name, CharmOfShrinkingItem::new);
+//            case "whoopee_cushion" -> register(name, WhoopeeCushionItem::new);
+
             //case "feral_claws" -> register(name, FeralClawsItem::new);
             //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);
