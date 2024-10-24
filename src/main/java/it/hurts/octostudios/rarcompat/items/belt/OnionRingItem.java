@@ -31,10 +31,10 @@ public class OnionRingItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("onion")
                                 .stat(StatData.builder("amount")
-                                        .icon(StatIcons.CAPACITY)
-                                        .initialValue(0.2D, 0.4D)
+                                        .icon(StatIcons.MODIFIER)
+                                        .initialValue(0.1D, 0.25D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 0))
                                         .build())
                                 .build())
                         .build())
@@ -59,7 +59,7 @@ public class OnionRingItem extends WearableRelicItem {
             int currentHunger = player.getFoodData().getFoodLevel();
             double modifier = relic.getStatValue(stack, "onion", "amount");
 
-            event.setNewSpeed((float) (event.getOriginalSpeed() + (currentHunger * modifier)));
+            event.setNewSpeed((float) (event.getNewSpeed() + (event.getNewSpeed() * (currentHunger * modifier))));
         }
 
         @SubscribeEvent

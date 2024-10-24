@@ -145,7 +145,7 @@
   "tooltip.relics.onion_ring.ability.onion": "Голод шахтёра",
   "tooltip.relics.onion_ring.ability.onion.description": "Увеличивает скорость добычи блоков в зависимости от сытости игрока.",
   "tooltip.relics.onion_ring.ability.onion.stat.amount.title": "Модификатор скорости добычи:",
-  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s за единицу сытости.",
+  "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s%% за единицу сытости.",
 
   "tooltip.relics.digging_claws.description": "Укрепляет руки владельца реликвии, позволяя эффективнее разрубать любые блоки.",
   "tooltip.relics.digging_claws.ability.claws": "Скоростная добыча",
