@@ -119,8 +119,8 @@
 
   "tooltip.relics.night_vision_goggles.description": "Allows the relic holder to see more clearly in the dark.",
   "tooltip.relics.night_vision_goggles.ability.vision": "Gamma Vision",
-  "tooltip.relics.night_vision_goggles.ability.vision.description": "Increases brightness in poorly lit areas.",
-  "tooltip.relics.night_vision_goggles.ability.vision.stat.amount.title": "Brightness Modifier:",
+  "tooltip.relics.night_vision_goggles.ability.vision.description": "Increases the brightness of poorly lit areas, first maximizing the value for the green spectrum.",
+  "tooltip.relics.night_vision_goggles.ability.vision.stat.amount.title": "Green Spectrum Brightness Shift:",
   "tooltip.relics.night_vision_goggles.ability.vision.stat.amount.value": "+%1$s%%",
 
   "tooltip.relics.cloud_in_a_bottle.description": "Improves the relic holder's maneuverability, allowing for additional jumps in the air.",

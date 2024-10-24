@@ -25,13 +25,13 @@ public class LightTextureMixin {
             return;
 
         var gamma = (float) relic.getStatValue(stack, "vision", "amount");
+        var modifier = relic.getRelicLevel(stack) / relic.getLevelingData().getMaxLevel();
 
         float r = args.get(0);
-        float g = args.get(1);
         float b = args.get(2);
 
-        args.set(0, Math.clamp(r - gamma / 2F, 0F, 1F));
-        args.set(1, Math.clamp(g + gamma, 0F, 1F));
-        args.set(2, Math.clamp(b - gamma / 2F, 0F, 1F));
+        args.set(0, Math.clamp((r + gamma) * modifier, 0F, 1F));
+        args.set(1, 1F);
+        args.set(2, Math.clamp((b + gamma) * modifier, 0F, 1F));
     }
 }
