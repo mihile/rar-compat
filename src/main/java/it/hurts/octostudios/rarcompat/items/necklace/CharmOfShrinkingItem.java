@@ -1,6 +1,7 @@
 package it.hurts.octostudios.rarcompat.items.necklace;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
@@ -32,14 +33,14 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("devouring")
+                        .ability(AbilityData.builder("shrinking")
                                 .active(CastData.builder().type(CastType.TOGGLEABLE)
                                         .build())
-                                .stat(StatData.builder("frequency")
+                                .stat(StatData.builder("time")
                                         .icon(StatIcons.DURATION)
-                                        .initialValue(120D, 140D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.071)
-                                        .formatValue(value -> MathUtils.round(value / 20, 1))
+                                        .initialValue(8D, 10D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
+                                        .formatValue(value -> (int) MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
@@ -60,12 +61,18 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (ability.equals("devouring") && player.level().isClientSide) {
-            if (stage == CastStage.START)
-                EntityUtils.applyAttribute(player, stack, Attributes.SCALE, -0.5F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-            else if (stage == CastStage.END)
-                player.playSound(SoundEvents.PUFFER_FISH_BLOW_UP, 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+        if (stage == CastStage.START)
+            player.playSound(SoundEvents.PUFFER_FISH_BLOW_OUT, 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+        else if (stage == CastStage.END) {
+            playUpSound(player);
+
+            setAbilityCooldown(stack, "shrinking", 200);
+
+            this.removeAttribute(player, stack);
         }
+
+        if (player.tickCount % 20 == 0)
+            setCurrentTick(stack, 1);
     }
 
     @Override
@@ -73,12 +80,32 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        if (isAbilityTicking(stack, "devouring")) {
-            EntityUtils.applyAttribute(player, stack, Attributes.SCALE, -0.5F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        } else {
-            this.removeAttribute(player, stack);
+        double time = getStatValue(stack, "shrinking", "time");
+
+        if (getCurrentTick(stack) >= time) {
+            playUpSound(player);
+
+            setAbilityCooldown(stack, "shrinking", 200);
+
+            setCurrentTick(stack, -getCurrentTick(stack));
+
+            removeAttribute(player, stack);
         }
 
+        if (isAbilityTicking(stack, "shrinking"))
+            EntityUtils.applyAttribute(player, stack, Attributes.SCALE, -0.5F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    }
+
+    public void playUpSound(Player player) {
+        player.playSound(SoundEvents.PUFFER_FISH_BLOW_UP, 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+    }
+
+    public void setCurrentTick(ItemStack stack, int val) {
+        stack.set(DataComponentRegistry.TIME, getCurrentTick(stack) + val);
+    }
+
+    public int getCurrentTick(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TIME, 0);
     }
 
     private void removeAttribute(LivingEntity entity, ItemStack stack) {
