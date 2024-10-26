@@ -1,6 +1,8 @@
 package it.hurts.octostudios.rarcompat.items;
 
+import artifacts.network.PlaySoundAtPlayerPacket;
 import artifacts.registry.ModItems;
+import artifacts.registry.ModSoundEvents;
 import it.hurts.octostudios.rarcompat.items.necklace.FlamePendantItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
@@ -32,6 +34,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 
 import java.util.List;
+import java.util.Random;
 
 public class WhoopeeCushionItem extends WearableRelicItem {
 
@@ -44,8 +47,8 @@ public class WhoopeeCushionItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("radius")
                                         .icon(StatIcons.DISTANCE)
-                                        .initialValue(5D, 7D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.057)
+                                        .initialValue(3D, 5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.06)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
@@ -63,7 +66,7 @@ public class WhoopeeCushionItem extends WearableRelicItem {
                 .build();
     }
 
-    // @EventBusSubscriber
+    @EventBusSubscriber
     public static class WhoopeeCushionEvent {
 
         @SubscribeEvent
@@ -77,20 +80,16 @@ public class WhoopeeCushionItem extends WearableRelicItem {
 
             Level level = player.level();
 
-            RandomSource random = player.getRandom();
-
-            if (!(stack.getItem() instanceof WhoopeeCushionItem relic) || random.nextInt(1) > (relic.getStatValue(stack, "push", "chance"))
-                    || level.isClientSide)
+            if (!(stack.getItem() instanceof WhoopeeCushionItem relic) || new Random().nextDouble(1) > relic.getStatValue(stack, "push", "chance"))
                 return;
 
-            double radius = 10.0;
+            level.playSound(null, player.blockPosition(), ModSoundEvents.FART.value(), player.getSoundSource(), 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+
+            double radius = relic.getStatValue(stack, "push", "radius");
 
             for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(radius))) {
-                Vec3 direction = mob.position().subtract(player.position()).normalize();
-
                 mob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 1));
-
-                mob.setDeltaMovement(direction.scale(2));
+                mob.setDeltaMovement(mob.position().subtract(player.position()).normalize());
             }
         }
     }

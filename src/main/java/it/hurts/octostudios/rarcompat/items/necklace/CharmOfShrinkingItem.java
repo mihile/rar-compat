@@ -16,6 +16,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -62,9 +63,9 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (stage == CastStage.START)
-            player.playSound(SoundEvents.PUFFER_FISH_BLOW_OUT, 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+            playSound(player, SoundEvents.PUFFER_FISH_BLOW_OUT);
         else if (stage == CastStage.END) {
-            playUpSound(player);
+            playSound(player, SoundEvents.PUFFER_FISH_BLOW_UP);
 
             setAbilityCooldown(stack, "shrinking", 200);
 
@@ -83,7 +84,7 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
         double time = getStatValue(stack, "shrinking", "time");
 
         if (getCurrentTick(stack) >= time) {
-            playUpSound(player);
+            playSound(player, SoundEvents.PUFFER_FISH_BLOW_UP);
 
             setAbilityCooldown(stack, "shrinking", 200);
 
@@ -96,8 +97,8 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
             EntityUtils.applyAttribute(player, stack, Attributes.SCALE, -0.5F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
-    public void playUpSound(Player player) {
-        player.playSound(SoundEvents.PUFFER_FISH_BLOW_UP, 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+    public void playSound(Player player, SoundEvent events) {
+        player.playSound(events, 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
     }
 
     public void setCurrentTick(ItemStack stack, int val) {
