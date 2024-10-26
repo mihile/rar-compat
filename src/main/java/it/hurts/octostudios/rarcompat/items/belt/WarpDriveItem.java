@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
@@ -36,6 +37,7 @@ public class WarpDriveItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("teleport")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
+                                        .predicate("teleport", PredicateType.CAST, (player, stack) -> getHitResult(player, stack).getType() != HitResult.Type.MISS)
                                         .build())
                                 .stat(StatData.builder("distance")
                                         .icon(StatIcons.DISTANCE)
@@ -63,7 +65,7 @@ public class WarpDriveItem extends WearableRelicItem {
         Level level = player.level();
 
         if (ability.equals("teleport") && !level.isClientSide) {
-            HitResult result = player.pick(this.getStatValue(stack, "teleport", "distance"), 1.0F, false);
+            HitResult result = getHitResult(player, stack);
 
             if (result.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) result;
@@ -87,4 +89,9 @@ public class WarpDriveItem extends WearableRelicItem {
             }
         }
     }
+
+    public HitResult getHitResult(Player player, ItemStack stack) {
+        return player.pick(this.getStatValue(stack, "teleport", "distance"), 1.0F, false);
+    }
+
 }

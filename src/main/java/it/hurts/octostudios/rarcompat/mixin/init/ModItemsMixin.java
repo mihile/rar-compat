@@ -54,12 +54,12 @@ public class ModItemsMixin {
             case "withered_bracelet" -> register(name, WitheredBraceletItem::new);
             case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
 
-//            case "snowshoes" -> register(name, SnowshoesItem::new);
-//            case "steadfast_spikes" -> register(name, SteadfastSpikesItem::new);
-//            case "rooted_boots" -> register(name, RootedBootsItem::new);
-//            case "warp_drive" -> register(name, WarpDriveItem::new);
-//            case "charm_of_shrinking" -> register(name, CharmOfShrinkingItem::new);
-//            case "whoopee_cushion" -> register(name, WhoopeeCushionItem::new);
+            case "snowshoes" -> register(name, SnowshoesItem::new);
+            case "steadfast_spikes" -> register(name, SteadfastSpikesItem::new);
+            case "rooted_boots" -> register(name, RootedBootsItem::new);
+            case "warp_drive" -> register(name, WarpDriveItem::new);
+            case "charm_of_shrinking" -> register(name, CharmOfShrinkingItem::new);
+            case "whoopee_cushion" -> register(name, WhoopeeCushionItem::new);
 
             //case "feral_claws" -> register(name, FeralClawsItem::new);
             //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
