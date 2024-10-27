@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
@@ -32,6 +33,11 @@ public class GoldenHookItem extends WearableRelicItem {
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 6, 10).star(1, 10, 5).star(2, 15, 10).star(3, 10, 18)
+                                        .star(4, 7, 23).star(5, 13, 23)
+                                        .link(0, 1).link(1, 2).link(2, 3).link(4, 5).link(3, 4).link(3, 5)
                                         .build())
                                 .build())
                         .build())

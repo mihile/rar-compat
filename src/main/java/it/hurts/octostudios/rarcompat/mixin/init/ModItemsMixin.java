@@ -4,6 +4,7 @@ import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WhoopeeCushionItem;
 import it.hurts.octostudios.rarcompat.items.belt.*;
+import it.hurts.octostudios.rarcompat.items.feet.KittySlippersItem;
 import it.hurts.octostudios.rarcompat.items.feet.RootedBootsItem;
 import it.hurts.octostudios.rarcompat.items.feet.SnowshoesItem;
 import it.hurts.octostudios.rarcompat.items.feet.SteadfastSpikesItem;
@@ -60,6 +61,7 @@ public class ModItemsMixin {
             case "warp_drive" -> register(name, WarpDriveItem::new);
             case "charm_of_shrinking" -> register(name, CharmOfShrinkingItem::new);
             case "whoopee_cushion" -> register(name, WhoopeeCushionItem::new);
+            case "kitty_slippers" -> register(name, KittySlippersItem::new);
 
             //case "feral_claws" -> register(name, FeralClawsItem::new);
             //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
