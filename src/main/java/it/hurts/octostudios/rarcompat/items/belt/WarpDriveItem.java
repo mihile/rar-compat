@@ -72,8 +72,8 @@ public class WarpDriveItem extends WearableRelicItem {
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 RandomSource random = player.getRandom();
 
-                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(
-                                new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)),
+                ((ServerLevel) level).sendParticles(
+                        ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)),
                                 0.7F, 40, 0.9F),
                         player.getX(), player.getY() + 1, player.getZ(),
                         30,
