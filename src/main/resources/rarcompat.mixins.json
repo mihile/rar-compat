@@ -6,11 +6,11 @@
   "refmap": "rarcompat.refmap.json",
   "mixins": [
     "AbstractVillagerMixin",
-    "init.ArtifactRenderersMixin",
     "RollLootTableModifierMixin",
     "init.ModItemsMixin"
   ],
   "client": [
+    "BeltModelMixin",
     "HumanoidModelMixin",
     "LightTextureMixin"
   ],
