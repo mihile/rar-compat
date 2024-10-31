@@ -1,4 +1,6 @@
 {
   "replace": true,
-  "values": []
+  "values": [
+    "artifacts:helium_flamingo"
+  ]
 }
