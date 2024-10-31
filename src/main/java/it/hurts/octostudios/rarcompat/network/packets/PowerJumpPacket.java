@@ -18,6 +18,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -25,6 +27,7 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.Objects;
 import java.util.Random;
 
 @Data
@@ -55,7 +58,8 @@ public class PowerJumpPacket implements CustomPacketPayload {
             if (action == 0) {
                 stack.set(DataComponentRegistry.TOGGLED, false);
                 stack.set(DataComponentRegistry.TIME, 0);
-            }
+            } else if (player.onGround())
+                stack.set(DataComponentRegistry.TIME, 0);
 
             if (Boolean.TRUE.equals(stack.get(DataComponentRegistry.TOGGLED)) && stack.getOrDefault(DataComponentRegistry.TIME, 0) <= limit) {
                 NetworkHandler.sendToClient(new PlayerMotionPacket(0, 0.2, 0), player);

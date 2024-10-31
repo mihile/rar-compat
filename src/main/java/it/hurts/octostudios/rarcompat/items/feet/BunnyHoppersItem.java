@@ -21,7 +21,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
@@ -31,6 +33,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import org.lwjgl.glfw.GLFW;
+import top.theillusivec4.curios.api.SlotContext;
+
+import java.awt.*;
+import java.util.Random;
 
 public class BunnyHoppersItem extends WearableRelicItem {
 
@@ -69,6 +75,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof BunnyHoppersItem relic) || !relic.isAbilityTicking(stack, "hold"))
                 return;
 
+            NetworkHandler.sendToServer(new PowerJumpPacket(1));
             stack.set(DataComponentRegistry.TOGGLED, true);
         }
     }
@@ -86,6 +93,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
             if (minecraft.screen == null && stack.getItem() instanceof BunnyHoppersItem relic && playerClient != null
                     && event.getKey() == minecraft.options.keyJump.getKey().getValue() && Boolean.TRUE.equals(stack.get(DataComponentRegistry.TOGGLED))
                     && relic.isAbilityTicking(stack, "hold")) {
+
                 NetworkHandler.sendToServer(new PowerJumpPacket(event.getAction()));
             }
         }
