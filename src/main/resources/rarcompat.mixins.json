@@ -11,8 +11,8 @@
   ],
   "client": [
     "BeltModelMixin",
-    "HumanoidModelMixin",
-    "LightTextureMixin"
+    "GameRendererMixin",
+    "HumanoidModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

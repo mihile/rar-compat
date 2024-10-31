@@ -16,13 +16,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Random;
@@ -62,10 +59,12 @@ public class NightVisionGogglesItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        float percent = (Math.abs(1 - (player.level().getMaxLocalRawBrightness(player.blockPosition()) / 15.0F)));
-
         if (isAbilityTicking(stack, "vision")) {
-            if (player.getRandom().nextFloat() <= percent && player.tickCount % 100 == 0 && !(Math.abs(player.getKnownMovement().x) <= 0.01D || Math.abs(player.getKnownMovement().z) <= 0.01D)) {
+            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 10, 0, false, false));
+
+            float percent = (Math.abs(1 - (player.level().getMaxLocalRawBrightness(player.blockPosition()) / 15.0F)));
+
+            if (player.getRandom().nextFloat() <= percent && player.tickCount % 60 == 0 && !(Math.abs(player.getKnownMovement().x) <= 0.01D || Math.abs(player.getKnownMovement().z) <= 0.01D)) {
                 spreadRelicExperience(player, stack, 1);
             }
         }
