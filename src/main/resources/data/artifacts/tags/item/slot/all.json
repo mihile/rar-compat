@@ -1,6 +1,5 @@
 {
-  "replace": false,
-  "remove": [
-    "#artifacts:slot/all"
+  "replace": true,
+  "values": [
   ]
 }
