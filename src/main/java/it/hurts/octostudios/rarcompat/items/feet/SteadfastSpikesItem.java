@@ -30,7 +30,7 @@ public class SteadfastSpikesItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("resistance")
                                 .stat(StatData.builder("modifier")
-                                        .icon(StatIcons.MULTIPLIER)
+                                        .icon(StatIcons.RESISTANCE)
                                         .initialValue(0.2, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
@@ -52,7 +52,7 @@ public class SteadfastSpikesItem extends WearableRelicItem {
                 .build();
     }
 
- //   @EventBusSubscriber
+    @EventBusSubscriber
     public static class SteadfastSpikesEvent {
 
         @SubscribeEvent

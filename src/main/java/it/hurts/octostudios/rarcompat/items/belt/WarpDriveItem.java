@@ -41,14 +41,14 @@ public class WarpDriveItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("distance")
                                         .icon(StatIcons.DISTANCE)
-                                        .initialValue(7D, 10D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
+                                        .initialValue(10D, 20D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("cooldown")
                                         .icon(StatIcons.COOLDOWN)
-                                        .initialValue(160D, 190D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.079)
+                                        .initialValue(20D, 150D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.1D)
                                         .formatValue(value -> MathUtils.round(value / 20, 1))
                                         .build())
                                 .build())
@@ -67,6 +67,7 @@ public class WarpDriveItem extends WearableRelicItem {
         if (ability.equals("teleport") && !level.isClientSide) {
             HitResult result = getHitResult(player, stack);
 
+            // TODO: Implement positive vertical safe-place searching
             if (result.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) result;
                 BlockPos blockPos = blockHitResult.getBlockPos();

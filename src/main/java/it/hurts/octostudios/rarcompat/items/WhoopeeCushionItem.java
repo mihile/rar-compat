@@ -85,6 +85,8 @@ public class WhoopeeCushionItem extends WearableRelicItem {
 
             Level level = player.level();
 
+            // TODO: Add same mechanic with the same chance for periodical sneaking
+            // TODO: Since this item have a mechanic now, move it to the head slot only
             if (!(stack.getItem() instanceof WhoopeeCushionItem relic) || new Random().nextDouble(1) > relic.getStatValue(stack, "push", "chance"))
                 return;
 
