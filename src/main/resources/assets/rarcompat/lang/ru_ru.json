@@ -119,8 +119,8 @@
 
   "tooltip.relics.night_vision_goggles.description": "Позволяет владельцу реликвии чётче видеть в темноте.",
   "tooltip.relics.night_vision_goggles.ability.vision": "Гамма-виденье",
-  "tooltip.relics.night_vision_goggles.ability.vision.description": "Увеличивает яркость плохо освещённых мест, предварительно возводя в абсолют значение для зелёного спектра.",
-  "tooltip.relics.night_vision_goggles.ability.vision.stat.amount.title": "Смещение яркости зелёного спектра:",
+  "tooltip.relics.night_vision_goggles.ability.vision.description": "Увеличивает яркость плохо освещённых мест.",
+  "tooltip.relics.night_vision_goggles.ability.vision.stat.amount.title": "Модификатор яркости:",
   "tooltip.relics.night_vision_goggles.ability.vision.stat.amount.value": "+%1$s%%",
 
   "tooltip.relics.cloud_in_a_bottle.description": "Повышает манёвренность владельца реликвии, позволяя совершать дополнительные прыжки в воздухе.",
