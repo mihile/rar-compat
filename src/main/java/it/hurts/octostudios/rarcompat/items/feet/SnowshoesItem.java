@@ -1,6 +1,7 @@
 package it.hurts.octostudios.rarcompat.items.feet;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -13,11 +14,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class SnowshoesItem extends WearableRelicItem {
@@ -47,27 +51,21 @@ public class SnowshoesItem extends WearableRelicItem {
                 .build();
     }
 
+    @Nullable
+    @Override
+    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+        return RelicAttributeModifier.builder()
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.MOVEMENT_SPEED, (float) getStatValue(stack, "speed", "amount")))
+                .build();
+    }
+
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        if (player.onGround() && player.level().getBlockState(player.blockPosition().below()).is(Blocks.SNOW_BLOCK))
-            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getStatValue(stack, "speed", "amount"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        else
-            removeAttribute(player, stack);
-
-    }
-
-    @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack == stack || !(slotContext.entity() instanceof Player player))
-            return;
-
-        removeAttribute(player, stack);
-    }
-
-    public static void removeAttribute(Player player, ItemStack stack) {
-        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        if (player.tickCount % 60 == 0 && player.onGround() && player.level().getBlockState(player.blockPosition().below()).is(Blocks.SNOW_BLOCK)
+                && (player.getKnownMovement().x != 0 || player.getKnownMovement().z != 0))
+            spreadRelicExperience(player, stack, 1);
     }
 }

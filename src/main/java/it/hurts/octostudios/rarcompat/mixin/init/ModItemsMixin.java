@@ -60,7 +60,7 @@ public class ModItemsMixin {
             case "whoopee_cushion" -> register(name, WhoopeeCushionItem::new);
             case "kitty_slippers" -> register(name, KittySlippersItem::new);
             case "bunny_hoppers" -> register(name, BunnyHoppersItem::new);
-            case "feral_claws" -> register(name, FeralClawsItem::new);
+          //  case "feral_claws" -> register(name, FeralClawsItem::new);
 
             //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);

@@ -33,6 +33,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
 import java.util.Random;
@@ -71,6 +72,13 @@ public class WhoopeeCushionItem extends WearableRelicItem {
                 .build();
     }
 
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if(!(slotContext.entity() instanceof  Player player))
+            return;
+
+    }
+
     @EventBusSubscriber
     public static class WhoopeeCushionEvent {
 
@@ -91,6 +99,8 @@ public class WhoopeeCushionItem extends WearableRelicItem {
                 return;
 
             level.playSound(null, player.blockPosition(), ModSoundEvents.FART.value(), player.getSoundSource(), 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+
+            relic.spreadRelicExperience(player, stack, 1);
 
             double radius = relic.getStatValue(stack, "push", "radius");
 

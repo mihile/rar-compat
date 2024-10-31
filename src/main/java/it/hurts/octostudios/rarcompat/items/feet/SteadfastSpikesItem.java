@@ -18,8 +18,10 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class SteadfastSpikesItem extends WearableRelicItem {
@@ -54,6 +56,18 @@ public class SteadfastSpikesItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class SteadfastSpikesEvent {
+        @SubscribeEvent
+        public static void onLivingKnockBack(LivingKnockBackEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.STEADFAST_SPIKES.value());
+
+            if (!(stack.getItem() instanceof SteadfastSpikesItem relic))
+                return;
+
+            relic.spreadRelicExperience(player, stack, 1);
+        }
 
         @SubscribeEvent
         public static void onLivingSlipping(LivingSlippingEvent event) {
@@ -65,6 +79,9 @@ public class SteadfastSpikesItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof SteadfastSpikesItem relic))
                 return;
+
+            if (player.tickCount % 60 == 0 && player.onGround() && (player.getKnownMovement().x != 0 || player.getKnownMovement().z != 0))
+                relic.spreadRelicExperience(player, stack, 1);
 
             event.setFriction((float) (event.getFriction() * (1 - (relic.getStatValue(stack, "resistance", "modifier") / 3))));
         }

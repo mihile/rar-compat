@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
@@ -24,6 +25,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Random;
@@ -52,12 +54,15 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
                 .build();
     }
 
+    @Nullable
     @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack == stack)
-            return;
+    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+        if (isAbilityTicking(stack, "shrinking"))
+            return RelicAttributeModifier.builder()
+                    .attribute(new RelicAttributeModifier.Modifier(Attributes.SCALE, -0.5F))
+                    .build();
 
-        this.removeAttribute(slotContext.entity(), stack);
+        return super.getRelicAttributeModifiers(stack);
     }
 
     @Override
@@ -93,8 +98,8 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
             removeAttribute(player, stack);
         }
 
-        if (isAbilityTicking(stack, "shrinking"))
-            EntityUtils.applyAttribute(player, stack, Attributes.SCALE, -0.5F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        if (player.tickCount % 20 == 0 && isAbilityTicking(stack, "shrinking"))
+            spreadRelicExperience(player, stack, 1);
     }
 
     public void playSound(Player player, SoundEvent events) {

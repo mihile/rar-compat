@@ -28,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 
 import java.awt.*;
 import java.util.Random;
@@ -72,6 +73,21 @@ public class KittySlippersItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class KittySlippersEvent {
+        @SubscribeEvent
+        public static void onPlayerFall(LivingFallEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            float fallDistance = event.getDistance();
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
+
+            if (!(stack.getItem() instanceof KittySlippersItem relic))
+                return;
+
+            if (fallDistance > 4F)
+                relic.spreadRelicExperience(player, stack, 1);
+        }
 
         @SubscribeEvent
         public static void onLivingDeath(LivingDeathEvent event) {

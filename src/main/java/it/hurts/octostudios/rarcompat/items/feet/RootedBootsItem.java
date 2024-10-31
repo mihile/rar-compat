@@ -73,11 +73,11 @@ public class RootedBootsItem extends WearableRelicItem {
                     20,
                     0.2,
                     0, 0.2, 0.0);
+            spreadRelicExperience(player, stack, 1);
 
             player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel() + 2);
 
             level.setBlock(blockPos, Blocks.DIRT.defaultBlockState(), 3);
-
             level.playSound(null, player, SoundEvents.GRASS_BREAK, SoundSource.PLAYERS,
                     1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
         }

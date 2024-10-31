@@ -74,6 +74,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof BunnyHoppersItem relic) || !relic.isAbilityTicking(stack, "hold"))
                 return;
+            relic.spreadRelicExperience(player, stack, 1);
 
             NetworkHandler.sendToServer(new PowerJumpPacket(1));
             stack.set(DataComponentRegistry.TOGGLED, true);
