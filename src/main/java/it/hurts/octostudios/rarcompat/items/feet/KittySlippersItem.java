@@ -3,6 +3,7 @@ package it.hurts.octostudios.rarcompat.items.feet;
 import artifacts.registry.ModItems;
 import artifacts.registry.ModSoundEvents;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -21,12 +22,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 
@@ -74,6 +77,23 @@ public class KittySlippersItem extends WearableRelicItem {
     @EventBusSubscriber
     public static class KittySlippersEvent {
         @SubscribeEvent
+        public static void onLivingHurt(LivingDamageEvent.Pre event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            float currentHealth = player.getHealth();
+            int damage = (int) event.getOriginalDamage();
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
+
+            if (!(stack.getItem() instanceof KittySlippersItem relic) || currentHealth - damage > 0 && new Random().nextFloat(1) > relic.getStatValue(stack, "resurrected", "chance"))
+                return;
+
+            relic.spreadRelicExperience(player, stack, damage);
+            stack.set(DataComponentRegistry.TOGGLED, true);
+        }
+
+        @SubscribeEvent
         public static void onPlayerFall(LivingFallEvent event) {
             if (!(event.getEntity() instanceof Player player))
                 return;
@@ -96,7 +116,7 @@ public class KittySlippersItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
 
-            if (!(stack.getItem() instanceof KittySlippersItem relic) || new Random().nextFloat(1) > relic.getStatValue(stack, "resurrected", "chance"))
+            if (!(stack.getItem() instanceof KittySlippersItem relic) || !stack.getOrDefault(DataComponentRegistry.TOGGLED, false))
                 return;
 
             Level level = player.level();
@@ -117,7 +137,10 @@ public class KittySlippersItem extends WearableRelicItem {
             }
 
             player.setHealth(1.0F);
+
             event.setCanceled(true);
+
+            stack.set(DataComponentRegistry.TOGGLED, false);
         }
     }
 }

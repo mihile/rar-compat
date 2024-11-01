@@ -30,8 +30,6 @@ import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
-import static it.hurts.octostudios.rarcompat.items.hands.FeralClawsItem.FeralClawsEvent.addTime;
-
 public class FeralClawsItem extends WearableRelicItem {
 
     @Override
@@ -65,12 +63,44 @@ public class FeralClawsItem extends WearableRelicItem {
             return;
 
         addTime(stack, 1);
-        player.displayClientMessage(Component.literal(String.valueOf(player.getAttributes().getValue(Attributes.ATTACK_SPEED))), true);
 
-        if (FeralClawsEvent.getTime(stack) > 3) {
-            EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-            FeralClawsEvent.addAttackCount(stack, -FeralClawsEvent.getAttackCount(stack));
+        int time = getTime(stack);
+        int attackCount = getAttackCount(stack);
+
+        if (player.getAttackStrengthScale(0.5F) < 0.5F)
+            addAttackCount(stack, -attackCount);
+
+        if (time >= 3) {
+            if (attackCount <= 0)
+                EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+
+            if (time % 3 == 0 && attackCount > 0) {
+                addAttackCount(stack, -1);
+                resetAttribute(player, stack, this);
+            }
+
+            addTime(stack, -time);
         }
+    }
+
+    public static void resetAttribute(Player player, ItemStack stack, FeralClawsItem relic) {
+        EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, (float) (getAttackCount(stack) * relic.getStatValue(stack, "claws", "modifier")), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    }
+
+    public static void addTime(ItemStack stack, int val) {
+        stack.set(DataComponentRegistry.TIME, stack.getOrDefault(DataComponentRegistry.TIME, 0) + val);
+    }
+
+    public static int getTime(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TIME, 0);
+    }
+
+    public static void addAttackCount(ItemStack stack, int val) {
+        stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + val);
+    }
+
+    public static int getAttackCount(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.COUNT, 0);
     }
 
     @EventBusSubscriber
@@ -82,29 +112,17 @@ public class FeralClawsItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FERAL_CLAWS.value());
 
-            if (!(stack.getItem() instanceof FeralClawsItem))
+            if (!(stack.getItem() instanceof FeralClawsItem relic))
                 return;
 
+            if (player.getAttackStrengthScale(0.5F) < 0.5F)
+                relic.spreadRelicExperience(player, stack, 1);
+
             addAttackCount(stack, 1);
-            addTime(stack, 1);
+            addTime(stack, -getTime(stack));
 
-            EntityUtils.applyAttribute(player, stack, Attributes.ATTACK_SPEED,  getAttackCount(stack), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-        }
 
-        public static void addTime(ItemStack stack, int val) {
-            stack.set(DataComponentRegistry.TIME, stack.getOrDefault(DataComponentRegistry.TIME, 0) + val);
-        }
-
-        public static int getTime(ItemStack stack) {
-            return stack.getOrDefault(DataComponentRegistry.TIME, 0);
-        }
-
-        public static void addAttackCount(ItemStack stack, int val) {
-            stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + val);
-        }
-
-        public static int getAttackCount(ItemStack stack) {
-            return stack.getOrDefault(DataComponentRegistry.COUNT, 0);
+            resetAttribute(player, stack, relic);
         }
     }
 }
