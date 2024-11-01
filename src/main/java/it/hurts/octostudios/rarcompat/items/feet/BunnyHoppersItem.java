@@ -50,7 +50,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
                                 .stat(StatData.builder("distance")
                                         .icon(StatIcons.DISTANCE)
                                         .initialValue(3D, 5D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.06)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())

@@ -156,8 +156,8 @@
   "tooltip.relics.feral_claws.description": "Пробуждает в носителе реликвии жажду крови, заставляя его драться быстрее с каждой следующей атакой.",
   "tooltip.relics.feral_claws.ability.claws": "Ярость зверя",
   "tooltip.relics.feral_claws.ability.claws.description": "Увеличивает скорость атаки игрока за каждую последующую атаку, совершенную не позднее 3 секунд после последней. В противном случае начинает теряет по 1 заряду каждую секунду. Атака с незаполненной шкалой скорости атаки обнулит количество накопленных зарядов.",
-  "tooltip.relics.feral_claws.ability.claws.stat.amount.title": "Модификатор скорости атаки:",
-  "tooltip.relics.feral_claws.ability.claws.stat.amount.value": "+%1$s%% за заряд.",
+  "tooltip.relics.feral_claws.ability.claws.stat.modifier.title": "Модификатор скорости атаки:",
+  "tooltip.relics.feral_claws.ability.claws.stat.modifier.value": "+%1$s%% за заряд.",
 
   "tooltip.relics.antidote_vessel.description": "Усиливает сопротивление эффектам у носителя реликвии.",
   "tooltip.relics.antidote_vessel.ability.antidote": "Сопротивление ядам",
@@ -181,7 +181,7 @@
 
   "tooltip.relics.snowshoes.description": "Повышает мобильность носителя реликвии в суровых снежных условиях.",
   "tooltip.relics.snowshoes.ability.speed": "Снегоход",
-  "tooltip.relics.snowshoes.ability.speed.description": "Увеличивает скорость передвижения по снегу",
+  "tooltip.relics.snowshoes.ability.speed.description": "Увеличивает скорость передвижения по снегу. Позволяет легко передвигаться по рыхлому снегу.",
   "tooltip.relics.snowshoes.ability.speed.stat.amount.title": "Модификатор скорости:",
   "tooltip.relics.snowshoes.ability.speed.stat.amount.value": "+%1$s%%",
 

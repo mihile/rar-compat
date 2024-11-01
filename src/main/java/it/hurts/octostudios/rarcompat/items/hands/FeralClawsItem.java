@@ -39,9 +39,9 @@ public class FeralClawsItem extends WearableRelicItem {
                         .ability(AbilityData.builder("claws")
                                 .stat(StatData.builder("modifier")
                                         .icon(StatIcons.MODIFIER)
-                                        .initialValue(0.2D, 0.4D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(0.05D, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.12D)
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 4, 15).star(1, 12, 3).star(2, 6, 19).star(3, 16, 6)
@@ -63,12 +63,13 @@ public class FeralClawsItem extends WearableRelicItem {
             return;
 
         addTime(stack, 1);
-
         int time = getTime(stack);
         int attackCount = getAttackCount(stack);
 
-        if (player.getAttackStrengthScale(0.5F) < 0.5F)
+        if (player.getAttackStrengthScale(0) != 1F) {
+            EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
             addAttackCount(stack, -attackCount);
+        }
 
         if (time >= 3) {
             if (attackCount <= 0)
@@ -103,6 +104,14 @@ public class FeralClawsItem extends WearableRelicItem {
         return stack.getOrDefault(DataComponentRegistry.COUNT, 0);
     }
 
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if(!(slotContext.entity() instanceof Player player) || newStack.getItem() == stack.getItem())
+            return;
+
+        EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    }
+
     @EventBusSubscriber
     public static class FeralClawsEvent {
 
@@ -115,7 +124,7 @@ public class FeralClawsItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof FeralClawsItem relic))
                 return;
 
-            if (player.getAttackStrengthScale(0.5F) < 0.5F)
+            if (player.getAttackStrengthScale(0) != 1F)
                 relic.spreadRelicExperience(player, stack, 1);
 
             addAttackCount(stack, 1);

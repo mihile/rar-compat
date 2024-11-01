@@ -156,8 +156,8 @@
   "tooltip.relics.feral_claws.description": "Awakens the bloodlust within the relic holder, causing them to attack faster with each subsequent strike.",
   "tooltip.relics.feral_claws.ability.claws": "Beast's Fury",
   "tooltip.relics.feral_claws.ability.claws.description": "Increases attack speed with each subsequent attack made within 3 seconds of the last. If no attack is made within this time, one charge is lost per second. Attacking with an unfilled attack speed bar will reset the accumulated charges.",
-  "tooltip.relics.feral_claws.ability.claws.stat.amount.title": "Attack Speed Modifier:",
-  "tooltip.relics.feral_claws.ability.claws.stat.amount.value": "+%1$s%% per charge.",
+  "tooltip.relics.feral_claws.ability.claws.stat.modifier.title": "Attack Speed Modifier:",
+  "tooltip.relics.feral_claws.ability.claws.stat.modifier.value": "+%1$s%% per charge.",
 
   "tooltip.relics.antidote_vessel.description": "Enhances the relic holder's resistance to negative effects.",
   "tooltip.relics.antidote_vessel.ability.antidote": "Poison Resistance",
@@ -181,7 +181,7 @@
 
   "tooltip.relics.snowshoes.description": "Increases the mobility of the relic's wearer in harsh snowy conditions.",
   "tooltip.relics.snowshoes.ability.speed": "Snow Walker",
-  "tooltip.relics.snowshoes.ability.speed.description": "Increases movement speed on snow.",
+  "tooltip.relics.snowshoes.ability.speed.description": "Increases movement speed on snow. Allows for easy movement in loose snow",
   "tooltip.relics.snowshoes.ability.speed.stat.amount.title": "Speed Modifier:",
   "tooltip.relics.snowshoes.ability.speed.stat.amount.value": "+%1$s%%",
 

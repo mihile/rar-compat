@@ -55,7 +55,7 @@ public class KittySlippersItem extends WearableRelicItem {
                                 .stat(StatData.builder("chance")
                                         .icon(StatIcons.CHANCE)
                                         .initialValue(0.05D, 0.1D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.075)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
@@ -63,6 +63,7 @@ public class KittySlippersItem extends WearableRelicItem {
                 .leveling(new LevelingData(100, 15, 100))
                 .loot(LootData.builder()
                         .entry(LootCollections.JUNGLE)
+                        .entry(LootCollections.VILLAGE)
                         .build())
                 .build();
     }
@@ -81,16 +82,14 @@ public class KittySlippersItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
-            float currentHealth = player.getHealth();
             int damage = (int) event.getOriginalDamage();
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
 
-            if (!(stack.getItem() instanceof KittySlippersItem relic) || currentHealth - damage > 0 && new Random().nextFloat(1) > relic.getStatValue(stack, "resurrected", "chance"))
+            if (!(stack.getItem() instanceof KittySlippersItem relic))
                 return;
 
-            relic.spreadRelicExperience(player, stack, damage);
-            stack.set(DataComponentRegistry.TOGGLED, true);
+            stack.set(DataComponentRegistry.COUNT, damage);
         }
 
         @SubscribeEvent
@@ -116,7 +115,8 @@ public class KittySlippersItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
 
-            if (!(stack.getItem() instanceof KittySlippersItem relic) || !stack.getOrDefault(DataComponentRegistry.TOGGLED, false))
+            if (!(stack.getItem() instanceof KittySlippersItem relic) || new Random().nextFloat(1) > relic.getStatValue(stack, "resurrected", "chance")
+            || !relic.canPlayerUseAbility(player, stack, "resurrected"))
                 return;
 
             Level level = player.level();
@@ -124,7 +124,7 @@ public class KittySlippersItem extends WearableRelicItem {
 
             level.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, player.getSoundSource(), 1F, 0.75F + random.nextFloat(1) * 0.5F);
 
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 50; i++)
                 ((ServerLevel) level).sendParticles(
                         ParticleUtils.constructSimpleSpark(new Color(100 + random.nextInt(156), random.nextInt(100 + random.nextInt(156)), random.nextInt(100 + random.nextInt(156))), 0.5F, 60, 0.95F),
                         player.getX(), player.getY() + 1.0, player.getZ(),
@@ -134,7 +134,8 @@ public class KittySlippersItem extends WearableRelicItem {
                         (random.nextDouble() - 0.5) * 3.0,
                         0.05
                 );
-            }
+
+            relic.spreadRelicExperience(player, stack, stack.getOrDefault(DataComponentRegistry.COUNT, 1));
 
             player.setHealth(1.0F);
 

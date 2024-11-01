@@ -21,6 +21,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -56,12 +58,29 @@ public class SnowshoesItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        if (player.onGround() && player.level().getBlockState(player.blockPosition().below()).is(Blocks.SNOW_BLOCK)) {
+        if (player.onGround() && isStandingOnSnow(player)) {
             if (player.tickCount % 60 == 0 && (player.getKnownMovement().x != 0 || player.getKnownMovement().z != 0))
                 spreadRelicExperience(player, stack, 1);
 
             EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getStatValue(stack, "speed", "amount"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        } else {
+            EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         }
+    }
+
+    private boolean isStandingOnSnow(Player player) {
+        var blockBelow = player.level().getBlockState(player.blockPosition().below());
+
+        return player.onGround() && (
+                blockBelow.is(Blocks.SNOW_BLOCK)
+                        || blockBelow.is(Blocks.POWDER_SNOW)
+                        || player.level().getBlockState(player.blockPosition()).is(Blocks.SNOW)
+        );
+    }
+
+    @Override
+    public boolean canWalkOnPowderedSnow(SlotContext slotContext, ItemStack stack) {
+        return true;
     }
 
     @Override

@@ -41,8 +41,6 @@ public class WhoopeeCushionItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("push")
-                                .active(CastData.builder().type(CastType.INSTANTANEOUS)
-                                        .build())
                                 .stat(StatData.builder("radius")
                                         .icon(StatIcons.DISTANCE)
                                         .initialValue(3D, 5D)
