@@ -103,8 +103,8 @@ public class WarpDriveItem extends WearableRelicItem {
                 }
             }
 
-            player.teleportTo(blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5);
-
+            player.teleportTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+            player.fallDistance = 0;
             player.level().playSound(null, player, SoundEvents.ENDER_EYE_DEATH, SoundSource.PLAYERS,
                     1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
 

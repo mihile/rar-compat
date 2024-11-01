@@ -1,9 +1,9 @@
-package it.hurts.octostudios.rarcompat.items;
+package it.hurts.octostudios.rarcompat.items.hat;
 
-import artifacts.network.PlaySoundAtPlayerPacket;
 import artifacts.registry.ModItems;
 import artifacts.registry.ModSoundEvents;
-import it.hurts.octostudios.rarcompat.items.necklace.FlamePendantItem;
+import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
@@ -18,9 +18,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.client.renderer.EffectInstance;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -28,14 +25,13 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class WhoopeeCushionItem extends WearableRelicItem {
@@ -74,9 +70,29 @@ public class WhoopeeCushionItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if(!(slotContext.entity() instanceof  Player player))
+        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
             return;
 
+        boolean isSneaking = player.isShiftKeyDown();
+        boolean crouchState = stack.getOrDefault(DataComponentRegistry.TOGGLED, false);
+
+        if (isSneaking && !crouchState && new Random().nextDouble() < 0.2)
+            createWhoopee(player.level(), player, this, stack);
+
+        stack.set(DataComponentRegistry.TOGGLED, isSneaking);
+    }
+
+    public static void createWhoopee(Level level, Player player, WhoopeeCushionItem relic, ItemStack stack) {
+        level.playSound(null, player.blockPosition(), ModSoundEvents.FART.value(), player.getSoundSource(), 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+
+        relic.spreadRelicExperience(player, stack, 1);
+
+        double radius = relic.getStatValue(stack, "push", "radius");
+
+        for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(radius))) {
+            mob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 1));
+            mob.setDeltaMovement(mob.position().subtract(player.position()).normalize());
+        }
     }
 
     @EventBusSubscriber
@@ -93,21 +109,10 @@ public class WhoopeeCushionItem extends WearableRelicItem {
 
             Level level = player.level();
 
-            // TODO: Add same mechanic with the same chance for periodical sneaking
-            // TODO: Since this item have a mechanic now, move it to the head slot only
             if (!(stack.getItem() instanceof WhoopeeCushionItem relic) || new Random().nextDouble(1) > relic.getStatValue(stack, "push", "chance"))
                 return;
 
-            level.playSound(null, player.blockPosition(), ModSoundEvents.FART.value(), player.getSoundSource(), 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
-
-            relic.spreadRelicExperience(player, stack, 1);
-
-            double radius = relic.getStatValue(stack, "push", "radius");
-
-            for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(radius))) {
-                mob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 1));
-                mob.setDeltaMovement(mob.position().subtract(player.position()).normalize());
-            }
+            WhoopeeCushionItem.createWhoopee(level, player, relic, stack);
         }
     }
 }

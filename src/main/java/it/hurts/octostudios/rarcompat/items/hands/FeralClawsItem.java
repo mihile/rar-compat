@@ -73,7 +73,7 @@ public class FeralClawsItem extends WearableRelicItem {
         }
     }
 
-    // @EventBusSubscriber
+    @EventBusSubscriber
     public static class FeralClawsEvent {
 
         @SubscribeEvent

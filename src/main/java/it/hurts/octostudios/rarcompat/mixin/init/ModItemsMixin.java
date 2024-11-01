@@ -2,7 +2,7 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.WhoopeeCushionItem;
+import it.hurts.octostudios.rarcompat.items.hat.WhoopeeCushionItem;
 import it.hurts.octostudios.rarcompat.items.belt.*;
 import it.hurts.octostudios.rarcompat.items.feet.*;
 import it.hurts.octostudios.rarcompat.items.hat.NightVisionGogglesItem;
@@ -60,7 +60,7 @@ public class ModItemsMixin {
             case "whoopee_cushion" -> register(name, WhoopeeCushionItem::new);
             case "kitty_slippers" -> register(name, KittySlippersItem::new);
             case "bunny_hoppers" -> register(name, BunnyHoppersItem::new);
-          //  case "feral_claws" -> register(name, FeralClawsItem::new);
+            case "feral_claws" -> register(name, FeralClawsItem::new);
 
             //   case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             //  case "panic_necklace" -> register(name, PanicNecklaceItem::new);

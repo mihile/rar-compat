@@ -42,17 +42,17 @@ public class KittySlippersItem extends WearableRelicItem {
                         .ability(AbilityData.builder("fall")
                                 .stat(StatData.builder("modifier")
                                         .icon(StatIcons.MODIFIER)
-                                        .initialValue(0.2D, 0.3D)
+                                        .initialValue(2D, 4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("resurrected")
                                 .requiredLevel(5)
                                 .stat(StatData.builder("chance")
                                         .icon(StatIcons.CHANCE)
-                                        .initialValue(0.1D, 0.2D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25)
+                                        .initialValue(0.05D, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.075)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
@@ -67,7 +67,7 @@ public class KittySlippersItem extends WearableRelicItem {
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.SAFE_FALL_DISTANCE, (float) getStatValue(stack, "fall", "modifier")))
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.SAFE_FALL_DISTANCE, (float) getStatValue(stack, "fall", "modifier") / 2))
                 .build();
     }
 

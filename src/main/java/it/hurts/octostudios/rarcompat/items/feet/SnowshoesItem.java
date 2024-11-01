@@ -51,21 +51,24 @@ public class SnowshoesItem extends WearableRelicItem {
                 .build();
     }
 
-    @Nullable
-    @Override
-    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
-        return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.MOVEMENT_SPEED, (float) getStatValue(stack, "speed", "amount")))
-                .build();
-    }
-
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player))
             return;
 
-        if (player.tickCount % 60 == 0 && player.onGround() && player.level().getBlockState(player.blockPosition().below()).is(Blocks.SNOW_BLOCK)
-                && (player.getKnownMovement().x != 0 || player.getKnownMovement().z != 0))
-            spreadRelicExperience(player, stack, 1);
+        if (player.onGround() && player.level().getBlockState(player.blockPosition().below()).is(Blocks.SNOW_BLOCK)) {
+            if (player.tickCount % 60 == 0 && (player.getKnownMovement().x != 0 || player.getKnownMovement().z != 0))
+                spreadRelicExperience(player, stack, 1);
+
+            EntityUtils.applyAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getStatValue(stack, "speed", "amount"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        }
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (newStack.getItem() == stack.getItem())
+            return;
+
+        EntityUtils.removeAttribute(slotContext.entity(), stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 }
