@@ -2,14 +2,11 @@ package it.hurts.octostudios.rarcompat.items.feet;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
-import it.hurts.octostudios.rarcompat.items.belt.CloudInBottleItem;
-import it.hurts.octostudios.rarcompat.network.packets.DoubleJumpPacket;
 import it.hurts.octostudios.rarcompat.network.packets.PowerJumpPacket;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.PredicateType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
@@ -21,22 +18,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import org.lwjgl.glfw.GLFW;
-import top.theillusivec4.curios.api.SlotContext;
-
-import java.awt.*;
-import java.util.Random;
 
 public class BunnyHoppersItem extends WearableRelicItem {
 
@@ -74,9 +64,10 @@ public class BunnyHoppersItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof BunnyHoppersItem relic) || !relic.isAbilityTicking(stack, "hold"))
                 return;
+
             relic.spreadRelicExperience(player, stack, 1);
 
-            NetworkHandler.sendToServer(new PowerJumpPacket(1));
+            PowerJumpPacket.createJump(1, (ServerPlayer) player);
             stack.set(DataComponentRegistry.TOGGLED, true);
         }
     }

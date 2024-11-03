@@ -61,8 +61,8 @@ public class FeralClawsItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0)
             return;
-
         addTime(stack, 1);
+
         int time = getTime(stack);
         int attackCount = getAttackCount(stack);
 

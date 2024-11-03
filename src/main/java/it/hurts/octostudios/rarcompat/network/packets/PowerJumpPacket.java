@@ -44,40 +44,42 @@ public class PowerJumpPacket implements CustomPacketPayload {
 
     public void handle(IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
-            ServerPlayer player = (ServerPlayer) ctx.player();
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.BUNNY_HOPPERS.value());
-
-            if (!(stack.getItem() instanceof BunnyHoppersItem relic))
-                return;
-
-            int action = this.getAction();
-            double limit = relic.getStatValue(stack, "hold", "distance");
-
-            stack.set(DataComponentRegistry.TIME, stack.getOrDefault(DataComponentRegistry.TIME, 0) + 1);
-
-            if (action == 0) {
-                stack.set(DataComponentRegistry.TOGGLED, false);
-                stack.set(DataComponentRegistry.TIME, 0);
-            } else if (player.onGround())
-                stack.set(DataComponentRegistry.TIME, 0);
-
-            if (Boolean.TRUE.equals(stack.get(DataComponentRegistry.TOGGLED)) && stack.getOrDefault(DataComponentRegistry.TIME, 0) <= limit) {
-                NetworkHandler.sendToClient(new PlayerMotionPacket(0, 0.2, 0), player);
-
-                Random random = new Random();
-
-                ((ServerLevel) player.level()).sendParticles(
-                        ParticleUtils.constructSimpleSpark(new Color(200 + random.nextInt(56), 200 + random.nextInt(56), 200 + random.nextInt(56)),
-                                0.7F, 40, 0.9F),
-                        player.getX(),
-                        player.getY() + 0.1,
-                        player.getZ(),
-                        10,
-                        0.3, 0.3, 0.3,
-                        0.02
-                );
-            }
+            createJump(getAction(), (ServerPlayer) ctx.player());
         });
+    }
+
+    public static void createJump(int action, ServerPlayer player) {
+        ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.BUNNY_HOPPERS.value());
+
+        if (!(stack.getItem() instanceof BunnyHoppersItem relic))
+            return;
+
+        double limit = relic.getStatValue(stack, "hold", "distance");
+
+        stack.set(DataComponentRegistry.TIME, stack.getOrDefault(DataComponentRegistry.TIME, 0) + 1);
+
+        if (action == 0) {
+            stack.set(DataComponentRegistry.TOGGLED, false);
+            stack.set(DataComponentRegistry.TIME, 0);
+        } else if (player.onGround())
+            stack.set(DataComponentRegistry.TIME, 0);
+
+        if (Boolean.TRUE.equals(stack.get(DataComponentRegistry.TOGGLED)) && stack.getOrDefault(DataComponentRegistry.TIME, 0) <= limit) {
+            NetworkHandler.sendToClient(new PlayerMotionPacket(0, 0.2, 0), player);
+
+            Random random = new Random();
+
+            ((ServerLevel) player.level()).sendParticles(
+                    ParticleUtils.constructSimpleSpark(new Color(200 + random.nextInt(56), 200 + random.nextInt(56), 200 + random.nextInt(56)),
+                            0.7F, 40, 0.9F),
+                    player.getX(),
+                    player.getY() + 0.1,
+                    player.getZ(),
+                    10,
+                    0.3, 0.3, 0.3,
+                    0.02
+            );
+        }
     }
 
     @Override
