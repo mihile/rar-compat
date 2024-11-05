@@ -33,11 +33,11 @@ import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.level.NoteBlockEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class UmbrellaItem extends WearableRelicItem {
-    public static double shiftHoldTime = 0;
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -47,15 +47,15 @@ public class UmbrellaItem extends WearableRelicItem {
                                 .stat(StatData.builder("count")
                                         .icon(StatIcons.COUNT)
                                         .initialValue(1D, 3D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> (int) MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("shield")
                                 .stat(StatData.builder("knockback")
                                         .icon(StatIcons.DISTANCE)
-                                        .initialValue(0.25D, 1D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.4D)
+                                        .initialValue(1D, 2D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
@@ -69,32 +69,39 @@ public class UmbrellaItem extends WearableRelicItem {
         if (!(entity instanceof Player player))
             return;
 
-        if (stack.getOrDefault(DataComponentRegistry.CHARGE, 0) > 5) {
-            player.stopUsingItem();
+        int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
 
-            player.getCooldowns().addCooldown(this, 120);
-
+        if (player.onGround() && charges != 0)
             stack.set(DataComponentRegistry.CHARGE, 0);
-        }
 
         slowFall(level, player, stack);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (player.getCommandSenderWorld().isClientSide)
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (player.onGround() || player.isInWater())
             return InteractionResultHolder.fail(player.getItemInHand(hand));
 
-        if (!player.onGround()) {
-            Vec3 center = player.position().add(player.getLookAngle().scale(1));
+        ItemStack stack = player.getItemInHand(hand);
 
-            level.getEntitiesOfClass(LivingEntity.class, new AABB(center.x - 0.5, center.y - 0.5, center.z - 0.5, center.x + 0.5, center.y + 0.5, center.z + 0.5),
-                    entity -> entity != null && entity != player).forEach(entity -> pushAwayEntity(player, entity));
+        int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
+        int statCount = (int) getStatValue(stack, "glider", "count");
 
-            player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
-            player.startUsingItem(hand);
+        stack.set(DataComponentRegistry.CHARGE, charges + 1);
+
+        if (charges > statCount) {
+            player.getCooldowns().addCooldown(this, 120);
         } else {
+            double modifierVal = 1.2;
+            Vec3 lookDirection = player.getLookAngle().scale(-1);
 
+            player.startUsingItem(hand);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
+
+            player.setDeltaMovement(new Vec3(
+                    (lookDirection.x * modifierVal),
+                    (lookDirection.y * modifierVal),
+                    (lookDirection.z * modifierVal)));
         }
 
         return InteractionResultHolder.consume(player.getItemInHand(hand));
@@ -108,30 +115,6 @@ public class UmbrellaItem extends WearableRelicItem {
     @Override
     public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
         return 72000;
-    }
-
-    public boolean pushAwayEntity(Player player, LivingEntity attacker) {
-        Vec3 toTarget = new Vec3(attacker.getX() - player.getX(), 0, attacker.getZ() - player.getZ()).normalize();
-        Vec3 knockbackDirection = toTarget.scale((getStatValue(player.getUseItem(), "shield", "knockback") * 2) / 3);
-
-        attacker.setDeltaMovement(attacker.getDeltaMovement().add(knockbackDirection));
-
-        Vec3 startPosition = attacker.position().add(new Vec3(0, attacker.getBbHeight() / 2.0, 0));
-        Vec3 particleVelocity = knockbackDirection.normalize().scale(0.5);
-
-        ((ServerLevel) player.level()).sendParticles(
-                ParticleTypes.CLOUD,
-                startPosition.x,
-                startPosition.y,
-                startPosition.z,
-                10,
-                particleVelocity.x,
-                particleVelocity.y,
-                particleVelocity.z,
-                0.1
-        );
-
-        return true;
     }
 
     public static boolean isHoldingUmbrellaUpright(LivingEntity entity, InteractionHand hand) {
@@ -153,59 +136,38 @@ public class UmbrellaItem extends WearableRelicItem {
     }
 
     public void slowFall(Level level, Player player, ItemStack stack) {
-        if (player.onGround() || player.isInWater() || !isHoldingUmbrellaUpright(player))
+        if (player.onGround() || player.isInWater() || !isHoldingUmbrellaUpright(player)) {
             setTime(stack, -getTime(stack));
-        System.out.println(getTime(stack));
-        if (!player.isShiftKeyDown())
-            shiftHoldTime = 0.0;
+            return;
+        }
 
-        if (!player.onGround() && !player.isInWater()
-                && player.getDeltaMovement().y < 0
-                && !player.hasEffect(MobEffects.SLOW_FALLING)
-                && isHoldingUmbrellaUpright(player)) {
-
+        if (player.getDeltaMovement().y < 0 && !player.hasEffect(MobEffects.SLOW_FALLING)) {
             createParticle(level, player);
-
             setTime(stack, 1);
+
             Vec3 motion = player.getDeltaMovement();
 
             double fallDistanceRatio = getTime(stack) / 130.0;
-            double newFallSpeed = motion.y * (1.0 - getLogFactor(stack));
+            double logFactor = Math.min(Math.log1p(fallDistanceRatio), 0.3);
+            double newFallSpeed = motion.y * (1.0 - logFactor);
 
-            setLogFactor(stack, Math.min(Math.log1p(fallDistanceRatio), 0.3));
-
-            if (player.isShiftKeyDown()) {
-                shiftHoldTime += 0.1;
-
-                if (getLogFactor(stack) >= 0.2)
-                    newFallSpeed -= Math.min(shiftHoldTime * 0.02, 0.3);
-            }
-
-            if (getLogFactor(stack) == 0.3)
-                player.fallDistance = 0;
+            stack.set(DataComponentRegistry.SPEED, logFactor);
 
             player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
         }
     }
 
     public void createParticle(Level level, Player player) {
-        if (level.isClientSide) return;
+        if (level.isClientSide)
+            return;
 
-        double fallingSpeed = -player.getDeltaMovement().y;
-        int particleCount = Math.max(1, (int) (fallingSpeed * 25) / 4);
+        int particleCount = Math.max(1, (int) (-player.getDeltaMovement().y * 6.25));
 
-        Vec3 basePosition;
-        if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof UmbrellaItem) {
-            basePosition = player.getEyePosition(1.0F)
-                    .add(player.getLookAngle().scale(0.5))
-                    .add(player.getUpVector(1.0F).scale(-0.25))
-                    .add(player.getLookAngle().cross(new Vec3(0, 1, 0)).scale(0.3));
-        } else {
-            basePosition = player.getEyePosition(1.0F)
-                    .add(player.getLookAngle().scale(0.5))
-                    .add(player.getUpVector(1.0F).scale(-0.25))
-                    .add(player.getLookAngle().cross(new Vec3(0, 1, 0)).scale(-0.3));
-        }
+        Vec3 basePosition = player.getEyePosition(1.0F)
+                .add(player.getLookAngle().scale(0.5))
+                .add(player.getUpVector(1.0F).scale(-0.25))
+                .add(player.getLookAngle().cross(new Vec3(0, 1, 0)))
+                .scale((player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof UmbrellaItem ? 0.3 : -0.3));
 
         Vec3[] offsets = new Vec3[]{
                 new Vec3(0.5, 0, 0.5),
@@ -235,16 +197,8 @@ public class UmbrellaItem extends WearableRelicItem {
         return stack.getOrDefault(DataComponentRegistry.TIME, 0);
     }
 
-    private void setLogFactor(ItemStack stack, double var) {
-        stack.set(DataComponentRegistry.SPEED, var);
-    }
-
-    private double getLogFactor(ItemStack stack) {
-        return stack.getOrDefault(DataComponentRegistry.SPEED, 0D);
-    }
-
     @EventBusSubscriber
-    public static class Events {
+    public static class UmbrellaEvent {
 
         @SubscribeEvent
         public static void onLivingFall(LivingFallEvent event) {
@@ -255,17 +209,53 @@ public class UmbrellaItem extends WearableRelicItem {
         }
 
         @SubscribeEvent
-        public static void onPlayerJump(LivingEvent.LivingJumpEvent event) {
-            if (!(event.getEntity() instanceof Player player) || isHoldingUmbrellaUpright(player)
-                    || !(player.getUseItem().getItem() instanceof UmbrellaItem relic)
-                    || !player.isUsingItem()) return;
+        public static void onEntityHurt(LivingIncomingDamageEvent event) {
+            if (event.getEntity() instanceof Player player
+                    && player.getUseItem().getItem() instanceof UmbrellaItem relic
+                    && player.isUsingItem()
+                    && event.getSource().getEntity() instanceof LivingEntity attacker
+                    && !player.level().isClientSide
+                    && attacker != player) {
 
-//            Vec3 lookDirection = player.getLookAngle();
-//            int modifierVal = (int) relic.getStatValue(new ItemStack(relic), "shield", "knockback");
-//
-//            Vec3 knockbackDirection = new Vec3((-lookDirection.x + modifierVal) * 1.2, (-lookDirection.y + modifierVal) * 0.7, (-lookDirection.z + modifierVal) * 1.2);
-//
-//            player.setDeltaMovement(knockbackDirection);
+                event.setCanceled(true);
+
+                double radius = 2.0;
+                double height = 2.0;
+
+                Vec3 zoneCenter = player.position().add(player.getLookAngle().normalize().scale(1.0));
+
+                AABB boundingBox = new AABB(
+                        zoneCenter.x - radius, zoneCenter.y - height / 2.0, zoneCenter.z - radius,
+                        zoneCenter.x + radius, zoneCenter.y + height / 2.0, zoneCenter.z + radius);
+
+                List<LivingEntity> entitiesInRange = player.level().getEntitiesOfClass(
+                        LivingEntity.class, boundingBox,
+                        entity -> entity != player && entity.isAlive()
+                );
+
+                for (LivingEntity entity : entitiesInRange) {
+                    Vec3 toEntity = entity.position().subtract(player.position()).normalize();
+
+                    entity.setDeltaMovement(toEntity.scale(relic.getStatValue(player.getUseItem(), "shield", "knockback")));
+
+                    Vec3 startPosition = attacker.position().add(new Vec3(0, attacker.getBbHeight() / 2.0, 0));
+                    Vec3 particleVelocity = toEntity.normalize().scale(0.5);
+
+                    ((ServerLevel) player.level()).sendParticles(
+                            ParticleTypes.CLOUD,
+                            startPosition.x,
+                            startPosition.y,
+                            startPosition.z,
+                            10,
+                            particleVelocity.x,
+                            particleVelocity.y,
+                            particleVelocity.z,
+                            0.1
+                    );
+                }
+
+                player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 0.3f, 1 + (player.getRandom().nextFloat() * 0.25F));
+            }
         }
 
         @SubscribeEvent
@@ -284,51 +274,5 @@ public class UmbrellaItem extends WearableRelicItem {
             if ((isHoldingMainHand && !isRightHanded) || (isHoldingOffHand && isRightHanded))
                 humanoidModel.leftArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
         }
-
-        @SubscribeEvent
-        public static void onEntityHurt(LivingIncomingDamageEvent event) {
-            if (event.getEntity() instanceof Player player
-                    && player.getUseItem().getItem() instanceof UmbrellaItem relic
-                    && player.isUsingItem()
-                    && event.getSource().getEntity() instanceof LivingEntity attacker
-                    && !player.level().isClientSide) {
-
-                ItemStack itemStack = player.getUseItem();
-
-                itemStack.set(DataComponentRegistry.CHARGE, itemStack.getOrDefault(DataComponentRegistry.CHARGE, 0) + 1);
-
-                if (relic.pushAwayEntity(player, attacker)) {
-                    event.setCanceled(true);
-
-                    double radius = 2.0;
-                    double height = 2.0;
-
-                    Vec3 playerPosition = player.position();
-                    Vec3 lookDirection = player.getLookAngle().normalize();
-                    Vec3 zoneCenter = playerPosition.add(lookDirection.scale(1.0));
-
-                    AABB boundingBox = new AABB(
-                            zoneCenter.x - radius, zoneCenter.y - height / 2.0, zoneCenter.z - radius,
-                            zoneCenter.x + radius, zoneCenter.y + height / 2.0, zoneCenter.z + radius
-                    );
-
-                    List<LivingEntity> entitiesInRange = player.level().getEntitiesOfClass(
-                            LivingEntity.class, boundingBox,
-                            entity -> entity != player && entity.isAlive()
-                    );
-
-                    for (LivingEntity entity : entitiesInRange) {
-                        Vec3 toEntity = entity.position().subtract(player.position()).normalize();
-                        Vec3 knockbackDirection = toEntity.scale(relic.getStatValue(player.getUseItem(), "shield", "knockback"));
-
-                        entity.setDeltaMovement(entity.getDeltaMovement().add(knockbackDirection));
-                    }
-
-                    player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 0.3f, 1 + (player.getRandom().nextFloat() * 0.25F));
-                }
-            }
-        }
-
-
     }
 }
