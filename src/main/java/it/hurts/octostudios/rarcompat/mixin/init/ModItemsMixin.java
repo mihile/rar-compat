@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.mixin.init;
 
 import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.UmbrellaItem;
 import it.hurts.octostudios.rarcompat.items.hat.WhoopeeCushionItem;
 import it.hurts.octostudios.rarcompat.items.belt.*;
 import it.hurts.octostudios.rarcompat.items.feet.*;
@@ -27,8 +28,7 @@ public class ModItemsMixin {
     @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;wearableItem(Ljava/lang/String;Ljava/util/function/Consumer;)Lnet/minecraft/core/Holder;"))
     private static Holder<Item> redirectWearableItem(String name, Consumer<WearableArtifactItem.Builder> builderConsumer) {
         return switch (name) {
-            case "plastic_drinking_hat" -> register(name, DrinkingHatItem::new);
-            case "novelty_drinking_hat" -> register(name, DrinkingHatItem::new);
+            case "plastic_drinking_hat", "novelty_drinking_hat" -> register(name, DrinkingHatItem::new);
             case "snorkel" -> register(name, SnorkelItem::new);
             case "villager_hat" -> register(name, VillagerHatItem::new);
             case "superstitious_hat" -> register(name, SuperstitiousHatItem::new);
@@ -51,7 +51,6 @@ public class ModItemsMixin {
             case "power_glove" -> register(name, PowerGloveItem::new);
             case "withered_bracelet" -> register(name, WitheredBraceletItem::new);
             case "night_vision_goggles" -> register(name, NightVisionGogglesItem::new);
-
             case "snowshoes" -> register(name, SnowshoesItem::new);
             case "steadfast_spikes" -> register(name, SteadfastSpikesItem::new);
             case "rooted_boots" -> register(name, RootedBootsItem::new);
@@ -69,13 +68,13 @@ public class ModItemsMixin {
         };
     }
 
-//    @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
-//    private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
-//        return switch (name) {
-//                case "umbrella" -> register(name, UmbrellaItem::new);
-//            default -> register(name, supplier);
-//        };
-//    }
+    @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
+    private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
+        if (name.equals("umbrella"))
+            return register(name, UmbrellaItem::new);
+
+        return register(name, supplier);
+    }
 
     @Shadow
     private static Holder<Item> wearableItem(String name, Consumer<WearableArtifactItem.Builder> consumer) {
