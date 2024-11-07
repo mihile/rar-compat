@@ -39,10 +39,10 @@ public abstract class AbstractVillagerMixin {
     @Inject(method = "getOffers", at = @At(value = "HEAD"))
     private void getOffers(CallbackInfoReturnable<MerchantOffers> cir) {
         ItemStack relicStack = EntityUtils.findEquippedCurio(tradingPlayer, ModItems.VILLAGER_HAT.value());
-        if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null) return;
+        if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null)
+            return;
 
         for (MerchantOffer offer : offers) {
-
             int discounted = (int) Math.floor(offer.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
             offer.addToSpecialPriceDiff(-discounted);
         }

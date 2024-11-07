@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
@@ -23,19 +24,22 @@ import java.util.UUID;
 @Mixin(Entity.class)
 public abstract class PlayerEntityMixin {
 
-    @Shadow public abstract void remove(Entity.RemovalReason p_146834_);
+//    @Shadow public abstract void
+//    remove(Entity.RemovalReason p_146834_);
+//
+//    @Shadow
+//    public abstract void playerTouch(Player p_20081_);
 
-    @Shadow public abstract void playerTouch(Player p_20081_);
-
-    @Inject(method = "getMaxAirSupply", at = @At(value = "HEAD"), cancellable = true, remap = false)
-    private void onAirMax(CallbackInfoReturnable<Integer> cir) {
-        Entity entity = (Entity) (Object) this;
-
-        ItemStack stack = EntityUtils.findEquippedCurio(entity, ModItems.CHARM_OF_SINKING.value());
-
-        if (entity == null || !entity.isEyeInFluid(FluidTags.WATER) || !entity.onGround() || !(stack.getItem() instanceof CharmOfSinkingItem relic))
-            return;
-
-        cir.setReturnValue((int) (300 + (500 * relic.getStatValue(stack, "immersion", "air"))));
+    @Inject(method = "Lnet/minecraft/world/entity/Entity;updateFluidHeightAndDoFluidPushing()V", at = @At(value = "HEAD"), cancellable = true, remap = false)
+    private void onAirMax(CallbackInfo ci) {
+  //      ci.cancel();
+//        Entity entity = (Entity) (Object) this;
+//
+//        ItemStack stack = EntityUtils.findEquippedCurio(entity, ModItems.CHARM_OF_SINKING.value());
+//
+//        if (entity == null || !entity.isEyeInFluid(FluidTags.WATER) || !entity.onGround() || !(stack.getItem() instanceof CharmOfSinkingItem relic))
+//            return;
+//
+//        cir.setReturnValue((int) (300 + (500 * relic.getStatValue(stack, "immersion", "air"))));
     }
 }
