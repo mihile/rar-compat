@@ -14,6 +14,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -49,6 +50,15 @@ public class KittySlippersItem extends WearableRelicItem {
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 6, 24).star(1, 2, 19).star(2, 2, 9).star(3, 6, 4)
+                                        .star(4, 16, 4).star(5, 20, 9).star(6, 20, 19).star(7, 16, 24)
+                                        .star(8, 11, 16).star(9, 8, 19).star(10, 5, 13).star(11, 8, 8)
+                                        .star(12, 14, 19).star(13, 17, 13).star(14, 14, 8)
+                                        .link(0, 1).link(1, 2).link(2, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 7).link(7, 0)
+                                        .link(0, 1).link(1, 2).link(2, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 7).link(7, 0)
+                                        .link(8, 9).link(9, 10).link(8, 11).link(8, 12).link(12, 13).link(8, 14)
+                                        .build())
                                 .build())
                         .ability(AbilityData.builder("resurrected")
                                 .requiredLevel(5)
@@ -57,6 +67,12 @@ public class KittySlippersItem extends WearableRelicItem {
                                         .initialValue(0.05D, 0.1D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 3, 16).star(1, 8, 15).star(2, 7, 11)
+                                        .star(3, 9, 6).star(4, 11, 8)
+                                        .star(5, 14, 17).star(6, 16, 14).star(7, 17, 22)
+                                        .link(0, 1).link(1, 2).link(2, 3).link(2, 4).link(1, 5).link(5, 6).link(5, 7)
                                         .build())
                                 .build())
                         .build())
@@ -116,7 +132,7 @@ public class KittySlippersItem extends WearableRelicItem {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
 
             if (!(stack.getItem() instanceof KittySlippersItem relic) || new Random().nextFloat(1) > relic.getStatValue(stack, "resurrected", "chance")
-            || !relic.canPlayerUseAbility(player, stack, "resurrected"))
+                    || !relic.canPlayerUseAbility(player, stack, "resurrected"))
                 return;
 
             Level level = player.level();
