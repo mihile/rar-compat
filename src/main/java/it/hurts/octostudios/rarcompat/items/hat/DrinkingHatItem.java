@@ -31,8 +31,8 @@ public class DrinkingHatItem extends WearableRelicItem {
                         .ability(AbilityData.builder("drinking")
                                 .stat(StatData.builder("speed")
                                         .icon(StatIcons.SPEED)
-                                        .initialValue(0.25D, 0.75D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
+                                        .initialValue(0.3D, 0.4D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
@@ -68,7 +68,7 @@ public class DrinkingHatItem extends WearableRelicItem {
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed") - 1F))
+                .attribute(new RelicAttributeModifier.Modifier(ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed")))
                 .build();
     }
 
@@ -93,9 +93,8 @@ public class DrinkingHatItem extends WearableRelicItem {
                 return;
 
             int hunger = (int) relic.getStatValue(stack, "nutrition", "hunger");
-            float saturation = hunger / 2F;
 
-            player.getFoodData().eat(hunger, saturation);
+            player.getFoodData().eat(hunger,  hunger / 2F);
         }
     }
 }

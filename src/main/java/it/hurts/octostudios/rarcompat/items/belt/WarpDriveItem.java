@@ -57,8 +57,8 @@ public class WarpDriveItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("cooldown")
                                         .icon(StatIcons.COOLDOWN)
-                                        .initialValue(20D, 150D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.1D)
+                                        .initialValue(60D, 40D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
                                         .formatValue(value -> MathUtils.round(value / 20, 1))
                                         .build())
                                 .research(ResearchData.builder()
@@ -84,6 +84,10 @@ public class WarpDriveItem extends WearableRelicItem {
         if (ability.equals("teleport") && !level.isClientSide) {
             BlockPos blockPos = getHitResult(player, stack);
             RandomSource random = player.getRandom();
+            BlockPos pos = getHitResult(player, stack);
+
+            if (pos == null)
+                return;
 
             ((ServerLevel) level).sendParticles(
                     ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)),
@@ -92,16 +96,13 @@ public class WarpDriveItem extends WearableRelicItem {
                     30,
                     0,
                     0, 0, 0.1);
-            BlockPos pos = getHitResult(player, stack);
 
             int distance = (int) player.position().distanceTo(pos.getCenter());
             int roundedDistance = ((distance + 9) / 10) * 10;
 
-            for (int i = 1; i <= roundedDistance; i++) {
-                if (i % 10 == 0) {
+            for (int i = 1; i <= roundedDistance; i++)
+                if (i % 10 == 0)
                     spreadRelicExperience(player, stack, 1);
-                }
-            }
 
             player.teleportTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
             player.fallDistance = 0;

@@ -1,7 +1,6 @@
-package it.hurts.octostudios.rarcompat.items.bunch;
+package it.hurts.octostudios.rarcompat.items.necklace;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -13,7 +12,6 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -55,8 +53,8 @@ public class PanicNecklaceItem extends WearableRelicItem {
         if (stack.getItem() == newStack.getItem() || !(slotContext.entity() instanceof Player player))
             return;
 
-        EntityUtils.removeAttribute(player, stack, Attributes.ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE);
-        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);    }
+        EntityUtils.removeAttribute(player, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
@@ -68,8 +66,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
         float modifierMovementSpeed = (float) this.getStatValue(stack, "panic", "movement") / 10 * countMob;
         float modifierAttackSpeed = (float) this.getStatValue(stack, "panic", "attack") / 10 * countMob;
 
-        EntityUtils.resetAttribute(player, stack, Attributes.ATTACK_SPEED, -modifierAttackSpeed, AttributeModifier.Operation.ADD_VALUE);
-            EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
     public int getLengthRadius(Player player, Level level, ItemStack stack) {

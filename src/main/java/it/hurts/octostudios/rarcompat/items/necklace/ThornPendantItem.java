@@ -51,8 +51,8 @@ public class ThornPendantItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("chance")
                                         .icon(StatIcons.CHANCE)
-                                        .initialValue(0.25D, 0.35D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .initialValue(0.1D, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 2))
                                         .build())
                                 .research(ResearchData.builder()
@@ -84,7 +84,8 @@ public class ThornPendantItem extends WearableRelicItem {
             Random random = new Random();
 
             if (!(stack.getItem() instanceof ThornPendantItem relic) || level.isClientSide
-                    || random.nextInt(100) > relic.getStatValue(stack, "poison", "chance") * 100) return;
+                    || random.nextInt() > relic.getStatValue(stack, "poison", "chance"))
+                return;
 
             float multiplier = (float) relic.getStatValue(stack, "poison", "multiplier");
             int time = (int) (relic.getStatValue(stack, "poison", "time") * 20);

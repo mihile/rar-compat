@@ -29,6 +29,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
 
 public class BunnyHoppersItem extends WearableRelicItem {
 

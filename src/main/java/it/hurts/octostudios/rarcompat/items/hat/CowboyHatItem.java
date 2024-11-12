@@ -16,8 +16,10 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -36,8 +38,8 @@ public class CowboyHatItem extends WearableRelicItem {
                         .ability(AbilityData.builder("cowboy")
                                 .stat(StatData.builder("speed")
                                         .icon(StatIcons.SPEED)
-                                        .initialValue(0.2D, 0.5D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.35D)
+                                        .initialValue(0.2D, 0.3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
@@ -55,20 +57,20 @@ public class CowboyHatItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player)) return;
+        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
+            return;
+
         Entity mountedEntity = player.getVehicle();
 
-        if (!(mountedEntity instanceof LivingEntity beingMounted) || player.level().isClientSide)
+        if (!(mountedEntity instanceof LivingEntity beingMounted) || mountedEntity instanceof Horse horse && !horse.isTamed())
             return;
 
         EntityUtils.applyAttribute(beingMounted, stack, Attributes.MOVEMENT_SPEED,
-                (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+                (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
-        if (mountedEntity.getKnownMovement().x != 0 || mountedEntity.getKnownMovement().z != 0)
-            if (mountedEntity.getRandom().nextFloat() < 0.5F && mountedEntity.tickCount % 20 == 0) {
-                spreadRelicExperience(player, stack, 1);
-            }
-
+        if ((mountedEntity.getKnownMovement().x != 0 || mountedEntity.getKnownMovement().z != 0)
+                && mountedEntity.getRandom().nextFloat() > 0.5F && player.tickCount % 20 == 0)
+            spreadRelicExperience(player, stack, 1);
     }
 
     @EventBusSubscriber
@@ -76,14 +78,14 @@ public class CowboyHatItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onEntityMount(EntityMountEvent event) {
-            Entity mountedEntity = event.getEntityBeingMounted();
-            if (!(event.getEntity() instanceof Player player)) return;
+            if (!(event.getEntity() instanceof Player player))
+                return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
-            if (event.isDismounting() && mountedEntity instanceof LivingEntity mount && stack.getItem() instanceof CowboyHatItem)
-                EntityUtils.removeAttribute(mount, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-
+            if (event.isDismounting() && event.getEntityBeingMounted() instanceof LivingEntity mount && stack.getItem() instanceof CowboyHatItem) {
+                EntityUtils.removeAttribute(mount, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+            }
         }
 
     }

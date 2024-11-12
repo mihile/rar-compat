@@ -90,7 +90,8 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
         if (stack.get(DataComponentRegistry.WORLD_POSITION) == null) {
             double thresholdValue = getStatValue(stack, "invisible", "threshold");
 
-            if (Math.abs(player.getKnownMovement().y) > thresholdValue) return;
+            if (Math.abs(player.getKnownMovement().y) > thresholdValue)
+                return;
 
             if (player.getSpeed() <= thresholdValue) {
                 player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 5, 0, false, false));

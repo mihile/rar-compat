@@ -36,8 +36,8 @@ public class UniversalAttractorItem extends WearableRelicItem {
                                 .icon((player, stack, ability) -> ability + (stack.getOrDefault(DataComponentRegistry.TOGGLED, true) ? "_attract" : "_repel"))
                                 .stat(StatData.builder("radius")
                                         .icon(StatIcons.SIZE)
-                                        .initialValue(2D, 4D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
+                                        .initialValue(3D, 5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.18D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
@@ -67,15 +67,15 @@ public class UniversalAttractorItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide) return;
 
-        int range = 5;
+        double range = getStatValue(stack, "attractor", "radius");
         int amountItem = 0;
 
         Vec3 pos = player.position();
 
         for (ItemEntity item : player.level().getEntitiesOfClass(ItemEntity.class, new AABB(pos.x - range, pos.y - range, pos.z - range,
                 pos.x + range, pos.y + range, pos.z + range))) {
-            if (item.position().y > pos.y) continue;
-
+            if (item.position().y > pos.y)
+                continue;
 
             if (stack.getOrDefault(DataComponentRegistry.TOGGLED, true) && item.isAlive() && !item.hasPickUpDelay()) {
                 if (amountItem++ > 50)

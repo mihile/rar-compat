@@ -45,7 +45,7 @@ public class ShockPendantItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("chance")
                                         .icon(StatIcons.CHANCE)
-                                        .initialValue(0.15D, 0.25D)
+                                        .initialValue(0.2D, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 100, 2))
                                         .build())
@@ -78,7 +78,8 @@ public class ShockPendantItem extends WearableRelicItem {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value());
 
             if (!(stack.getItem() instanceof ShockPendantItem relic) || level.isClientSide
-                    || random.nextInt(100) > relic.getStatValue(stack, "lightning", "chance") * 100) return;
+                    || random.nextInt() > relic.getStatValue(stack, "lightning", "chance"))
+                return;
 
             relic.spreadRelicExperience(player, stack, 1);
 
