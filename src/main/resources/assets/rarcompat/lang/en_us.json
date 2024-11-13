@@ -204,6 +204,7 @@
   "tooltip.relics.warp_drive.ability.teleport.stat.distance.value": "%1$s blocks.",
   "tooltip.relics.warp_drive.ability.teleport.stat.cooldown.title": "Cooldown Time:",
   "tooltip.relics.warp_drive.ability.teleport.stat.cooldown.value": "%1$s seconds.",
+  "tooltip.relics.warp_drive.ability.teleport.predicate.teleport": "",
 
   "tooltip.relics.charm_of_shrinking.description": "Enables the relic's owner to shrink their body, accessing previously unreachable places.",
   "tooltip.relics.charm_of_shrinking.ability.shrinking": "Compression",

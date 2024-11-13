@@ -49,7 +49,7 @@ public class UmbrellaItem extends WearableRelicItem {
                         .ability(AbilityData.builder("glider")
                                 .stat(StatData.builder("count")
                                         .icon(StatIcons.COUNT)
-                                        .initialValue(1D, 3D)
+                                        .initialValue(3D, 5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> (int) MathUtils.round(value, 1))
                                         .build())
@@ -60,6 +60,7 @@ public class UmbrellaItem extends WearableRelicItem {
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("shield")
+                                .requiredLevel(5)
                                 .stat(StatData.builder("knockback")
                                         .icon(StatIcons.DISTANCE)
                                         .initialValue(1D, 2D)
@@ -141,35 +142,17 @@ public class UmbrellaItem extends WearableRelicItem {
         return isHoldingUmbrellaUpright(entity, InteractionHand.MAIN_HAND) || isHoldingUmbrellaUpright(entity, InteractionHand.OFF_HAND);
     }
 
-    public static ItemStack getItemStackUmbrella(Player player) {
-        if (isHoldingUmbrellaUpright(player))
-            if (player.getMainHandItem().getItem() instanceof UmbrellaItem)
-                return player.getMainHandItem();
-            else
-                return player.getOffhandItem();
-
-        return ItemStack.EMPTY;
-    }
-
     public void slowFall(Level level, Player player, ItemStack stack) {
-        if (player.onGround() || player.isInWater() || !isHoldingUmbrellaUpright(player)) {
-            setTime(stack, -getTime(stack));
+        if (player.onGround() || player.isInWater() || !isHoldingUmbrellaUpright(player) || player.getDeltaMovement().y < 0
+                || player.hasEffect(MobEffects.SLOW_FALLING))
             return;
-        }
 
         if (player.getDeltaMovement().y < 0 && !player.hasEffect(MobEffects.SLOW_FALLING)) {
             createParticle(level, player);
             setTime(stack, 1);
-
             Vec3 motion = player.getDeltaMovement();
 
-            double fallDistanceRatio = getTime(stack) / 130.0;
-            double logFactor = Math.min(Math.log1p(fallDistanceRatio), 0.3);
-            double newFallSpeed = motion.y * (1.0 - logFactor);
-
-            stack.set(DataComponentRegistry.SPEED, logFactor);
-
-            player.setDeltaMovement(motion.x, newFallSpeed, motion.z);
+            player.setDeltaMovement(motion.x, 0.3, motion.z);
         }
     }
 
@@ -221,7 +204,7 @@ public class UmbrellaItem extends WearableRelicItem {
             if (!isHoldingUmbrellaUpright(event.getEntity()) || !(event.getEntity() instanceof Player player))
                 return;
 
-            event.setDamageMultiplier((float) (1 - (UmbrellaItem.getItemStackUmbrella(player).getOrDefault(DataComponentRegistry.SPEED, 0D) / 0.3)));
+            event.setDamageMultiplier(0);
         }
 
         @SubscribeEvent

@@ -15,6 +15,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.sounds.SoundEvent;
@@ -44,6 +45,12 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
                                         .initialValue(8D, 10D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
                                         .formatValue(value -> (int) MathUtils.round(value, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 11, 28).star(1, 11, 17).star(2, 11, 11).star(3, 11, 4)
+                                        .star(4, 6, 21  ).star(5, 16, 21).star(6, 4, 17  ).star(7, 18, 17)
+                                        .star(8, 2, 14  ).star(9, 20, 14)
+                                        .link(0, 1).link(1, 2).link(2, 3).link(1, 4).link(1, 5).link(2, 6).link(2, 7).link(3, 8).link(3, 9)
                                         .build())
                                 .build())
                         .build())

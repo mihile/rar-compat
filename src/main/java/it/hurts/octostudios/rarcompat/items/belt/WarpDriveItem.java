@@ -40,14 +40,14 @@ public class WarpDriveItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("teleport")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
-//                                        .predicate("teleport", PredicateType.CAST, (player, stack) -> {
-//                                            BlockPos pos = getHitResult(player, stack);
-//
-//                                            if (pos == null)
-//                                                return false;
-//
-//                                            return player.position().distanceTo(pos.getCenter()) <= getStatValue(stack, "teleport", "distance");
-//                                        })
+                                        .predicate("teleport", PredicateType.CAST, (player, stack) -> {
+                                            BlockPos pos = getHitResult(player, stack);
+
+                                            if (pos == null)
+                                                return false;
+
+                                            return player.position().distanceTo(pos.getCenter()) <= getStatValue(stack, "teleport", "distance");
+                                        })
                                         .build())
                                 .stat(StatData.builder("distance")
                                         .icon(StatIcons.DISTANCE)

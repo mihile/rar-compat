@@ -27,14 +27,9 @@ public class PanicNecklaceItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("panic")
-                                .stat(StatData.builder("attack")
-                                        .initialValue(5D, 4D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
-                                        .build())
                                 .stat(StatData.builder("movement")
                                         .initialValue(1D, 2D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
@@ -61,10 +56,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
         if (slotContext.entity().level().isClientSide || !(slotContext.entity() instanceof Player player))
             return;
 
-        int countMob = getLengthRadius(player, player.level(), stack);
-
-        float modifierMovementSpeed = (float) this.getStatValue(stack, "panic", "movement") / 10 * countMob;
-        float modifierAttackSpeed = (float) this.getStatValue(stack, "panic", "attack") / 10 * countMob;
+        float modifierMovementSpeed = (float) this.getStatValue(stack, "panic", "movement") / 10 *  getLengthRadius(player, player.level(), stack);
 
         EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
