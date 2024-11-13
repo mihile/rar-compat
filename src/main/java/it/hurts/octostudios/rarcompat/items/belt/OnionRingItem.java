@@ -35,7 +35,7 @@ public class OnionRingItem extends WearableRelicItem {
                                         .icon(StatIcons.MODIFIER)
                                         .initialValue(0.02D, 0.05D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
-                                        .formatValue(value -> (int) MathUtils.round(value * 100, 2))
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 11, 25).star(1, 5, 21).star(2, 3, 14).star(3, 5, 7)

@@ -28,12 +28,14 @@ public abstract class AbstractVillagerMixin {
     @Inject(method = "notifyTrade ", at = @At(value = "HEAD"))
     private void notifyTrade(MerchantOffer p_35274_, CallbackInfo ci) {
         ItemStack relicStack = EntityUtils.findEquippedCurio(tradingPlayer, ModItems.VILLAGER_HAT.value());
-        if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null) return;
 
-        int discounted = (int) Math.round(p_35274_.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
+        if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null)
+            return;
 
-        if (discounted > 1)
-            hat.spreadRelicExperience(tradingPlayer, relicStack, 1 + tradingPlayer.getRandom().nextInt(discounted) + 1);
+        int newPrice = (int) Math.round(p_35274_.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier"));
+
+        if (newPrice > 1)
+            hat.spreadRelicExperience(tradingPlayer, relicStack, 1 + tradingPlayer.getRandom().nextInt(newPrice) + 1);
     }
 
     @Inject(method = "getOffers", at = @At(value = "HEAD"))
