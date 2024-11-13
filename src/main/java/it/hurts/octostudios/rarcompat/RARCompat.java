@@ -11,5 +11,4 @@ public class RARCompat {
     public RARCompat(IEventBus bus) {
         SoundRegistry.register(bus);
     }
-
 }

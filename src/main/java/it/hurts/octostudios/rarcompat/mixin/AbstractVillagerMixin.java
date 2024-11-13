@@ -30,7 +30,7 @@ public abstract class AbstractVillagerMixin {
         ItemStack relicStack = EntityUtils.findEquippedCurio(tradingPlayer, ModItems.VILLAGER_HAT.value());
         if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null) return;
 
-        int discounted = (int) Math.floor(p_35274_.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
+        int discounted = (int) Math.round(p_35274_.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
 
         if (discounted > 1)
             hat.spreadRelicExperience(tradingPlayer, relicStack, 1 + tradingPlayer.getRandom().nextInt(discounted) + 1);
@@ -39,12 +39,12 @@ public abstract class AbstractVillagerMixin {
     @Inject(method = "getOffers", at = @At(value = "HEAD"))
     private void getOffers(CallbackInfoReturnable<MerchantOffers> cir) {
         ItemStack relicStack = EntityUtils.findEquippedCurio(tradingPlayer, ModItems.VILLAGER_HAT.value());
+
         if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null)
             return;
 
         for (MerchantOffer offer : offers) {
-            int discounted = (int) Math.floor(offer.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
-            offer.addToSpecialPriceDiff(-discounted);
-        }
-    }
+            int newPrice = (int) Math.round(offer.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier"));
+            offer.setSpecialPriceDiff(-newPrice);
+        }    }
 }
