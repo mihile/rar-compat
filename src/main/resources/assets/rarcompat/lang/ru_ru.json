@@ -204,7 +204,7 @@
   "tooltip.relics.warp_drive.ability.teleport.stat.distance.value": "%1$s блоков.",
   "tooltip.relics.warp_drive.ability.teleport.stat.cooldown.title": "Время перезарядки:",
   "tooltip.relics.warp_drive.ability.teleport.stat.cooldown.value": "%1$s секунд.",
-  "tooltip.relics.warp_drive.ability.teleport.predicate.teleport": "",
+  "tooltip.relics.warp_drive.ability.teleport.predicate.teleport": "Взгляд на позицию телепортации",
 
   "tooltip.relics.charm_of_shrinking.description": "Позволяет владельцу реликвии сжать собственное тело, чтобы проникнуть в ранее недосягаемые места.",
   "tooltip.relics.charm_of_shrinking.ability.shrinking": "Компрессия",
