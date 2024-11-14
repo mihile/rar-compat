@@ -91,14 +91,19 @@ public class UmbrellaItem extends WearableRelicItem {
         if (player.onGround() && charges != 0)
             stack.set(DataComponentRegistry.CHARGE, 0);
 
-        slowFall(level, player, stack);
+        if (player.isInWater() || !isHoldingUmbrellaUpright(player)
+                || player.hasEffect(MobEffects.SLOW_FALLING) || player.getDeltaMovement().y > 0)
+            return;
+
+        Vec3 motion = player.getDeltaMovement();
+
+        player.setDeltaMovement(motion.x, -0.15, motion.z);
+
+        createParticle(level, player);
     }
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (player.onGround() || player.isInWater())
-            return InteractionResultHolder.fail(player.getItemInHand(hand));
-
         ItemStack stack = player.getItemInHand(hand);
 
         int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
@@ -106,20 +111,22 @@ public class UmbrellaItem extends WearableRelicItem {
 
         stack.set(DataComponentRegistry.CHARGE, charges + 1);
 
-        if (charges > statCount) {
-            player.getCooldowns().addCooldown(this, 120);
-        } else {
-            double modifierVal = 1.2;
-            Vec3 lookDirection = player.getLookAngle().scale(-1);
+        if (!player.onGround())
+            if (charges > statCount) {
+                player.getCooldowns().addCooldown(this, 120);
+            } else {
+                double modifierVal = 1.2;
+                Vec3 lookDirection = player.getLookAngle().scale(-1);
 
-            player.startUsingItem(hand);
-            player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
+                player.startUsingItem(hand);
+                player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
 
-            player.setDeltaMovement(new Vec3(
-                    (lookDirection.x * modifierVal),
-                    (lookDirection.y * modifierVal),
-                    (lookDirection.z * modifierVal)));
-        }
+                player.setDeltaMovement(new Vec3(
+                        (lookDirection.x * modifierVal),
+                        (lookDirection.y * modifierVal),
+                        (lookDirection.z * modifierVal)));
+            }
+        player.startUsingItem(hand);
 
         return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
@@ -142,31 +149,15 @@ public class UmbrellaItem extends WearableRelicItem {
         return isHoldingUmbrellaUpright(entity, InteractionHand.MAIN_HAND) || isHoldingUmbrellaUpright(entity, InteractionHand.OFF_HAND);
     }
 
-    public void slowFall(Level level, Player player, ItemStack stack) {
-        if (player.onGround() || player.isInWater() || !isHoldingUmbrellaUpright(player) || player.getDeltaMovement().y < 0
-                || player.hasEffect(MobEffects.SLOW_FALLING))
-            return;
-
-        if (player.getDeltaMovement().y < 0 && !player.hasEffect(MobEffects.SLOW_FALLING)) {
-            createParticle(level, player);
-            setTime(stack, 1);
-            Vec3 motion = player.getDeltaMovement();
-
-            player.setDeltaMovement(motion.x, 0.3, motion.z);
-        }
-    }
-
     public void createParticle(Level level, Player player) {
-        if (level.isClientSide)
+        if (level.isClientSide || player.fallDistance < 2)
             return;
-
-        int particleCount = Math.max(1, (int) (-player.getDeltaMovement().y * 6.25));
 
         Vec3 basePosition = player.getEyePosition(1.0F)
                 .add(player.getLookAngle().scale(0.5))
                 .add(player.getUpVector(1.0F).scale(-0.25))
-                .add(player.getLookAngle().cross(new Vec3(0, 1, 0)))
-                .scale((player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof UmbrellaItem ? 0.3 : -0.3));
+                .add(player.getLookAngle().cross(new Vec3(0, 1, 0))
+                        .scale(player.getMainHandItem().getItem() instanceof UmbrellaItem ? 0.3 : -0.3));
 
         Vec3[] offsets = new Vec3[]{
                 new Vec3(0.5, 0, 0.5),
@@ -177,23 +168,16 @@ public class UmbrellaItem extends WearableRelicItem {
 
         for (Vec3 offset : offsets) {
             Vec3 particlePosition = basePosition.add(offset);
+
             ((ServerLevel) level).sendParticles(
                     ParticleTypes.CLOUD,
                     particlePosition.x,
                     player.getY() + 3,
                     particlePosition.z,
-                    particleCount,
+                    1,
                     0, 0, 0, 0
             );
         }
-    }
-
-    private void setTime(ItemStack stack, int var) {
-        stack.set(DataComponentRegistry.TIME, getTime(stack) + var);
-    }
-
-    private int getTime(ItemStack stack) {
-        return stack.getOrDefault(DataComponentRegistry.TIME, 0);
     }
 
     @EventBusSubscriber
@@ -201,7 +185,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onLivingFall(LivingFallEvent event) {
-            if (!isHoldingUmbrellaUpright(event.getEntity()) || !(event.getEntity() instanceof Player player))
+            if (!isHoldingUmbrellaUpright(event.getEntity()))
                 return;
 
             event.setDamageMultiplier(0);
@@ -233,9 +217,9 @@ public class UmbrellaItem extends WearableRelicItem {
                 );
 
                 for (LivingEntity entity : entitiesInRange) {
-                    Vec3 toEntity = entity.position().subtract(player.position()).normalize();
+                    Vec3 toEntity = entity.position().subtract(player.position()).normalize().scale(relic.getStatValue(player.getUseItem(), "shield", "knockback"));
 
-                    entity.setDeltaMovement(toEntity.scale(relic.getStatValue(player.getUseItem(), "shield", "knockback")));
+                    entity.setDeltaMovement(toEntity.x, toEntity.y / 2, toEntity.z);
 
                     Vec3 startPosition = attacker.position().add(new Vec3(0, attacker.getBbHeight() / 2.0, 0));
                     Vec3 particleVelocity = toEntity.normalize().scale(0.5);

@@ -60,21 +60,21 @@ public class ModItemsMixin {
             case "kitty_slippers" -> register(name, KittySlippersItem::new);
             case "bunny_hoppers" -> register(name, BunnyHoppersItem::new);
             case "feral_claws" -> register(name, FeralClawsItem::new);
-        //    case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
-            //case "panic_necklace" -> register(name, PanicNecklaceItem::new);
+            case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
+            case "panic_necklace" -> register(name, PanicNecklaceItem::new);
 
-            //         case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
+            case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
 
-//    @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
-//    private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
-//        if (name.equals("umbrella"))
-//            return register(name, UmbrellaItem::new);
-//
-//        return register(name, supplier);
-//    }
+    @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lartifacts/registry/ModItems;register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraft/core/Holder;"))
+    private static Holder<Item> redirectRegister(String name, Supplier<? extends Item> supplier) {
+        if (name.equals("umbrella"))
+            return register(name, UmbrellaItem::new);
+
+        return register(name, supplier);
+    }
 
     @Shadow
     private static Holder<Item> wearableItem(String name, Consumer<WearableArtifactItem.Builder> consumer) {
