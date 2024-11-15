@@ -180,7 +180,7 @@ public class UmbrellaItem extends WearableRelicItem {
         }
     }
 
-    @EventBusSubscriber
+//    @EventBusSubscriber
     public static class UmbrellaEvent {
 
         @SubscribeEvent

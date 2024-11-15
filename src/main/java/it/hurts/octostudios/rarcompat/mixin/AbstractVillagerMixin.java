@@ -46,7 +46,8 @@ public abstract class AbstractVillagerMixin {
             return;
 
         for (MerchantOffer offer : offers) {
-            int newPrice = (int) Math.round(offer.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier"));
+            int newPrice = (int) Math.round(offer.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
             offer.setSpecialPriceDiff(-newPrice);
-        }    }
+        }
+    }
 }
