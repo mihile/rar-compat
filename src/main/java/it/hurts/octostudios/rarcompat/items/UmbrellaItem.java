@@ -87,6 +87,10 @@ public class UmbrellaItem extends WearableRelicItem {
             return;
 
         int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
+        int statCount = (int) getStatValue(stack, "glider", "count");
+
+        if (charges > statCount)
+            player.getCooldowns().addCooldown(this, 120);
 
         if (player.onGround() && charges != 0)
             stack.set(DataComponentRegistry.CHARGE, 0);
@@ -107,32 +111,28 @@ public class UmbrellaItem extends WearableRelicItem {
         ItemStack stack = player.getItemInHand(hand);
 
         int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
-        int statCount = (int) getStatValue(stack, "glider", "count");
 
-        stack.set(DataComponentRegistry.CHARGE, charges + 1);
+        if (!player.onGround()) {
+            double modifierVal = 1.2;
+            Vec3 lookDirection = player.getLookAngle().scale(-1);
 
-        if (!player.onGround())
-            if (charges > statCount) {
-                player.getCooldowns().addCooldown(this, 120);
-            } else {
-                double modifierVal = 1.2;
-                Vec3 lookDirection = player.getLookAngle().scale(-1);
+            player.startUsingItem(hand);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
 
-                player.startUsingItem(hand);
-                player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
+            player.setDeltaMovement(new Vec3
+                    ((lookDirection.x * modifierVal),
+                            (lookDirection.y * modifierVal),
+                            (lookDirection.z * modifierVal)));
 
-                player.setDeltaMovement(new Vec3(
-                        (lookDirection.x * modifierVal),
-                        (lookDirection.y * modifierVal),
-                        (lookDirection.z * modifierVal)));
-            }
-        player.startUsingItem(hand);
+            stack.set(DataComponentRegistry.CHARGE, charges + 1);
+        } else
+            player.startUsingItem(hand);
 
         return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public @NotNull UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BLOCK;
     }
 
@@ -180,7 +180,7 @@ public class UmbrellaItem extends WearableRelicItem {
         }
     }
 
-//    @EventBusSubscriber
+    @EventBusSubscriber
     public static class UmbrellaEvent {
 
         @SubscribeEvent
@@ -224,8 +224,8 @@ public class UmbrellaItem extends WearableRelicItem {
                     Vec3 startPosition = attacker.position().add(new Vec3(0, attacker.getBbHeight() / 2.0, 0));
                     Vec3 particleVelocity = toEntity.normalize().scale(0.5);
 
-                    ((ServerLevel) player.level()).sendParticles(
-                            ParticleTypes.CLOUD,
+                    ((ServerLevel) player.level()).sendParticles
+                            (ParticleTypes.CLOUD,
                             startPosition.x,
                             startPosition.y,
                             startPosition.z,
@@ -233,11 +233,10 @@ public class UmbrellaItem extends WearableRelicItem {
                             particleVelocity.x,
                             particleVelocity.y,
                             particleVelocity.z,
-                            0.1
-                    );
+                            0.1);
                 }
 
-                player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 0.3f, 1 + (player.getRandom().nextFloat() * 0.25F));
+                player.level().playSound(null, player.blockPosition(), SoundEvents.ALLAY_HURT, SoundSource.MASTER, 0.3f, 1 + (player.getRandom().nextFloat() * 0.25F));
             }
         }
 

@@ -9,8 +9,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 import net.minecraft.world.entity.Mob;
@@ -28,9 +30,9 @@ public class PanicNecklaceItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("panic")
                                 .stat(StatData.builder("movement")
-                                        .initialValue(1D, 2D)
+                                        .initialValue(0.1D, 0.2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> MathUtils.round(value * 10, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
                                         .initialValue(6D, 8D)
@@ -53,22 +55,23 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (slotContext.entity().level().isClientSide || !(slotContext.entity() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
             return;
+        System.out.println(this.getStatValue(stack, "panic", "movement"));
+        double modifierMovementSpeed = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
 
-        float modifierMovementSpeed = (float) this.getStatValue(stack, "panic", "movement") / 10 *  getLengthRadius(player, player.level(), stack);
-
-        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
     public int getLengthRadius(Player player, Level level, ItemStack stack) {
-        Set<Mob> trackedMobs = new HashSet<>();
+        Set<Monster> trackedMobs = new HashSet<>();
 
-        for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius")), entity -> entity instanceof Mob))
+        for (Monster mob : level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius")), entity -> entity instanceof Mob))
             if (mob.getTarget() == player)
                 trackedMobs.add(mob);
 
-        trackedMobs.removeIf(mob -> mob.getTarget() != player || !mob.isAlive() || !mob.getBoundingBox().intersects(player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))));
+        trackedMobs.removeIf(mob -> mob.getTarget() != player || !mob.isAlive() || !mob.getBoundingBox()
+                .intersects(player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))));
 
         return trackedMobs.toArray().length;
     }

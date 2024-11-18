@@ -57,7 +57,7 @@ public class CharmOfSinkingItem extends WearableRelicItem {
                 .build();
     }
 
-  //  @EventBusSubscriber
+    @EventBusSubscriber
     public static class CharmOfSinkingEvent {
 
         @SubscribeEvent

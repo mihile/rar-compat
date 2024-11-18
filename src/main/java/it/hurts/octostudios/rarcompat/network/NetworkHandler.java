@@ -1,10 +1,7 @@
 package it.hurts.octostudios.rarcompat.network;
 
 import it.hurts.octostudios.rarcompat.RARCompat;
-import it.hurts.octostudios.rarcompat.network.packets.CreateZonePacket;
-import it.hurts.octostudios.rarcompat.network.packets.DoubleJumpPacket;
-import it.hurts.octostudios.rarcompat.network.packets.PlayerMotionPacket;
-import it.hurts.octostudios.rarcompat.network.packets.PowerJumpPacket;
+import it.hurts.octostudios.rarcompat.network.packets.*;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
