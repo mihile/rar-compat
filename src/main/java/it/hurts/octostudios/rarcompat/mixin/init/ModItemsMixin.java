@@ -60,11 +60,10 @@ public class ModItemsMixin {
             case "kitty_slippers" -> register(name, KittySlippersItem::new);
             case "bunny_hoppers" -> register(name, BunnyHoppersItem::new);
             case "feral_claws" -> register(name, FeralClawsItem::new);
-
             case "charm_of_sinking" -> register(name, CharmOfSinkingItem::new);
             case "panic_necklace" -> register(name, PanicNecklaceItem::new);
-
-          case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
+            case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
+            case "pocket_piston" -> register(name, PocketPistonItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
