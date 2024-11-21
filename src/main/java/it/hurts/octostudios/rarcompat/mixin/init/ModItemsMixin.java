@@ -64,6 +64,7 @@ public class ModItemsMixin {
             case "panic_necklace" -> register(name, PanicNecklaceItem::new);
             case "helium_flamingo" -> register(name, HeliumFlamingoItem::new);
             case "pocket_piston" -> register(name, PocketPistonItem::new);
+            case "obsidian_skull" -> register(name, ObsidianSkullItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
