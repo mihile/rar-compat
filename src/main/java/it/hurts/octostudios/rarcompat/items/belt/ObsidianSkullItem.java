@@ -15,17 +15,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.ArmorHurtEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class ObsidianSkullItem extends WearableRelicItem {
@@ -95,7 +90,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
     public static class ObsidianSkull {
 
         @SubscribeEvent
-        public static void onPreGetDamage(LivingDamageEvent.Pre event) {
+        public static void onAttack(LivingDamageEvent.Pre event) {
             if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE))
                 return;
 
