@@ -15,13 +15,21 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.awt.*;
 
 public class ObsidianSkullItem extends WearableRelicItem {
 
@@ -59,14 +67,16 @@ public class ObsidianSkullItem extends WearableRelicItem {
 
         int time = getTime(stack);
         int charges = getCharges(stack);
-        double stat = getStatValue(stack, "buffer", "duration") * 2;
+        double stat = MathUtils.round(getStatValue(stack, "buffer", "duration") * 2, 0);
 
         if (time >= 3 && charges > 0 && charges < stat) {
             addCharges(stack, -1);
             addTime(stack, -time);
-        } else if (time >= 60 && charges > stat) {
+        } else if (time >= 60) {
             addCharges(stack, -charges);
             addTime(stack, -time);
+
+            player.playSound(SoundEvents.BAT_TAKEOFF, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
         }
     }
 
@@ -91,7 +101,8 @@ public class ObsidianSkullItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onAttack(LivingDamageEvent.Pre event) {
-            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE))
+            Level level = event.getEntity().level();
+            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide)
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.OBSIDIAN_SKULL.value());
@@ -99,13 +110,26 @@ public class ObsidianSkullItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof ObsidianSkullItem relic))
                 return;
 
-            double stat = relic.getStatValue(stack, "buffer", "duration") * 2;
+            double stat = MathUtils.round(relic.getStatValue(stack, "buffer", "duration") * 2, 0);
 
             addCharges(stack, 1);
             addTime(stack, -getTime(stack));
 
-            if (getCharges(stack) <= stat)
+            if (getCharges(stack) <= stat) {
                 event.setNewDamage(0);
+                RandomSource random = level.getRandom();
+
+                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(
+                                new Color(64 + random.nextInt(64), random.nextInt(50), 200 + random.nextInt(55)),
+                                0.6F, 20, 0.9F),
+                        player.getX(), player.getY() + player.getBbHeight() / 2F, player.getZ(),
+                        10, player.getBbWidth() / 2F, player.getBbHeight() / 2F, player.getBbWidth() / 2F,
+                        0.025F);
+
+                if (stat == getCharges(stack))
+                    player.level().playSound(null, player, SoundEvents.BAT_LOOP, SoundSource.PLAYERS,
+                            1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
+            }
         }
     }
 }
