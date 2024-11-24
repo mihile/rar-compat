@@ -39,7 +39,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("buffer")
                                 .stat(StatData.builder("duration")
-                                        .icon(StatIcons.DURATION)
+                                        .icon(StatIcons.CAPACITY)
                                         .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.ADD, 0.2D)
                                         .formatValue(value -> MathUtils.round(value * 2, 1))
