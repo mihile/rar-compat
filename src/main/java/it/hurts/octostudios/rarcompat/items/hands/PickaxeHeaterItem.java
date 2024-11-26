@@ -55,8 +55,8 @@ public class PickaxeHeaterItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("capacity")
                                         .icon(StatIcons.CAPACITY)
-                                        .initialValue(5D, 8D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
+                                        .initialValue(7D, 10D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
                                 .research(ResearchData.builder()
@@ -102,7 +102,7 @@ public class PickaxeHeaterItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PICKAXE_HEATER.value());
             List<ItemStack> smeltingResult = getSmeltingResult(new ItemStack(event.getState().getBlock()), (ServerLevel) level).stream().toList();
-
+            System.out.println(getCharges(stack));
             if (smeltingResult.isEmpty() || !(stack.getItem() instanceof PickaxeHeaterItem relic) || !relic.isAbilityTicking(stack, "heater") || getCharges(stack) < 1)
                 return;
 
@@ -140,9 +140,6 @@ public class PickaxeHeaterItem extends WearableRelicItem {
         }
 
         public static Optional<ItemStack> getSmeltingResult(ItemStack stack, ServerLevel level) {
-            if (stack.isEmpty())
-                return Optional.empty();
-
             Optional<RecipeHolder<SmeltingRecipe>> optionalRecipe =
                     Objects.requireNonNull(level.getServer()).getRecipeManager()
                             .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
