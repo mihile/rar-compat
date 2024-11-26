@@ -16,11 +16,18 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.awt.*;
+import java.util.Random;
 
 public class ChorusTotemItem extends WearableRelicItem {
 
@@ -44,9 +51,9 @@ public class ChorusTotemItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("capacity")
                                         .icon(StatIcons.CAPACITY)
-                                        .initialValue(120D, 140D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.4D)
-                                        .formatValue(value -> MathUtils.round(value * 20, 0))
+                                        .initialValue(14D, 12D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.08D)
+                                        .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
                                 .build())
                         .build())
@@ -62,6 +69,8 @@ public class ChorusTotemItem extends WearableRelicItem {
         Vec3 pos = getWorldPos(stack, player).getPos();
 
         player.teleportTo(pos.x, pos.y, pos.z);
+
+        setAbilityCooldown(stack, "past", (int) getStatValue(stack, "past", "capacity") * 20);
     }
 
     @Override
@@ -72,19 +81,23 @@ public class ChorusTotemItem extends WearableRelicItem {
         int tickCount = player.tickCount;
 
         if (canPlayerUseAbility(player, stack, "past"))
-            stack.set(DataComponentRegistry.TOGGLED, false);
+            setToggled(stack, false);
 
-        if (tickCount % 5 == 0 && stack.getOrDefault(DataComponentRegistry.TOGGLED, true))
+        if (tickCount % 5 == 0 && getToggled(stack))
             setWorldPos(stack, new WorldPosition(player));
         else {
-            if (tickCount % 20 == 0)
+            if (tickCount % 20 == 0){
                 addTime(stack, 1);
+            }
 
             if (getTime(stack) >= 3) {
                 setWorldPos(stack, new WorldPosition(player));
                 addTime(stack, -getTime(stack));
 
-                stack.set(DataComponentRegistry.TOGGLED, true);
+                setToggled(stack, true);
+
+                if (!isAbilityOnCooldown(stack, "past"))
+                    player.playSound(SoundEvents.BEE_DEATH, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
             }
         }
     }
@@ -111,5 +124,13 @@ public class ChorusTotemItem extends WearableRelicItem {
 
     public static int getTime(ItemStack stack) {
         return stack.getOrDefault(DataComponentRegistry.TIME, 0);
+    }
+
+    public static void setToggled(ItemStack stack, boolean val) {
+        stack.set(DataComponentRegistry.TOGGLED, val);
+    }
+
+    public static boolean getToggled(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TOGGLED, true);
     }
 }

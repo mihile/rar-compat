@@ -24,10 +24,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -101,22 +99,24 @@ public class PickaxeHeaterItem extends WearableRelicItem {
             Level level = player.level();
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PICKAXE_HEATER.value());
-            List<ItemStack> smeltingResult = getSmeltingResult(new ItemStack(event.getState().getBlock()), (ServerLevel) level).stream().toList();
-            System.out.println(getCharges(stack));
-            if (smeltingResult.isEmpty() || !(stack.getItem() instanceof PickaxeHeaterItem relic) || !relic.isAbilityTicking(stack, "heater") || getCharges(stack) < 1)
+
+            if (!(stack.getItem() instanceof PickaxeHeaterItem relic) || !relic.isAbilityTicking(stack, "heater") || getCharges(stack) < 1)
+                return;
+
+            ItemStack smeltingItem = getSmeltingResult(new ItemStack(event.getState().getBlock()), (ServerLevel) level);
+
+            if (smeltingItem.is(ItemStack.EMPTY.getItem()))
                 return;
 
             BlockPos pos = event.getPos();
 
-            for (ItemStack itemStack : smeltingResult) {
-                ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack);
-                level.addFreshEntity(itemEntity);
-
-                event.setCanceled(true);
-            }
-
             spawnBurstParticles(level, pos);
+
             addCharge(stack, -1);
+
+            level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, smeltingItem));
+
+            event.setCanceled(true);
         }
 
         public static void spawnBurstParticles(Level level, BlockPos centerPos) {
@@ -134,17 +134,15 @@ public class PickaxeHeaterItem extends WearableRelicItem {
                         centerX, centerY, centerZ,
                         1,
                         0.3, 0.3, 0.3,
-                        0.01
-                );
+                        0.01);
             }
         }
 
-        public static Optional<ItemStack> getSmeltingResult(ItemStack stack, ServerLevel level) {
+        public static ItemStack getSmeltingResult(ItemStack stack, ServerLevel level) {
             Optional<RecipeHolder<SmeltingRecipe>> optionalRecipe =
-                    Objects.requireNonNull(level.getServer()).getRecipeManager()
-                            .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
+                    Objects.requireNonNull(level.getServer()).getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
 
-            return optionalRecipe.map(recipeHolder -> recipeHolder.value().getResultItem(level.registryAccess()));
+            return optionalRecipe.map(recipeHolder -> recipeHolder.value().getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
         }
     }
 }
