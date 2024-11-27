@@ -67,8 +67,8 @@ public class ModItemsMixin {
             case "obsidian_skull" -> register(name, ObsidianSkullItem::new);
             case "fire_gauntlet" -> register(name, FireGauntletItem::new);
             case "pickaxe_heater" -> register(name, PickaxeHeaterItem::new);
-            case "running_shoes" -> register(name, RunningShoesItem::new);
             case "chorus_totem" -> register(name, ChorusTotemItem::new);
+            case "running_shoes" -> register(name, RunningShoesItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
