@@ -69,6 +69,7 @@ public class ModItemsMixin {
             case "pickaxe_heater" -> register(name, PickaxeHeaterItem::new);
             case "chorus_totem" -> register(name, ChorusTotemItem::new);
             case "running_shoes" -> register(name, RunningShoesItem::new);
+            case "flippers" -> register(name, FlippersItem::new);
             default -> wearableItem(name, builderConsumer);
         };
     }
