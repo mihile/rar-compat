@@ -19,6 +19,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -78,6 +80,12 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                                         .star(3, 17, 12).star(4, 6, 12).star(5, 6, 17)
                                         .link(0, 1).link(1, 2).link(1, 3).link(1, 4).link(4, 5)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff51a4df)
+                                .borderBottom(0xff2c3b70)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

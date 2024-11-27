@@ -15,6 +15,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -62,6 +64,12 @@ public class PickaxeHeaterItem extends WearableRelicItem {
                                         .star(3, 11, 6).star(4, 4, 9).star(5, 18, 9)
                                         .link(0, 1).link(1, 2).link(3, 1).link(3, 4).link(3, 5)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff939ca2)
+                                .borderBottom(0xff696b7c)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

@@ -13,6 +13,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -40,6 +42,12 @@ public class CrystalHeartItem extends WearableRelicItem {
                                         .star(0, 6, 12).star(1, 16, 12).star(2, 11, 22)
                                         .link(0, 1).link(1, 2).link(2, 0).link(1, 0)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xffea1717)
+                                .borderBottom(0xff7d0000)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

@@ -16,6 +16,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -57,6 +59,12 @@ public class WhoopeeCushionItem extends WearableRelicItem {
                                         .star(0, 4, 13).star(1, 13, 8).star(2, 18, 14).star(3, 10, 19)
                                         .link(0, 1).link(1, 2).link(3, 2).link(3, 0)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xffdd5959)
+                                .borderBottom(0xff7c2a2a)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

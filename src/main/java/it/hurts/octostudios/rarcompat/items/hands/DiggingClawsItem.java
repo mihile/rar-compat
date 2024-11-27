@@ -12,6 +12,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
@@ -41,6 +43,12 @@ public class DiggingClawsItem extends WearableRelicItem {
                                         .star(4, 9, 23).star(5, 17, 12).star(6, 13, 24).star(7, 17, 18)
                                         .link(0, 1).link(2, 3).link(4, 5).link(6, 7)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff0c71e0)
+                                .borderBottom(0xff151989)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

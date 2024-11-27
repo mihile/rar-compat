@@ -13,6 +13,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -49,6 +51,12 @@ public class ObsidianSkullItem extends WearableRelicItem {
                                         .star(4, 17, 7).star(5, 19, 13).star(6, 14, 22).star(7, 11, 15)
                                         .link(0, 1).link(0, 7).link(2, 3).link(3, 4).link(4, 5).link(5, 7).link(5, 6).link(7, 6).link(1, 2).link(1, 7)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff3e265a)
+                                .borderBottom(0xff150b2c)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

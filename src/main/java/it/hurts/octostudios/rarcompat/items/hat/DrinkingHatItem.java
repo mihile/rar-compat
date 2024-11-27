@@ -14,6 +14,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
@@ -59,6 +61,18 @@ public class DrinkingHatItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 15, 100))
+                .style(StyleData.builder()
+                        .tooltip((player, stack) ->
+                                stack.getItem() == ModItems.PLASTIC_DRINKING_HAT.value()
+                                        ? TooltipData.builder()
+                                        .borderTop(0xfffc933c)
+                                        .borderBottom(0xffad3923)
+                                        .build()
+                                        : TooltipData.builder()
+                                        .borderTop(0xff415db0)
+                                        .borderBottom(0xff1d205d)
+                                        .build())
+                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.ANTHROPOGENIC)
                         .build())
@@ -94,7 +108,7 @@ public class DrinkingHatItem extends WearableRelicItem {
 
             int hunger = (int) relic.getStatValue(stack, "nutrition", "hunger");
 
-            player.getFoodData().eat(hunger,  hunger / 2F);
+            player.getFoodData().eat(hunger, hunger / 2F);
         }
     }
 }

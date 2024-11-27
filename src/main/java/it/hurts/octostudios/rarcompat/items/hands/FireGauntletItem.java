@@ -13,6 +13,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -64,6 +66,12 @@ public class FireGauntletItem extends WearableRelicItem {
                                         .star(4, 9, 16).star(5, 13, 17).star(6, 16, 19)
                                         .link(0, 1).link(1, 2).link(1, 3).link(1, 4).link(1, 5).link(1, 6)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xfffcbc11)
+                                .borderBottom(0xffd12e00)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

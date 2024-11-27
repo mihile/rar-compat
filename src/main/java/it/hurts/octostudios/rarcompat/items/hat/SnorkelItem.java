@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -38,6 +40,12 @@ public class SnorkelItem extends WearableRelicItem {
                                         .star(6, 9, 24)
                                         .link(0, 1).link(1, 2).link(1, 3).link(4, 2).link(4, 3).link(1, 5).link(5, 6).link(6, 4)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff22b818)
+                                .borderBottom(0xff00869c)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

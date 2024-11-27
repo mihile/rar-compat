@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -33,6 +35,12 @@ public class LuckyScarfItem extends WearableRelicItem {
                                         .star(3, 9, 20).star(4, 3, 21).star(5, 14, 23)
                                         .link(0, 1).link(0, 2).link(1, 3).link(2, 3).link(3, 4).link(3, 5)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff84ca26)
+                                .borderBottom(0xff205c0e)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

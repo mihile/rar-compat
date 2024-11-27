@@ -15,6 +15,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
@@ -55,6 +57,12 @@ public class ChorusTotemItem extends WearableRelicItem {
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.08D)
                                         .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff9045a6)
+                                .borderBottom(0xff258273)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
