@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -36,6 +38,12 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                                         .link(0, 1).link(0, 2).link(2, 1).link(0, 3).link(0, 4).link(4, 3).link(0, 5).link(0, 6)
                                         .link(0, 7).link(0, 8).link(8, 7)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff55b014)
+                                .borderBottom(0xff206a2a)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

@@ -12,6 +12,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
@@ -39,6 +41,12 @@ public class GoldenHookItem extends WearableRelicItem {
                                         .star(4, 7, 23).star(5, 13, 23)
                                         .link(0, 1).link(1, 2).link(2, 3).link(4, 5).link(3, 4).link(3, 5)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xfffced59)
+                                .borderBottom(0xffe6af15)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

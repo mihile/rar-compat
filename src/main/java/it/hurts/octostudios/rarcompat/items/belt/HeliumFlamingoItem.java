@@ -17,6 +17,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.network.chat.Component;
@@ -54,6 +56,12 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                                         .star(3, 15, 21).star(4, 20, 11)
                                         .link(0, 2).link(1, 2).link(2, 3).link(3, 4)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xfff47d92)
+                                .borderBottom(0xffb43263)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

@@ -15,6 +15,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -74,6 +76,12 @@ public class KittySlippersItem extends WearableRelicItem {
                                         .star(5, 14, 17).star(6, 16, 14).star(7, 17, 22)
                                         .link(0, 1).link(1, 2).link(2, 3).link(2, 4).link(1, 5).link(5, 6).link(5, 7)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xffededed)
+                                .borderBottom(0xff696969)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 15, 100))

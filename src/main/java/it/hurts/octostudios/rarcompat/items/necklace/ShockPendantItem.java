@@ -12,6 +12,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
@@ -54,6 +56,12 @@ public class ShockPendantItem extends WearableRelicItem {
                                         .star(3, 16, 16).star(4, 12, 29)
                                         .link(1, 0).link(2, 0).link(3, 0).link(4, 0)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xff0090cd)
+                                .borderBottom(0xff0e356e)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

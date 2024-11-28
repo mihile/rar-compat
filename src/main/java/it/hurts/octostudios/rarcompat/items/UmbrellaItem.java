@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.particles.ParticleTypes;
@@ -72,6 +74,12 @@ public class UmbrellaItem extends WearableRelicItem {
                                         .star(3, 11, 13).star(4, 3, 19).star(5, 19, 19).star(6, 11, 25)
                                         .link(0, 3).link(1, 3).link(2, 3).link(3, 4).link(4, 6).link(6, 5).link(3, 5)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xffb63a2b)
+                                .borderBottom(0xff600f15)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

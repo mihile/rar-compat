@@ -13,6 +13,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -44,6 +46,12 @@ public class CloudInBottleItem extends WearableRelicItem {
                                         .link(0, 2).link(0, 3).link(1, 3).link(3, 4).link(3, 5)
                                         .link(5, 6).link(6, 7).link(6, 8).link(9, 7).link(9, 8)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xffd0eae9)
+                                .borderBottom(0xff5c8dc0)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

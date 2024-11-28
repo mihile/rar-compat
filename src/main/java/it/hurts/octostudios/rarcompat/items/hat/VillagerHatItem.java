@@ -11,6 +11,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 
 public class VillagerHatItem extends WearableRelicItem {
@@ -31,6 +33,12 @@ public class VillagerHatItem extends WearableRelicItem {
                                         .star(6, 15, 15)
                                         .link(0, 1).link(0, 2).link(0, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 3)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xffd8c348)
+                                .borderBottom(0xff8a5b35)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))

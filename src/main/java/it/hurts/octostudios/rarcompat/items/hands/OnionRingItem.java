@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.belt;
+package it.hurts.octostudios.rarcompat.items.hands;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
@@ -12,13 +12,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
+import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDestroyBlockEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
@@ -44,6 +45,12 @@ public class OnionRingItem extends WearableRelicItem {
                                         .link(0, 1).link(1, 2).link(2, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 7).link(7, 0)
                                         .link(0, 9).link(8, 9).link(9, 10).link(2, 8).link(10, 6)
                                         .build())
+                                .build())
+                        .build())
+                .style(StyleData.builder()
+                        .tooltip(TooltipData.builder()
+                                .borderTop(0xfff0852a)
+                                .borderBottom(0xff934311)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
