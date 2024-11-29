@@ -98,7 +98,7 @@ public class ChorusTotemItem extends WearableRelicItem {
                 addTime(stack, 1);
             }
 
-            if (getTime(stack) >= 3) {
+            if (getTime(stack) >= 5) {
                 setWorldPos(stack, new WorldPosition(player));
                 addTime(stack, -getTime(stack));
 
