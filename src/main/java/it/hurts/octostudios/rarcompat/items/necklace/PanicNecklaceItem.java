@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.necklace;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -17,6 +18,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -85,5 +89,22 @@ public class PanicNecklaceItem extends WearableRelicItem {
                 .intersects(player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))));
 
         return trackedMobs.toArray().length;
+    }
+
+    @EventBusSubscriber
+    public static class PanicNecklaceEvent {
+
+        @SubscribeEvent
+        public static void onPlayerDamage(LivingIncomingDamageEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PANIC_NECKLACE.value());
+
+            if (!(stack.getItem() instanceof PanicNecklaceItem relic))
+                return;
+
+            relic.spreadRelicExperience(player, stack, 1);
+        }
     }
 }

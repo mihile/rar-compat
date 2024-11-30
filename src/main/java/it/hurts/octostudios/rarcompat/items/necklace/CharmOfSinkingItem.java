@@ -78,6 +78,9 @@ public class CharmOfSinkingItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof CharmOfSinkingItem relic))
                 return;
 
+            if (player.isInWater() && player.onGround() && player.getAirSupply() > 1)
+                relic.spreadRelicExperience(player, stack, 1);
+
             if (player.tickCount % (int) relic.getStatValue(stack, "immersion", "air") == 0) {
                 event.setConsumeAirAmount(1);
             } else

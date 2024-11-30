@@ -101,6 +101,11 @@ public class PocketPistonItem extends WearableRelicItem {
 
             float modifier = (float) relic.getStatValue(stack, "attacking", "interaction");
 
+            relic.spreadRelicExperience(player, stack, 1);
+
+            if(player.distanceTo(target) > 3)
+                relic.spreadRelicExperience(player, stack, 1);
+
             Vec3 toEntity = target.position().subtract(player.position()).normalize().scale(modifier);
 
             target.setDeltaMovement(toEntity.x, toEntity.y / 2, toEntity.z);

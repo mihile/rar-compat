@@ -72,6 +72,8 @@ public class ChorusTotemItem extends WearableRelicItem {
 
         player.teleportTo(pos.x, pos.y, pos.z);
 
+        spreadRelicExperience(player, stack, 1);
+
         setAbilityCooldown(stack, "past", (int) getStatValue(stack, "past", "capacity") * 20);
     }
 

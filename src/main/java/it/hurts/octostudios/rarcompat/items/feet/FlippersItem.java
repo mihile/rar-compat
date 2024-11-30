@@ -55,4 +55,13 @@ public class FlippersItem extends WearableRelicItem {
                 .attribute(new RelicAttributeModifier.Modifier(NeoForgeMod.SWIM_SPEED, (float) getStatValue(stack, "swimmer", "modifier")))
                 .build();
     }
+
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if(!(slotContext.entity() instanceof  Player player))
+            return;
+
+        if(player.tickCount % 20 == 0 && player.isSwimming())
+            spreadRelicExperience(player, stack, 1);
+    }
 }

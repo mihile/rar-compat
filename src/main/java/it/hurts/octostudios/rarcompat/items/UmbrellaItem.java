@@ -111,6 +111,9 @@ public class UmbrellaItem extends WearableRelicItem {
 
         player.setDeltaMovement(motion.x, -0.15, motion.z);
 
+        if (player.tickCount % 20 == 0)
+            spreadRelicExperience(player, stack, 1);
+
         createParticle(level, player);
     }
 
@@ -126,11 +129,12 @@ public class UmbrellaItem extends WearableRelicItem {
 
             player.startUsingItem(hand);
             player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
-
             player.setDeltaMovement(new Vec3
                     ((lookDirection.x * modifierVal),
                             (lookDirection.y * modifierVal),
                             (lookDirection.z * modifierVal)));
+
+            spreadRelicExperience(player, stack, 1);
 
             stack.set(DataComponentRegistry.CHARGE, charges + 1);
         } else
@@ -217,12 +221,14 @@ public class UmbrellaItem extends WearableRelicItem {
 
                 AABB boundingBox = new AABB
                         (zoneCenter.x - radius, zoneCenter.y - height / 2.0, zoneCenter.z - radius,
-                        zoneCenter.x + radius, zoneCenter.y + height / 2.0, zoneCenter.z + radius);
+                                zoneCenter.x + radius, zoneCenter.y + height / 2.0, zoneCenter.z + radius);
 
                 List<LivingEntity> entitiesInRange = player.level().getEntitiesOfClass(
                         LivingEntity.class, boundingBox,
                         entity -> entity != player && entity.isAlive()
                 );
+
+                relic.spreadRelicExperience(player, player.getUseItem(), 1);
 
                 for (LivingEntity entity : entitiesInRange) {
                     double stat = relic.getStatValue(player.getUseItem(), "shield", "knockback");

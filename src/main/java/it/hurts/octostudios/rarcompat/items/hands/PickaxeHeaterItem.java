@@ -125,6 +125,8 @@ public class PickaxeHeaterItem extends WearableRelicItem {
 
                 level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, smeltingItem));
 
+                relic.spreadRelicExperience(player, stack, 1);
+
                 event.setCanceled(true);
             }
         }

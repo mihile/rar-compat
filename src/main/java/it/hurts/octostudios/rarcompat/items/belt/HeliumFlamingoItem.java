@@ -113,6 +113,9 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                 return;
             }
 
+            if(player.tickCount % 20 == 0)
+                relic.spreadRelicExperience(player, stack, 1);
+
             player.setSpeed(Math.min(1F, player.getSpeed()));
 
             if (relic.isAbilityTicking(stack, "flying") && getTime(stack) <= timeWorked)

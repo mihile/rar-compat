@@ -100,8 +100,11 @@ public class FireGauntletItem extends WearableRelicItem {
             double sector = relic.getStatValue(stack, "arson", "sector") * 10;
             int flameTime = (int) relic.getStatValue(stack, "arson", "time");
 
-            for (LivingEntity entity : findMobsInCone(player, attackRange, sector * 10))
+            for (LivingEntity entity : findMobsInCone(player, attackRange, sector * 10)) {
                 entity.setRemainingFireTicks(flameTime * 20);
+
+                relic.spreadRelicExperience(player, stack, 1);
+            }
 
             spawnDirectionalArc(player, sector, attackRange);
         }
