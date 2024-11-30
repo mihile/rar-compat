@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -40,13 +41,27 @@ public class PocketPistonItem extends WearableRelicItem {
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 11, 27).star(1, 11, 23).star(2, 4, 19).star(3, 4, 23)
+                                        .star(4, 18, 19).star(5, 18, 23).star(6, 11, 15).star(7, 11, 6)
+                                        .star(8, 4, 10).star(9, 18, 10)
+                                        .link(0, 1).link(1, 2).link(1, 4).link(3, 0).link(0, 5).link(5, 4).link(2, 3).link(1, 6).link(2, 6)
+                                        .link(4, 6).link(3, 0).link(0, 5).link(5, 4).link(2, 3).link(6, 8).link(6, 9).link(7, 8).link(7, 9)
+                                        .build())
                                 .build())
-                        .ability(AbilityData.builder("distance")
+                        .ability(AbilityData.builder("attacking")
                                 .stat(StatData.builder("interaction")
                                         .icon(StatIcons.MODIFIER)
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 11, 27).star(1, 11, 23).star(2, 4, 19).star(3, 4, 23)
+                                        .star(4, 18, 19).star(5, 18, 23).star(6, 11, 15).star(7, 11, 6)
+                                        .star(8, 4, 10).star(9, 18, 10)
+                                        .link(0, 1).link(1, 2).link(1, 4).link(3, 0).link(0, 5).link(5, 4).link(2, 3).link(1, 6).link(2, 6)
+                                        .link(4, 6).link(3, 0).link(0, 5).link(5, 4).link(2, 3).link(6, 8).link(6, 9).link(7, 8).link(7, 9)
                                         .build())
                                 .build())
                         .build())
@@ -65,7 +80,7 @@ public class PocketPistonItem extends WearableRelicItem {
 
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
-        float modifier = (float) getStatValue(stack, "distance", "interaction");
+        float modifier = (float) getStatValue(stack, "discarding", "range");
 
         return RelicAttributeModifier.builder()
                 .attribute(new RelicAttributeModifier.Modifier(Attributes.ENTITY_INTERACTION_RANGE, modifier, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
@@ -84,7 +99,7 @@ public class PocketPistonItem extends WearableRelicItem {
             if (!(event.getTarget() instanceof LivingEntity target) || !(stack.getItem() instanceof PocketPistonItem relic))
                 return;
 
-            float modifier = (float) relic.getStatValue(stack, "distance", "interaction");
+            float modifier = (float) relic.getStatValue(stack, "attacking", "interaction");
 
             Vec3 toEntity = target.position().subtract(player.position()).normalize().scale(modifier);
 
