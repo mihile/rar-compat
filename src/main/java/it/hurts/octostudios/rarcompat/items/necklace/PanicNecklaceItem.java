@@ -68,7 +68,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
             return;
-        System.out.println(this.getStatValue(stack, "panic", "movement"));
+
         double modifierMovementSpeed = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
 
         EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);

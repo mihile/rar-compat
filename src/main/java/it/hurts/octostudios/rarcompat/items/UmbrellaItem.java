@@ -65,9 +65,9 @@ public class UmbrellaItem extends WearableRelicItem {
                                 .requiredLevel(5)
                                 .stat(StatData.builder("knockback")
                                         .icon(StatIcons.DISTANCE)
-                                        .initialValue(1D, 2D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .initialValue(2D, 3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
+                                        .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 2, 5).star(1, 11, 3).star(2, 20, 6)
@@ -200,7 +200,7 @@ public class UmbrellaItem extends WearableRelicItem {
         }
 
         @SubscribeEvent
-        public static void onEntityHurt(LivingIncomingDamageEvent event) {
+        public static void onPlayerHurt(LivingIncomingDamageEvent event) {
             if (event.getEntity() instanceof Player player
                     && player.getUseItem().getItem() instanceof UmbrellaItem relic
                     && player.isUsingItem()
@@ -215,8 +215,8 @@ public class UmbrellaItem extends WearableRelicItem {
 
                 Vec3 zoneCenter = player.position().add(player.getLookAngle().normalize().scale(1.0));
 
-                AABB boundingBox = new AABB(
-                        zoneCenter.x - radius, zoneCenter.y - height / 2.0, zoneCenter.z - radius,
+                AABB boundingBox = new AABB
+                        (zoneCenter.x - radius, zoneCenter.y - height / 2.0, zoneCenter.z - radius,
                         zoneCenter.x + radius, zoneCenter.y + height / 2.0, zoneCenter.z + radius);
 
                 List<LivingEntity> entitiesInRange = player.level().getEntitiesOfClass(
@@ -225,7 +225,8 @@ public class UmbrellaItem extends WearableRelicItem {
                 );
 
                 for (LivingEntity entity : entitiesInRange) {
-                    Vec3 toEntity = entity.position().subtract(player.position()).normalize().scale(relic.getStatValue(player.getUseItem(), "shield", "knockback"));
+                    double stat = relic.getStatValue(player.getUseItem(), "shield", "knockback");
+                    Vec3 toEntity = entity.position().subtract(player.position()).normalize().scale(stat * 0.5);
 
                     entity.setDeltaMovement(toEntity.x, toEntity.y / 2, toEntity.z);
 
@@ -234,14 +235,14 @@ public class UmbrellaItem extends WearableRelicItem {
 
                     ((ServerLevel) player.level()).sendParticles
                             (ParticleTypes.CLOUD,
-                            startPosition.x,
-                            startPosition.y,
-                            startPosition.z,
-                            10,
-                            particleVelocity.x,
-                            particleVelocity.y,
-                            particleVelocity.z,
-                            0.1);
+                                    startPosition.x,
+                                    startPosition.y,
+                                    startPosition.z,
+                                    10,
+                                    particleVelocity.x,
+                                    particleVelocity.y,
+                                    particleVelocity.z,
+                                    0.1);
                 }
 
                 player.level().playSound(null, player.blockPosition(), SoundEvents.ALLAY_HURT, SoundSource.MASTER, 0.3f, 1 + (player.getRandom().nextFloat() * 0.25F));
