@@ -7,6 +7,7 @@ import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
+import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
@@ -72,6 +73,12 @@ public class HeliumFlamingoItem extends WearableRelicItem {
     }
 
     @Override
+    public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
+        if (stage == CastStage.END)
+            setAbilityCooldown(stack, "flying", 60);
+    }
+
+    @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || !isAbilityTicking(stack, "flying") || player.isInWater())
             return;
@@ -79,9 +86,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
         if (slotContext.entity().tickCount % 20 == 0)
             addTime(stack, 1);
 
-        int timeWorked = (int) getStatValue(stack, "flying", "time");
-
-        if (getTime(stack) > timeWorked) {
+        if (getTime(stack) > (int) getStatValue(stack, "flying", "time")) {
             player.setDeltaMovement(player.getDeltaMovement().x, -0.08, player.getKnownMovement().z);
             player.fallDistance = 0;
         }
@@ -103,8 +108,13 @@ public class HeliumFlamingoItem extends WearableRelicItem {
             if (getTime(stack) > timeWorked && player.onGround()) {
                 addTime(stack, -getTime(stack));
 
+                relic.setAbilityCooldown(stack, "flying", 40);
+
                 return;
             }
+
+            if(player.tickCount % 20 == 0)
+                relic.spreadRelicExperience(player, stack, 1);
 
             player.setSpeed(Math.min(1F, player.getSpeed()));
 

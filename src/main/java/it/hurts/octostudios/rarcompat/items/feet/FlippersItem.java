@@ -38,8 +38,8 @@ public class FlippersItem extends WearableRelicItem {
                         .build())
                 .style(StyleData.builder()
                         .tooltip(TooltipData.builder()
-                                .borderTop(0xffd53828)
-                                .borderBottom(0xffb2120d)
+                                .borderTop(0xff3c7090)
+                                .borderBottom(0xff3c7090)
                                 .build())
                         .build())
                 .leveling(new LevelingData(100, 10, 100))
@@ -54,5 +54,14 @@ public class FlippersItem extends WearableRelicItem {
         return RelicAttributeModifier.builder()
                 .attribute(new RelicAttributeModifier.Modifier(NeoForgeMod.SWIM_SPEED, (float) getStatValue(stack, "swimmer", "modifier")))
                 .build();
+    }
+
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if(!(slotContext.entity() instanceof  Player player))
+            return;
+
+        if(player.tickCount % 20 == 0 && player.isSwimming())
+            spreadRelicExperience(player, stack, 1);
     }
 }

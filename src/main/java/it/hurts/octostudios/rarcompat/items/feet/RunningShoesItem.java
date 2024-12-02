@@ -60,13 +60,17 @@ public class RunningShoesItem extends WearableRelicItem {
 
         AttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
-        if (speedAttribute == null)
+        if (speedAttribute == null || player.isSwimming() || !player.onGround())
             return;
 
         double currentSpeed = speedAttribute.getBaseValue();
 
         if (player.isSprinting()) {
             double newSpeed = Math.min(currentSpeed + speedIncrement, 3 * 0.1);
+
+            if(player.tickCount % 20 == 0)
+                spreadRelicExperience(player, stack, 1);
+
             speedAttribute.setBaseValue(newSpeed);
         } else {
             double newSpeed = Math.max(currentSpeed - speedIncrement * 4, 0.1);

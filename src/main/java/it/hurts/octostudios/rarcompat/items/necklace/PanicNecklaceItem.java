@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.necklace;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -7,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -16,6 +18,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -32,11 +37,13 @@ public class PanicNecklaceItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("panic")
                                 .stat(StatData.builder("movement")
+                                        .icon(StatIcons.MODIFIER)
                                         .initialValue(0.1D, 0.2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 10, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
+                                        .icon(StatIcons.DISTANCE)
                                         .initialValue(6D, 8D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
@@ -65,7 +72,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
             return;
-        System.out.println(this.getStatValue(stack, "panic", "movement"));
+
         double modifierMovementSpeed = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
 
         EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
@@ -82,5 +89,22 @@ public class PanicNecklaceItem extends WearableRelicItem {
                 .intersects(player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))));
 
         return trackedMobs.toArray().length;
+    }
+
+    @EventBusSubscriber
+    public static class PanicNecklaceEvent {
+
+        @SubscribeEvent
+        public static void onPlayerDamage(LivingIncomingDamageEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PANIC_NECKLACE.value());
+
+            if (!(stack.getItem() instanceof PanicNecklaceItem relic))
+                return;
+
+            relic.spreadRelicExperience(player, stack, 1);
+        }
     }
 }

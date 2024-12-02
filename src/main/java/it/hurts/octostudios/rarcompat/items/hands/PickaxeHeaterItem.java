@@ -111,20 +111,24 @@ public class PickaxeHeaterItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof PickaxeHeaterItem relic) || !relic.isAbilityTicking(stack, "heater") || getCharges(stack) < 1)
                 return;
 
-            ItemStack smeltingItem = getSmeltingResult(new ItemStack(event.getState().getBlock()), (ServerLevel) level);
+            for (ItemEntity itemStack : event.getDrops()) {
+                ItemStack smeltingItem = getSmeltingResult(itemStack.getItem(), (ServerLevel) level);
 
-            if (smeltingItem.is(ItemStack.EMPTY.getItem()))
-                return;
+                if (smeltingItem.is(ItemStack.EMPTY.getItem()))
+                    return;
 
-            BlockPos pos = event.getPos();
+                BlockPos pos = event.getPos();
 
-            spawnBurstParticles(level, pos);
+                spawnBurstParticles(level, pos);
 
-            addCharge(stack, -1);
+                addCharge(stack, -1);
 
-            level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, smeltingItem));
+                level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, smeltingItem));
 
-            event.setCanceled(true);
+                relic.spreadRelicExperience(player, stack, 1);
+
+                event.setCanceled(true);
+            }
         }
 
         public static void spawnBurstParticles(Level level, BlockPos centerPos) {

@@ -125,6 +125,9 @@ public class ObsidianSkullItem extends WearableRelicItem {
 
             if (getCharges(stack) <= stat) {
                 event.setNewDamage(0);
+
+                relic.spreadRelicExperience(player, stack, 1);
+
                 RandomSource random = level.getRandom();
 
                 ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(

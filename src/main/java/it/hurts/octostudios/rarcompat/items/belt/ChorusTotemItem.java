@@ -18,18 +18,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
-
-import java.awt.*;
-import java.util.Random;
 
 public class ChorusTotemItem extends WearableRelicItem {
 
@@ -78,6 +72,8 @@ public class ChorusTotemItem extends WearableRelicItem {
 
         player.teleportTo(pos.x, pos.y, pos.z);
 
+        spreadRelicExperience(player, stack, 1);
+
         setAbilityCooldown(stack, "past", (int) getStatValue(stack, "past", "capacity") * 20);
     }
 
@@ -94,11 +90,11 @@ public class ChorusTotemItem extends WearableRelicItem {
         if (tickCount % 5 == 0 && getToggled(stack))
             setWorldPos(stack, new WorldPosition(player));
         else {
-            if (tickCount % 20 == 0){
+            if (tickCount % 20 == 0) {
                 addTime(stack, 1);
             }
 
-            if (getTime(stack) >= 3) {
+            if (getTime(stack) >= 5) {
                 setWorldPos(stack, new WorldPosition(player));
                 addTime(stack, -getTime(stack));
 

@@ -100,8 +100,11 @@ public class FireGauntletItem extends WearableRelicItem {
             double sector = relic.getStatValue(stack, "arson", "sector") * 10;
             int flameTime = (int) relic.getStatValue(stack, "arson", "time");
 
-            for (LivingEntity entity : findMobsInCone(player, attackRange, sector * 10))
+            for (LivingEntity entity : findMobsInCone(player, attackRange, sector * 10)) {
                 entity.setRemainingFireTicks(flameTime * 20);
+
+                relic.spreadRelicExperience(player, stack, 1);
+            }
 
             spawnDirectionalArc(player, sector, attackRange);
         }
@@ -121,7 +124,7 @@ public class FireGauntletItem extends WearableRelicItem {
             Random random = new Random();
 
             for (double d = 0; d <= rangeAttack; d += 0.4) {
-                int particleCount = (int) (arcAngle / 2 + d);
+                int particleCount = (int) (arcAngle / 4 + d);
 
                 for (int i = 0; i <= particleCount; i++) {
                     double angleStep = (endAngle - startAngle) / particleCount;
@@ -132,7 +135,7 @@ public class FireGauntletItem extends WearableRelicItem {
 
                     ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(
                                     new Color(200 + random.nextInt(56), random.nextInt(100), random.nextInt(20)),
-                                    0.8F, 5, 0.9F),
+                                    0.8F, 20, 0.9F),
                             x, centerY, z,
                             0, 0, 0, 0, 0);
                 }
