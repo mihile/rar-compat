@@ -104,7 +104,7 @@ public class PickaxeHeaterItem extends WearableRelicItem {
                 return;
 
             Level level = player.level();
-            System.out.println(getCharges(stack));
+
             for (ItemEntity itemStack : event.getDrops()) {
                 ItemStack smeltingItem = getSmeltingResult(itemStack.getItem(), (ServerLevel) level);
 
