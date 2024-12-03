@@ -104,7 +104,7 @@ public class PickaxeHeaterItem extends WearableRelicItem {
                 return;
 
             Level level = player.level();
-
+            System.out.println(getCharges(stack));
             for (ItemEntity itemStack : event.getDrops()) {
                 ItemStack smeltingItem = getSmeltingResult(itemStack.getItem(), (ServerLevel) level);
 
@@ -145,10 +145,14 @@ public class PickaxeHeaterItem extends WearableRelicItem {
         }
 
         public static ItemStack getSmeltingResult(ItemStack stack, ServerLevel level) {
-            Optional<RecipeHolder<SmeltingRecipe>> optionalRecipe =
-                    level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
+            for (RecipeHolder<SmeltingRecipe> recipeHolder : level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
+                SmeltingRecipe recipe = recipeHolder.value();
 
-            return optionalRecipe.map(recipeHolder -> recipeHolder.value().getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
+                if (recipe.matches(new SingleRecipeInput(stack), level))
+                    return recipe.getResultItem(level.registryAccess());
+            }
+
+            return ItemStack.EMPTY;
         }
     }
 }

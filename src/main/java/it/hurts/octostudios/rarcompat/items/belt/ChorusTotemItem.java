@@ -111,6 +111,20 @@ public class ChorusTotemItem extends WearableRelicItem {
             }
         }
     }
+//    public boolean canPlayerMove(Player player, Vec3 startPosition, Vec3 endPosition, int ticks) {
+//        // Вычисляем пройденное расстояние
+//        double traveledDistance = startPosition.distanceTo(endPosition);
+//
+//        // Получаем скорость игрока
+//        Vec3 movement = player.getKnownMovement();
+//        double playerSpeed = movement.();
+//
+//        // Вычисляем максимальное расстояние, которое игрок мог пройти за 10 тиков
+//        double maxDistance = playerSpeed * ticks;
+//
+//        // Сравниваем фактическое расстояние с максимально возможным
+//        return traveledDistance <= maxDistance;
+//    }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
