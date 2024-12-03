@@ -80,7 +80,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
         if (time >= 3 && charges > 0 && charges < stat) {
             addCharges(stack, -1);
             addTime(stack, -time);
-        } else if (time >= 60) {
+        } else if (time >= 60 && charges > 0) {
             addCharges(stack, -charges);
             addTime(stack, -time);
 

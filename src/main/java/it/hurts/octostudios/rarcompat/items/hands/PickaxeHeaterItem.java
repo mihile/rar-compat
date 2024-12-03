@@ -21,25 +21,19 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
@@ -84,7 +78,7 @@ public class PickaxeHeaterItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.tickCount % 100 != 0)
             return;
 
-        if (MathUtils.round(getStatValue(stack, "heater", "capacity"), 0) > getCharges(stack))
+        if (MathUtils.round(getStatValue(stack, "heater", "capacity"), 0) >= getCharges(stack))
             addCharge(stack, 1);
     }
 
@@ -104,12 +98,12 @@ public class PickaxeHeaterItem extends WearableRelicItem {
             if (!(event.getBreaker() instanceof Player player))
                 return;
 
-            Level level = player.level();
-
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PICKAXE_HEATER.value());
 
-            if (!(stack.getItem() instanceof PickaxeHeaterItem relic) || !relic.isAbilityTicking(stack, "heater") || getCharges(stack) < 1)
+            if (!(stack.getItem() instanceof PickaxeHeaterItem relic) || !relic.isAbilityTicking(stack, "heater") || getCharges(stack) <= 1)
                 return;
+
+            Level level = player.level();
 
             for (ItemEntity itemStack : event.getDrops()) {
                 ItemStack smeltingItem = getSmeltingResult(itemStack.getItem(), (ServerLevel) level);
@@ -152,7 +146,7 @@ public class PickaxeHeaterItem extends WearableRelicItem {
 
         public static ItemStack getSmeltingResult(ItemStack stack, ServerLevel level) {
             Optional<RecipeHolder<SmeltingRecipe>> optionalRecipe =
-                    Objects.requireNonNull(level.getServer()).getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
+                    level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
 
             return optionalRecipe.map(recipeHolder -> recipeHolder.value().getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
         }

@@ -77,12 +77,18 @@ public class HeliumFlamingoItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || !isAbilityTicking(stack, "flying") || player.isInWater())
             return;
 
-        if (slotContext.entity().tickCount % 20 == 0 && getToggled(stack))
+        if (player.tickCount % 20 == 0 && getToggled(stack)) {
             addTime(stack, 1);
+            spreadRelicExperience(player, stack, 1);
+        }
 
-        if (getTime(stack) >= (int) getStatValue(stack, "flying", "time")) {
+        int timeWorked = (int) getStatValue(stack, "flying", "time");
+
+        if (getTime(stack) >= timeWorked || player.onGround()) {
             player.setDeltaMovement(player.getDeltaMovement().x, -0.08, player.getKnownMovement().z);
             player.fallDistance = 0;
+
+            setToggled(stack, false);
         }
     }
 
@@ -120,6 +126,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
 
                 relic.setAbilityCooldown(stack, "flying", 40);
                 setToggled(stack, false);
+                event.setResult(EventResult.FAIL);
 
                 return;
             }
@@ -127,9 +134,6 @@ public class HeliumFlamingoItem extends WearableRelicItem {
             if (relic.isAbilityTicking(stack, "flying") && getTime(stack) <= timeWorked && player.isSprinting()) {
                 event.setResult(EventResult.SUCCESS);
                 setToggled(stack, true);
-
-                if (player.tickCount % 20 == 0)
-                    relic.spreadRelicExperience(player, stack, 1);
             }
         }
     }
