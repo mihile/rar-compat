@@ -24,10 +24,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
@@ -35,10 +36,8 @@ import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
 import java.util.Optional;
-import java.util.Random;
 
 public class PickaxeHeaterItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -75,15 +74,15 @@ public class PickaxeHeaterItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 100 != 0)
+        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 100 != 0
+                || getCharges(stack) >= Math.round(getStatValue(stack, "heater", "capacity")))
             return;
 
-        if (MathUtils.round(getStatValue(stack, "heater", "capacity"), 0) >= getCharges(stack))
-            addCharge(stack, 1);
+        addCharges(stack, 1);
     }
 
-    public static void addCharge(ItemStack stack, int val) {
-        stack.set(DataComponentRegistry.CHARGE, getCharges(stack) + val);
+    public static void addCharges(ItemStack stack, int amount) {
+        stack.set(DataComponentRegistry.CHARGE, getCharges(stack) + amount);
     }
 
     public static int getCharges(ItemStack stack) {
@@ -92,67 +91,60 @@ public class PickaxeHeaterItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class PickaxeHeaterEvent {
-
         @SubscribeEvent
         public static void onPlayerAttack(BlockDropsEvent event) {
             if (!(event.getBreaker() instanceof Player player))
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PICKAXE_HEATER.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.PICKAXE_HEATER.value());
+            var level = player.getCommandSenderWorld();
 
-            if (!(stack.getItem() instanceof PickaxeHeaterItem relic) || !relic.isAbilityTicking(stack, "heater") || getCharges(stack) <= 1)
+            if (level.isClientSide() || !(stack.getItem() instanceof PickaxeHeaterItem relic)
+                    || !relic.isAbilityTicking(stack, "heater") || getCharges(stack) <= 1)
                 return;
 
-            Level level = player.level();
+            var serverLevel = (ServerLevel) level;
 
-            for (ItemEntity itemStack : event.getDrops()) {
-                ItemStack smeltingItem = getSmeltingResult(itemStack.getItem(), (ServerLevel) level);
+            var smelted = false;
 
-                if (smeltingItem.is(ItemStack.EMPTY.getItem()))
-                    return;
+            for (ItemEntity drop : event.getDrops()) {
+                var source = drop.getItem();
+                var result = getSmeltingResult(source, serverLevel);
 
-                BlockPos pos = event.getPos();
+                if (!smelted && source != result)
+                    smelted = true;
 
-                spawnBurstParticles(level, pos);
+                drop.setItem(result);
+            }
 
-                addCharge(stack, -1);
+            if (smelted) {
+                spawnBurstParticles(serverLevel, event.getPos());
 
-                level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, smeltingItem));
+                addCharges(stack, -1);
 
                 relic.spreadRelicExperience(player, stack, 1);
-
-                event.setCanceled(true);
             }
         }
 
-        public static void spawnBurstParticles(Level level, BlockPos centerPos) {
-            double centerX = centerPos.getX() + 0.5;
-            double centerY = centerPos.getY() + 0.5;
-            double centerZ = centerPos.getZ() + 0.5;
+        public static void spawnBurstParticles(ServerLevel level, BlockPos centerPos) {
+            var center = centerPos.getCenter();
+            var random = level.getRandom();
 
-            Random random = new Random();
+            level.sendParticles(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(106), random.nextInt(50), 50 + random.nextInt(51), 255),
+                    0.6F, 20, 0.85F), center.x(), center.y(), center.z(), 25, 0.3, 0.3, 0.3, 0.01);
+        }
+    }
 
-            for (int i = 0; i < 25; i++) {
-                ((ServerLevel) level).sendParticles(
-                        ParticleUtils.constructSimpleSpark(
-                                new Color(150 + random.nextInt(106), random.nextInt(50), 50 + random.nextInt(51), 255),
-                                0.6F, 20, 0.85F),
-                        centerX, centerY, centerZ,
-                        1,
-                        0.3, 0.3, 0.3,
-                        0.01);
-            }
+    public static ItemStack getSmeltingResult(ItemStack stack, ServerLevel level) {
+        var entry = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
+
+        if (entry.isPresent()) {
+            var result = entry.get().value().getResultItem(level.registryAccess());
+
+            if (!result.isEmpty())
+                return result.copyWithCount(stack.getCount() * result.getCount());
         }
 
-        public static ItemStack getSmeltingResult(ItemStack stack, ServerLevel level) {
-            for (RecipeHolder<SmeltingRecipe> recipeHolder : level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
-                SmeltingRecipe recipe = recipeHolder.value();
-
-                if (recipe.matches(new SingleRecipeInput(stack), level))
-                    return recipe.getResultItem(level.registryAccess());
-            }
-
-            return ItemStack.EMPTY;
-        }
+        return stack;
     }
 }
