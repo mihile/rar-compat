@@ -111,7 +111,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
         player.setDeltaMovement(motion.x, -0.15, motion.z);
 
-        if (player.tickCount % 20 == 0)
+        if (player.tickCount % 20 == 0 && !player.onGround())
             spreadRelicExperience(player, stack, 1);
 
         createParticle(level, player);

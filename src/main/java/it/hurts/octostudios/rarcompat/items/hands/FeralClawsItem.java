@@ -138,7 +138,6 @@ public class FeralClawsItem extends WearableRelicItem {
             addAttackCount(stack, 1);
             addTime(stack, -getTime(stack));
 
-
             resetAttribute(player, stack, relic);
         }
     }

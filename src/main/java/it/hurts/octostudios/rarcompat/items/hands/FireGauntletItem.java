@@ -52,7 +52,7 @@ public class FireGauntletItem extends WearableRelicItem {
                                 .stat(StatData.builder("sector")
                                         .icon(StatIcons.DISTANCE)
                                         .initialValue(0.8D, 0.9D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.35D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("time")

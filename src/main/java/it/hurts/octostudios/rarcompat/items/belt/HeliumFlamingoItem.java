@@ -22,19 +22,13 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.data.fixes.NeoForgeEntityLegacyAttributesFix;
 import top.theillusivec4.curios.api.SlotContext;
-
-import static it.hurts.octostudios.rarcompat.items.belt.HeliumFlamingoItem.HeliumFlamingoEvent.addTime;
-import static it.hurts.octostudios.rarcompat.items.belt.HeliumFlamingoItem.HeliumFlamingoEvent.getTime;
 
 public class HeliumFlamingoItem extends WearableRelicItem {
 
@@ -75,7 +69,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
         if (stage == CastStage.END)
-            setAbilityCooldown(stack, "flying", 60);
+            setToggled(stack, false);
     }
 
     @Override
@@ -83,13 +77,35 @@ public class HeliumFlamingoItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || !isAbilityTicking(stack, "flying") || player.isInWater())
             return;
 
-        if (slotContext.entity().tickCount % 20 == 0)
+        if (player.tickCount % 20 == 0 && getToggled(stack)) {
             addTime(stack, 1);
+            spreadRelicExperience(player, stack, 1);
+        }
 
-        if (getTime(stack) > (int) getStatValue(stack, "flying", "time")) {
+        int timeWorked = (int) getStatValue(stack, "flying", "time");
+
+        if (getTime(stack) >= timeWorked || player.onGround()) {
             player.setDeltaMovement(player.getDeltaMovement().x, -0.08, player.getKnownMovement().z);
             player.fallDistance = 0;
+
+            setToggled(stack, false);
         }
+    }
+
+    public static boolean getToggled(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TOGGLED, false);
+    }
+
+    public static void setToggled(ItemStack stack, boolean val) {
+        stack.set(DataComponentRegistry.TOGGLED, val);
+    }
+
+    public static void addTime(ItemStack stack, int val) {
+        stack.set(DataComponentRegistry.TIME, getTime(stack) + val);
+    }
+
+    public static int getTime(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TIME, 0);
     }
 
     @EventBusSubscriber
@@ -100,7 +116,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.HELIUM_FLAMINGO.value());
 
-            if (!(stack.getItem() instanceof HeliumFlamingoItem relic) || player.isInWater() || player.getSpeed() >= 0.15)
+            if (!(stack.getItem() instanceof HeliumFlamingoItem relic) || player.isInWater() || player.getSpeed() >= 0.132)
                 return;
 
             int timeWorked = (int) relic.getStatValue(stack, "flying", "time");
@@ -109,26 +125,16 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                 addTime(stack, -getTime(stack));
 
                 relic.setAbilityCooldown(stack, "flying", 40);
+                setToggled(stack, false);
+                event.setResult(EventResult.FAIL);
 
                 return;
             }
 
-            if(player.tickCount % 20 == 0)
-                relic.spreadRelicExperience(player, stack, 1);
-
-            player.setSpeed(Math.min(1F, player.getSpeed()));
-
-            if (relic.isAbilityTicking(stack, "flying") && getTime(stack) <= timeWorked)
+            if (relic.isAbilityTicking(stack, "flying") && getTime(stack) <= timeWorked && player.isSprinting()) {
                 event.setResult(EventResult.SUCCESS);
+                setToggled(stack, true);
+            }
         }
-
-        public static void addTime(ItemStack stack, int val) {
-            stack.set(DataComponentRegistry.TIME, getTime(stack) + val);
-        }
-
-        public static int getTime(ItemStack stack) {
-            return stack.getOrDefault(DataComponentRegistry.TIME, 0);
-        }
-
     }
 }

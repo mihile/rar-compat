@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.belt;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -17,12 +18,17 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class ChorusTotemItem extends WearableRelicItem {
@@ -33,17 +39,7 @@ public class ChorusTotemItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("past")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
-                                        .predicate("past", PredicateType.CAST, (player, stack) -> {
-
-                                            WorldPosition lastPos = getWorldPos(stack, player);
-                                            WorldPosition currentPos = new WorldPosition(player);
-
-                                            double distance = Math.sqrt(Math.pow(currentPos.getPos().x - lastPos.getPos().x, 2) +
-                                                    Math.pow(currentPos.getPos().y - lastPos.getPos().y, 2) +
-                                                    Math.pow(currentPos.getPos().z - lastPos.getPos().z, 2));
-
-                                            return distance > 5;
-                                        })
+                                        .predicate("past", PredicateType.CAST, (player, stack) -> !teleportedPlayer(player, player.position(), getWorldPos(stack, player).getPos()))
                                         .build())
                                 .stat(StatData.builder("capacity")
                                         .icon(StatIcons.CAPACITY)
@@ -75,11 +71,14 @@ public class ChorusTotemItem extends WearableRelicItem {
         spreadRelicExperience(player, stack, 1);
 
         setAbilityCooldown(stack, "past", (int) getStatValue(stack, "past", "capacity") * 20);
+
+        if(stage == CastStage.END)
+            setToggled(stack, true);
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player) || !teleportedPlayer(player, player.position(), getWorldPos(stack, player).getPos()))
             return;
 
         int tickCount = player.tickCount;
@@ -87,7 +86,7 @@ public class ChorusTotemItem extends WearableRelicItem {
         if (canPlayerUseAbility(player, stack, "past"))
             setToggled(stack, false);
 
-        if (tickCount % 5 == 0 && getToggled(stack))
+        if (tickCount % 2 == 0 && getToggled(stack))
             setWorldPos(stack, new WorldPosition(player));
         else {
             if (tickCount % 20 == 0) {
@@ -104,6 +103,10 @@ public class ChorusTotemItem extends WearableRelicItem {
                     player.playSound(SoundEvents.BEE_DEATH, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
             }
         }
+    }
+
+    public boolean teleportedPlayer(Player player, Vec3 startPosition, Vec3 endPosition) {
+        return startPosition.distanceTo(endPosition) <= player.getKnownMovement().length() * 10;
     }
 
     @Override
