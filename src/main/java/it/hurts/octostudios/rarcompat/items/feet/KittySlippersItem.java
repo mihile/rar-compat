@@ -30,12 +30,17 @@ import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
@@ -114,37 +119,64 @@ public class KittySlippersItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
             return;
+//
+//        var phantom = player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(16));
+//        for (Phantom creeper : creepers) {
+//            if (creeper.getTarget() instanceof Player) {  // Проверяем, что цель крипера - игрок
+//
+//                Vec3 playerPosition = player.position();
+//                Vec3 creeperPosition = creeper.position();
+//
+//                // Рассчитываем вектор от крипера к игроку
+//                Vec3 directionToPlayer = playerPosition.subtract(creeperPosition);
+//
+//                // Инвертируем вектор, чтобы получить направление от игрока
+//                Vec3 escapeDirection = directionToPlayer.normalize().scale(-1);  // Убираем знак, чтобы убегать
+//
+//                // Применяем deltaMovement (увеличиваем скорость движения крипера)
+//                creeper.setDeltaMovement(escapeDirection.scale(0.5)); // 0.5 - скорость движения
+//
+//                // Поворачиваем крипера в сторону, куда он бежит
+//                float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));  // Рассчитываем угол поворота
+//                creeper.yBodyRot = yaw;  // Обновляем угол поворота по оси Y
+//                creeper.yHeadRot = yaw;  // Обновляем угол поворота головы
+//            }
+//        }
+//
 
-        int avoidRadius = 4;
+        var creepers = player.level().getEntitiesOfClass(Creeper.class, player.getBoundingBox().inflate(16));
+        for (Creeper creeper : creepers) {
+            Vec3 creeperPosition = creeper.position();
 
-        AABB area = new AABB(
-                player.getX() - avoidRadius, player.getY() - avoidRadius, player.getZ() - avoidRadius,
-                player.getX() + avoidRadius, player.getY() + avoidRadius, player.getZ() + avoidRadius
-        );
+            Vec3 escapeDirection =  player.position().subtract(creeperPosition).normalize().scale(-1);
 
-        for (Creeper creeper : player.level().getEntitiesOfClass(Creeper.class, area)) {
-            if (creeper.getTarget() instanceof Player)
-                creeper.goalSelector.addGoal(0, new AvoidEntityGoal<>(creeper, Player.class, avoidRadius, 1.0, 1.5));
+            Vec3 escapePosition = creeperPosition.add(escapeDirection.scale(5));
+
+            PathNavigation navigation = creeper.getNavigation();
+            Path path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
+
+            if (path != null)
+                navigation.moveTo(path, 1.5);
+
+            float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
+            creeper.yBodyRot = yaw;
+            creeper.yHeadRot = yaw;
         }
-    }
 
-    public void searchMobs(Mob entity, Player player) {
-        int avoidRadius = 4;
-
-        AABB area = new AABB(
-                player.getX() - avoidRadius, player.getY() - avoidRadius, player.getZ() - avoidRadius,
-                player.getX() + avoidRadius, player.getY() + avoidRadius, player.getZ() + avoidRadius
-        );
-
-
-        for (Mob creeper : player.level().getEntitiesOfClass(entity.getClass(), area)) {
-            if (creeper.getTarget() instanceof Player)
-                creeper.goalSelector.addGoal(0, new AvoidEntityGoal<>((PathfinderMob) creeper, Player.class, avoidRadius, 1.0, 1.5));
-        }
     }
 
     @EventBusSubscriber
     public static class KittySlippersEvent {
+        @SubscribeEvent
+        public static void onLivingChangeTargetEvent(LivingChangeTargetEvent event) {
+            if (event.getEntity() instanceof Creeper && event.getNewAboutToBeSetTarget() instanceof Player player) {
+                ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
+
+                if (itemStack.getItem() instanceof KittySlippersItem)
+                    event.setCanceled(true);
+            }
+        }
+
         @SubscribeEvent
         public static void onLivingHurt(LivingDamageEvent.Pre event) {
             if (!(event.getEntity() instanceof Player player))
