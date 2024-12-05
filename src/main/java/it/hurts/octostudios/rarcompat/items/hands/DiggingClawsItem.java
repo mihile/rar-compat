@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.hands;
 
+import artifacts.ability.UpgradeToolTierAbility;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -16,12 +17,19 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.references.Blocks;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Random;
 
@@ -44,6 +52,9 @@ public class DiggingClawsItem extends WearableRelicItem {
                                         .link(0, 1).link(2, 3).link(4, 5).link(6, 7)
                                         .build())
                                 .build())
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
+                                .build())
                         .build())
                 .style(StyleData.builder()
                         .tooltip(TooltipData.builder()
@@ -60,6 +71,21 @@ public class DiggingClawsItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class DiggingClawsEvent {
+
+        @SubscribeEvent
+        private static void onDiggingClawsHarvestCheck(PlayerEvent.HarvestCheck event) {
+            Player player = event.getEntity();
+            BlockState blockState = event.getTargetBlock();
+
+            // Получаем текущий инструмент игрока
+            ItemStack itemStack = player.getMainHandItem();
+
+            // Получаем свойства блока
+
+
+            // Если игрок использует инструмент ниже каменного уровня, отменяем проверку
+
+        }
 
         @SubscribeEvent
         public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
