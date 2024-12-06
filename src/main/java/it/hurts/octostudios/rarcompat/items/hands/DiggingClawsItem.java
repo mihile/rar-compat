@@ -1,7 +1,9 @@
 package it.hurts.octostudios.rarcompat.items.hands;
 
 import artifacts.ability.UpgradeToolTierAbility;
+import artifacts.registry.ModAbilities;
 import artifacts.registry.ModItems;
+import artifacts.util.AbilityHelper;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
@@ -17,12 +19,16 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import lombok.Getter;
 import net.minecraft.references.Blocks;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -71,21 +77,22 @@ public class DiggingClawsItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class DiggingClawsEvent {
-
         @SubscribeEvent
         private static void onDiggingClawsHarvestCheck(PlayerEvent.HarvestCheck event) {
             BlockState blockState = event.getTargetBlock();
             Player player = event.getEntity();
 
-            ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-            if (!(itemStack.getItem() instanceof DiggingClawsItem relic))
+            if (!(stack.getItem() instanceof DiggingClawsItem relic))
                 return;
 
-            if (blockState.is(BlockTags.NEEDS_STONE_TOOL) || blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)
-                    && relic.isAbilityTicking(itemStack, "passive"))
+            if (player.getMainHandItem().getItem() instanceof TieredItem tieredItem) {
+                if (relic.canPlayerUseAbility(player, stack, "passive"))
+                    event.setCanHarvest(isCorrectTierForDrops(getTierFromString((Tiers) tieredItem.getTier()), blockState));
+            } else if (!event.getTargetBlock().is(BlockTags.INCORRECT_FOR_WOODEN_TOOL)) {
                 event.setCanHarvest(true);
-
+            }
         }
 
         @SubscribeEvent
@@ -113,6 +120,33 @@ public class DiggingClawsItem extends WearableRelicItem {
 
             if (random.nextFloat(1) <= (hardness / 20))
                 relic.spreadRelicExperience(player, stack, 1);
+        }
+
+        public static int getTierFromString(Tiers tier) {
+            return switch (tier) {
+                case Tiers.WOOD -> 1;
+                case Tiers.STONE -> 2;
+                case Tiers.IRON -> 3;
+                case Tiers.GOLD -> 4;
+                case Tiers.DIAMOND -> 5;
+                case Tiers.NETHERITE -> 6;
+            };
+        }
+
+        public static boolean isCorrectTierForDrops(int i, BlockState state) {
+            if (!state.requiresCorrectToolForDrops()) {
+                return true;
+            }
+
+            if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
+                return i >= 4;
+            } else if (state.is(BlockTags.NEEDS_IRON_TOOL)) {
+                return i >= 2;
+            } else if (state.is(BlockTags.NEEDS_STONE_TOOL)) {
+                return i >= 1;
+            }
+
+            return false;
         }
     }
 }
