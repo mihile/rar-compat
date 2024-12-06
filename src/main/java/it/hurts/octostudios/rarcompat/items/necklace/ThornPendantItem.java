@@ -79,20 +79,16 @@ public class ThornPendantItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class Event {
-
         @SubscribeEvent
         public static void onReceivingDamage(LivingIncomingDamageEvent event) {
-            Entity entityAttacker = event.getSource().getEntity();
-
-            if (!(event.getEntity() instanceof Player player) || !(entityAttacker instanceof LivingEntity attacker) || attacker == player)
+            if (!(event.getEntity() instanceof Player player) || !(event.getSource().getEntity() instanceof LivingEntity attacker) || attacker == player)
                 return;
 
-            Level level = attacker.level();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.THORN_PENDANT.value());
+
             Random random = new Random();
 
-            if (!(stack.getItem() instanceof ThornPendantItem relic) || level.isClientSide
-                    || random.nextInt() > relic.getStatValue(stack, "poison", "chance"))
+            if (!(stack.getItem() instanceof ThornPendantItem relic) || random.nextDouble(1) >= relic.getStatValue(stack, "poison", "chance"))
                 return;
 
             float multiplier = (float) relic.getStatValue(stack, "poison", "multiplier");
@@ -103,7 +99,7 @@ public class ThornPendantItem extends WearableRelicItem {
             attacker.hurt(event.getSource(), event.getAmount() * multiplier);
             attacker.addEffect(new MobEffectInstance(MobEffects.POISON, time, 1));
 
-            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + random.nextInt(50), 200 + random.nextInt(55), 50 + random.nextInt(50)), 0.4F, 30, 0.95F),
+            ((ServerLevel) player.level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + random.nextInt(50), 200 + random.nextInt(55), 50 + random.nextInt(50)), 0.4F, 30, 0.95F),
                     attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
         }
 

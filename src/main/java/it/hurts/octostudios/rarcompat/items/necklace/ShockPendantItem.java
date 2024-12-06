@@ -19,6 +19,8 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.data.worldgen.AncientCityStructurePieces;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -57,6 +59,9 @@ public class ShockPendantItem extends WearableRelicItem {
                                         .link(1, 0).link(2, 0).link(3, 0).link(4, 0)
                                         .build())
                                 .build())
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
+                                .build())
                         .build())
                 .style(StyleData.builder()
                         .tooltip(TooltipData.builder()
@@ -72,36 +77,43 @@ public class ShockPendantItem extends WearableRelicItem {
     }
 
     @EventBusSubscriber
-    public static class Event {
+    public static class ShockPendantEvent {
 
         @SubscribeEvent
         public static void onReceivingDamage(LivingIncomingDamageEvent event) {
-            Entity attacker = event.getSource().getEntity();
+            DamageSource damageSource = event.getSource();
+            Entity attacker = damageSource.getEntity();
 
-            if (!(event.getEntity() instanceof Player player) || attacker == null || attacker == player)
+            if (!(event.getEntity() instanceof Player player) || attacker == null)
                 return;
 
-            Random random = new Random();
-            Level level = attacker.level();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value());
 
-            if (!(stack.getItem() instanceof ShockPendantItem relic) || level.isClientSide
-                    || random.nextInt() > relic.getStatValue(stack, "lightning", "chance"))
+            Level level = player.getCommandSenderWorld();
+
+            if (!(stack.getItem() instanceof ShockPendantItem relic) || level.isClientSide())
                 return;
 
-            relic.spreadRelicExperience(player, stack, 1);
+            if (damageSource.is(DamageTypeTags.IS_LIGHTNING) && relic.isAbilityTicking(stack, "passive"))
+                event.setCanceled(true);
 
-            LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+            Random random = new Random();
 
-            lightningBolt.setVisualOnly(true);
-            lightningBolt.setPos(attacker.position());
+            if (random.nextDouble(1) <= relic.getStatValue(stack, "lightning", "chance")) {
+                relic.spreadRelicExperience(player, stack, 1);
 
-            level.addFreshEntity(lightningBolt);
+                LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
 
-            attacker.hurt(lightningBolt.damageSources().lightningBolt(), (float) relic.getStatValue(stack, "lightning", "damage"));
+                lightningBolt.setVisualOnly(true);
+                lightningBolt.setPos(attacker.position());
 
-            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.4F, 30, 0.95F),
-                    attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
+                level.addFreshEntity(lightningBolt);
+
+                attacker.hurt(lightningBolt.damageSources().lightningBolt(), (float) relic.getStatValue(stack, "lightning", "damage"));
+
+                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.4F, 30, 0.95F),
+                        attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
+            }
         }
     }
 }

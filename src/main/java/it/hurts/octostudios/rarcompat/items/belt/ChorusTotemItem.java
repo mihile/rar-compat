@@ -1,6 +1,5 @@
 package it.hurts.octostudios.rarcompat.items.belt;
 
-import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -18,17 +17,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
-import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class ChorusTotemItem extends WearableRelicItem {
@@ -39,7 +33,7 @@ public class ChorusTotemItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("past")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
-                                        .predicate("past", PredicateType.CAST, (player, stack) -> !teleportedPlayer(player, player.position(), getWorldPos(stack, player).getPos()))
+                                        .predicate("past", PredicateType.CAST, (player, stack) -> teleportedPlayer(player, player.position(), getWorldPos(stack, player).getPos()))
                                         .build())
                                 .stat(StatData.builder("capacity")
                                         .icon(StatIcons.CAPACITY)
@@ -72,13 +66,13 @@ public class ChorusTotemItem extends WearableRelicItem {
 
         setAbilityCooldown(stack, "past", (int) getStatValue(stack, "past", "capacity") * 20);
 
-        if(stage == CastStage.END)
+        if (stage == CastStage.END)
             setToggled(stack, true);
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !teleportedPlayer(player, player.position(), getWorldPos(stack, player).getPos()))
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
         int tickCount = player.tickCount;
@@ -106,15 +100,17 @@ public class ChorusTotemItem extends WearableRelicItem {
     }
 
     public boolean teleportedPlayer(Player player, Vec3 startPosition, Vec3 endPosition) {
-        return startPosition.distanceTo(endPosition) <= player.getKnownMovement().length() * 10;
+        return !(startPosition.distanceTo(endPosition) <= player.getKnownMovement().length() * 10);
     }
 
     @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack.getItem() == stack.getItem())
+    public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
+        if (prevStack.getItem() == stack.getItem())
             return;
 
         setWorldPos(stack, null);
+        setToggled(stack, true);
+        addTime(stack, -getTime(stack));
     }
 
     public static void setWorldPos(ItemStack stack, WorldPosition worldPosition) {
