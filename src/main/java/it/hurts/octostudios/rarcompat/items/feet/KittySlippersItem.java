@@ -33,6 +33,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -119,33 +120,8 @@ public class KittySlippersItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
             return;
-//
-//        var phantom = player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(16));
-//        for (Phantom creeper : creepers) {
-//            if (creeper.getTarget() instanceof Player) {  // Проверяем, что цель крипера - игрок
-//
-//                Vec3 playerPosition = player.position();
-//                Vec3 creeperPosition = creeper.position();
-//
-//                // Рассчитываем вектор от крипера к игроку
-//                Vec3 directionToPlayer = playerPosition.subtract(creeperPosition);
-//
-//                // Инвертируем вектор, чтобы получить направление от игрока
-//                Vec3 escapeDirection = directionToPlayer.normalize().scale(-1);  // Убираем знак, чтобы убегать
-//
-//                // Применяем deltaMovement (увеличиваем скорость движения крипера)
-//                creeper.setDeltaMovement(escapeDirection.scale(0.5)); // 0.5 - скорость движения
-//
-//                // Поворачиваем крипера в сторону, куда он бежит
-//                float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));  // Рассчитываем угол поворота
-//                creeper.yBodyRot = yaw;  // Обновляем угол поворота по оси Y
-//                creeper.yHeadRot = yaw;  // Обновляем угол поворота головы
-//            }
-//        }
-//
 
-        var creepers = player.level().getEntitiesOfClass(Creeper.class, player.getBoundingBox().inflate(16));
-        for (Creeper creeper : creepers) {
+        for (Creeper creeper : player.level().getEntitiesOfClass(Creeper.class, player.getBoundingBox().inflate(5))) {
             Vec3 creeperPosition = creeper.position();
 
             Vec3 escapeDirection =  player.position().subtract(creeperPosition).normalize().scale(-1);
@@ -163,6 +139,19 @@ public class KittySlippersItem extends WearableRelicItem {
             creeper.yHeadRot = yaw;
         }
 
+        for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(7))) {
+            if (phantom.getTarget() instanceof Player) {
+                Vec3 directionToPlayer = player.position().subtract(phantom.position());
+
+                Vec3 escapeDirection = directionToPlayer.normalize().scale(-1);
+
+                phantom.setDeltaMovement(escapeDirection.scale(0.5));
+
+                float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
+                phantom.yBodyRot = yaw;
+                phantom.yHeadRot = yaw;
+            }
+        }
     }
 
     @EventBusSubscriber

@@ -74,16 +74,17 @@ public class DiggingClawsItem extends WearableRelicItem {
 
         @SubscribeEvent
         private static void onDiggingClawsHarvestCheck(PlayerEvent.HarvestCheck event) {
-            Player player = event.getEntity();
             BlockState blockState = event.getTargetBlock();
+            Player player = event.getEntity();
 
-            // Получаем текущий инструмент игрока
-            ItemStack itemStack = player.getMainHandItem();
+            ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-            // Получаем свойства блока
+            if (!(itemStack.getItem() instanceof DiggingClawsItem relic))
+                return;
 
-
-            // Если игрок использует инструмент ниже каменного уровня, отменяем проверку
+            if (blockState.is(BlockTags.NEEDS_STONE_TOOL) || blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)
+                    && relic.isAbilityTicking(itemStack, "passive"))
+                event.setCanHarvest(true);
 
         }
 
