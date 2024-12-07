@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -46,6 +47,12 @@ public class PowerGloveItem extends WearableRelicItem {
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 2, 24).star(1, 8, 23).star(2, 5, 18).star(3, 5, 11)
+                                        .star(4, 8, 7).star(5, 14, 7).star(6, 20, 13).star(7, 20, 20)
+                                        .star(8, 15, 23).star(9, 20, 24)
+                                        .link(0, 1).link(1, 2).link(2, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 7).link(7, 8).link(8, 9)
                                         .build())
                                 .build())
                         .build())

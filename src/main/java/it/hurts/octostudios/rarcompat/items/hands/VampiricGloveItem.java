@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOp
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
 import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -37,6 +38,11 @@ public class VampiricGloveItem extends WearableRelicItem {
                                         .icon(StatIcons.MULTIPLIER)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 11, 9).star(1, 11, 13).star(2, 11, 20).star(3, 11, 24)
+                                        .star(4, 5, 13).star(5, 17, 13)
+                                        .link(0, 1).link(1, 2).link(2, 3).link(1, 4).link(1, 5)
                                         .build())
                                 .build())
                         .build())

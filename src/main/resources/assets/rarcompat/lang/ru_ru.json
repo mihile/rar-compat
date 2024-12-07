@@ -76,6 +76,8 @@
   "tooltip.relics.flame_pendant.ability.fire.stat.chance.value": "%1$s%%",
 
   "tooltip.relics.shock_pendant.description": "Разит молнией каждого, кто осмелится напасть на обладателя реликвии.",
+  "tooltip.relics.shock_pendant.ability.passive": "",
+  "tooltip.relics.shock_pendant.ability.passive.description": "",
   "tooltip.relics.shock_pendant.ability.lightning": "Молниеносная оборона",
   "tooltip.relics.shock_pendant.ability.lightning.description": "С шансом поражает молнией цель, атаковавшую игрока.",
   "tooltip.relics.shock_pendant.ability.lightning.stat.damage.title": "Урон молнии:",
@@ -148,6 +150,8 @@
   "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s%% за единицу сытости.",
 
   "tooltip.relics.digging_claws.description": "Укрепляет руки владельца реликвии, позволяя эффективнее разрубать любые блоки.",
+  "tooltip.relics.digging_claws.ability.passive": "",
+  "tooltip.relics.digging_claws.ability.passive.description": "",
   "tooltip.relics.digging_claws.ability.claws": "Скоростная добыча",
   "tooltip.relics.digging_claws.ability.claws.description": "Увеличивает скорость добычи блоков.",
   "tooltip.relics.digging_claws.ability.claws.stat.amount.title": "Модификатор скорости добычи:",
@@ -221,6 +225,8 @@
   "tooltip.relics.whoopee_cushion.ability.push.stat.chance.value": "%1$s%%",
 
   "tooltip.relics.kitty_slippers.description": "Наделяет носителя реликвии свойствами семейства кошачьих, в частности мягкими лапками и неисчисляемыми жизнями.",
+  "tooltip.relics.kitty_slippers.ability.passive": "",
+  "tooltip.relics.kitty_slippers.ability.fall.passive": "",
   "tooltip.relics.kitty_slippers.ability.fall": "Мягкие лапки",
   "tooltip.relics.kitty_slippers.ability.fall.description": "Увеличивает безопасную для падения высоту.",
   "tooltip.relics.kitty_slippers.ability.fall.stat.modifier.title": "Дополнительная высота:",
@@ -291,6 +297,7 @@
   "tooltip.relics.chorus_totem.ability.past.description": "",
   "tooltip.relics.chorus_totem.ability.past.stat.capacity.title": "",
   "tooltip.relics.chorus_totem.ability.past.stat.capacity.value": "",
+  "tooltip.relics.chorus_totem.ability.past.predicate.past": "",
 
   "tooltip.relics.running_shoes.description": "",
   "tooltip.relics.running_shoes.ability.runner": "",

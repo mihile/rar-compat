@@ -90,16 +90,13 @@ public class DiggingClawsItem extends WearableRelicItem {
             if (player.getMainHandItem().getItem() instanceof TieredItem tieredItem) {
                 if (relic.canPlayerUseAbility(player, stack, "passive"))
                     event.setCanHarvest(isCorrectTierForDrops(getTierFromString((Tiers) tieredItem.getTier()), blockState));
-            } else if (!event.getTargetBlock().is(BlockTags.INCORRECT_FOR_WOODEN_TOOL)) {
+            } else if (!event.getTargetBlock().is(BlockTags.INCORRECT_FOR_WOODEN_TOOL))
                 event.setCanHarvest(true);
-            }
         }
 
         @SubscribeEvent
         public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-            Player player = event.getEntity();
-
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
+            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ModItems.DIGGING_CLAWS.value());
 
             if (!(stack.getItem() instanceof DiggingClawsItem relic))
                 return;
@@ -115,10 +112,9 @@ public class DiggingClawsItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof DiggingClawsItem relic))
                 return;
 
-            float hardness = event.getState().getDestroySpeed(player.level(), player.blockPosition());
-            Random random = new Random();
+            float hardness = (event.getState().getDestroySpeed(player.level(), player.blockPosition()) / 20);
 
-            if (random.nextFloat(1) <= (hardness / 20))
+            if (new Random().nextFloat(1) <= hardness)
                 relic.spreadRelicExperience(player, stack, 1);
         }
 
@@ -142,7 +138,7 @@ public class DiggingClawsItem extends WearableRelicItem {
                 return i >= 4;
             } else if (state.is(BlockTags.NEEDS_IRON_TOOL)) {
                 return i >= 2;
-            } else if (state.is(BlockTags.NEEDS_STONE_TOOL)) {
+            } else if (state.is(BlockTags.NEEDS_STONE_TOOL) || !state.is(BlockTags.INCORRECT_FOR_WOODEN_TOOL)) {
                 return i >= 1;
             }
 
