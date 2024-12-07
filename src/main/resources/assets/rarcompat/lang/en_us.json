@@ -76,6 +76,8 @@
   "tooltip.relics.flame_pendant.ability.fire.stat.chance.value": "%1$s%%",
 
   "tooltip.relics.shock_pendant.description": "Strikes anyone with lightning who dares to attack the relic bearer.",
+  "tooltip.relics.shock_pendant.ability.passive": "",
+  "tooltip.relics.shock_pendant.ability.passive.description": "",
   "tooltip.relics.shock_pendant.ability.lightning": "Lightning Defense",
   "tooltip.relics.shock_pendant.ability.lightning.description": "Has a chance to strike the target that attacked the player with lightning.",
   "tooltip.relics.shock_pendant.ability.lightning.stat.damage.title": "Lightning Damage:",
@@ -148,6 +150,8 @@
   "tooltip.relics.onion_ring.ability.onion.stat.amount.value": "+%1$s%% per hunger point.",
 
   "tooltip.relics.digging_claws.description": "Strengthens the relic holder's hands, allowing for more efficient block breaking.",
+  "tooltip.relics.digging_claws.ability.passive": "",
+  "tooltip.relics.digging_claws.ability.passive.description": "",
   "tooltip.relics.digging_claws.ability.claws": "Speed Mining",
   "tooltip.relics.digging_claws.ability.claws.description": "Increases block mining speed.",
   "tooltip.relics.digging_claws.ability.claws.stat.amount.title": "Mining Speed Modifier:",
@@ -221,6 +225,8 @@
   "tooltip.relics.whoopee_cushion.ability.push.stat.chance.value": "%1$s%%",
 
   "tooltip.relics.kitty_slippers.description": "Grants the relic's wearer feline traits, including soft paws and countless lives.",
+  "tooltip.relics.kitty_slippers.ability.passive": "",
+  "tooltip.relics.kitty_slippers.ability.fall.passive": "",
   "tooltip.relics.kitty_slippers.ability.fall": "Soft Paws",
   "tooltip.relics.kitty_slippers.ability.fall.description": "Increases safe fall height.",
   "tooltip.relics.kitty_slippers.ability.fall.stat.modifier.title": "Additional Height:",
@@ -291,6 +297,7 @@
   "tooltip.relics.chorus_totem.ability.past.description": "",
   "tooltip.relics.chorus_totem.ability.past.stat.capacity.title": "",
   "tooltip.relics.chorus_totem.ability.past.stat.capacity.value": "",
+  "tooltip.relics.chorus_totem.ability.past.predicate.past": "",
 
   "tooltip.relics.running_shoes.description": "",
   "tooltip.relics.running_shoes.ability.runner": "",
