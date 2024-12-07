@@ -7,6 +7,8 @@
   "mixins": [
     "AbstractVillagerMixin",
     "RollLootTableModifierMixin",
+    "config.ConfigManagerMixin",
+    "config.ModConfigMixin",
     "init.ModItemsMixin"
   ],
   "client": [
