@@ -1,46 +1,32 @@
 package it.hurts.octostudios.rarcompat.items.feet;
 
 import artifacts.registry.ModItems;
-import artifacts.registry.ModSoundEvents;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -54,14 +40,12 @@ import java.awt.*;
 import java.util.Random;
 
 public class KittySlippersItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("fall")
                                 .stat(StatData.builder("modifier")
-                                        .icon(StatIcons.MODIFIER)
                                         .initialValue(2D, 4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
                                         .formatValue(value -> MathUtils.round(value, 1))
@@ -78,7 +62,6 @@ public class KittySlippersItem extends WearableRelicItem {
                         .ability(AbilityData.builder("resurrected")
                                 .requiredLevel(5)
                                 .stat(StatData.builder("chance")
-                                        .icon(StatIcons.CHANCE)
                                         .initialValue(0.05D, 0.1D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
@@ -102,7 +85,21 @@ public class KittySlippersItem extends WearableRelicItem {
                                 .borderBottom(0xff696969)
                                 .build())
                         .build())
-                .leveling(new LevelingData(100, 20, 100))
+                .leveling(LevelingData.builder()
+                        .initialCost(100)
+                        .maxLevel(20)
+                        .step(100)
+                        .sources(LevelingSourcesData.builder()
+                                .source(LevelingSourceData.abilityBuilder("fall")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
+                                        .build())
+                                .source(LevelingSourceData.abilityBuilder("resurrected")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
+                                        .build())
+                                .build())
+                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.JUNGLE)
                         .entry(LootCollections.VILLAGE)
@@ -125,7 +122,7 @@ public class KittySlippersItem extends WearableRelicItem {
         for (Creeper creeper : player.level().getEntitiesOfClass(Creeper.class, player.getBoundingBox().inflate(5))) {
             Vec3 creeperPosition = creeper.position();
 
-            Vec3 escapeDirection =  player.position().subtract(creeperPosition).normalize().scale(-1);
+            Vec3 escapeDirection = player.position().subtract(creeperPosition).normalize().scale(-1);
 
             Vec3 escapePosition = creeperPosition.add(escapeDirection.scale(5));
 

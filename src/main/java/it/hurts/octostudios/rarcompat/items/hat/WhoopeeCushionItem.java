@@ -5,16 +5,12 @@ import artifacts.registry.ModSoundEvents;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -32,8 +28,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class WhoopeeCushionItem extends WearableRelicItem {
@@ -44,20 +38,18 @@ public class WhoopeeCushionItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("push")
                                 .stat(StatData.builder("radius")
-                                        .icon(StatIcons.DISTANCE)
                                         .initialValue(3D, 5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.06)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
-                                        .icon(StatIcons.CHANCE)
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.075)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 10, 13).star(1, 8, 6).star(2, 16, 9).star(3, 17, 14)
-                                        .star(4,16, 22).star(5, 6, 21).star(6, 3, 13)
+                                        .star(4, 16, 22).star(5, 6, 21).star(6, 3, 13)
                                         .link(0, 1).link(0, 2).link(0, 3).link(0, 4).link(0, 5).link(0, 6).link(0, 6)
                                         .build())
                                 .build())
@@ -68,7 +60,17 @@ public class WhoopeeCushionItem extends WearableRelicItem {
                                 .borderBottom(0xff7c2a2a)
                                 .build())
                         .build())
-                .leveling(new LevelingData(100, 10, 100))
+                .leveling(LevelingData.builder()
+                        .initialCost(100)
+                        .maxLevel(10)
+                        .step(100)
+                        .sources(LevelingSourcesData.builder()
+                                .source(LevelingSourceData.abilityBuilder("push")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
+                                        .build())
+                                .build())
+                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
                         .build())
