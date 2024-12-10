@@ -4,10 +4,9 @@ import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.octostudios.rarcompat.items.belt.ObsidianSkullItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
@@ -50,13 +49,11 @@ public class FireGauntletItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("arson")
                                 .stat(StatData.builder("sector")
-                                        .icon(StatIcons.DISTANCE)
                                         .initialValue(0.8D, 0.9D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.35D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("time")
-                                        .icon(StatIcons.DURATION)
                                         .initialValue(2D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value, 1))
@@ -74,7 +71,17 @@ public class FireGauntletItem extends WearableRelicItem {
                                 .borderBottom(0xffd12e00)
                                 .build())
                         .build())
-                .leveling(new LevelingData(100, 10, 100))
+                .leveling(LevelingData.builder()
+                        .initialCost(100)
+                        .maxLevel(10)
+                        .step(100)
+                        .sources(LevelingSourcesData.builder()
+                                .source(LevelingSourceData.abilityBuilder("arson")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .build())
+                                .build())
+                        .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.NETHER)
                         .build())

@@ -3,10 +3,9 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
@@ -42,13 +41,11 @@ public class ShockPendantItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("lightning")
                                 .stat(StatData.builder("damage")
-                                        .icon(StatIcons.DEALT_DAMAGE)
                                         .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
-                                        .icon(StatIcons.CHANCE)
                                         .initialValue(0.2D, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 100, 2))
@@ -69,7 +66,17 @@ public class ShockPendantItem extends WearableRelicItem {
                                 .borderBottom(0xff0e356e)
                                 .build())
                         .build())
-                .leveling(new LevelingData(100, 10, 100))
+                .leveling(LevelingData.builder()
+                        .initialCost(100)
+                        .maxLevel(10)
+                        .step(100)
+                        .sources(LevelingSourcesData.builder()
+                                .source(LevelingSourceData.abilityBuilder("lightning")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .build())
+                                .build())
+                        .build())
                 .loot(LootData.builder()
                         .entry("minecraft:chests/ancient_city", 0.5F)
                         .build())

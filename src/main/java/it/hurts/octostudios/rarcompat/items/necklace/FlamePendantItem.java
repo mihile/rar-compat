@@ -3,10 +3,9 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilitiesData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.AbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.LevelingData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.StatData;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
+import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
@@ -40,13 +39,11 @@ public class FlamePendantItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("fire")
                                 .stat(StatData.builder("time")
-                                        .icon(StatIcons.DURATION)
                                         .initialValue(2D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
-                                        .icon(StatIcons.CHANCE)
                                         .initialValue(0.25D, 0.35D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 100, 2))
@@ -64,8 +61,17 @@ public class FlamePendantItem extends WearableRelicItem {
                                 .borderBottom(0xff740000)
                                 .build())
                         .build())
-                .leveling(new LevelingData(100, 10, 100))
-                .loot(LootData.builder()
+                .leveling(LevelingData.builder()
+                        .initialCost(100)
+                        .maxLevel(10)
+                        .step(100)
+                        .sources(LevelingSourcesData.builder()
+                                .source(LevelingSourceData.abilityBuilder("fire")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .build())
+                                .build())
+                        .build())                .loot(LootData.builder()
                         .entry(LootCollections.NETHER)
                         .build())
                 .build();
