@@ -65,7 +65,7 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("shrinking")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
+                                        .gem(GemShape.SQUARE, GemColor.CYAN)
                                         .build())
                                 .build())
                         .build())

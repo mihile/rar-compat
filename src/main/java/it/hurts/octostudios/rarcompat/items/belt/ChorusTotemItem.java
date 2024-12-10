@@ -13,6 +13,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -38,6 +39,11 @@ public class ChorusTotemItem extends WearableRelicItem {
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.08D)
                                         .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 11, 19).star(1, 11, 27).star(2, 3, 12).star(3, 19, 12)
+                                        .star(4, 13, 8).star(5, 9, 8)
+                                        .link(0, 1).link(1, 2).link(0, 2).link(0, 3).link(1, 3).link(4, 0).link(5, 0)
+                                        .build())
                                 .build())
                         .build())
                 .style(StyleData.builder()
@@ -53,7 +59,7 @@ public class ChorusTotemItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("past")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
                                         .build())
                                 .build())
                         .build())
@@ -99,9 +105,6 @@ public class ChorusTotemItem extends WearableRelicItem {
                 addTime(stack, -getTime(stack));
 
                 setToggled(stack, true);
-
-                if (!isAbilityOnCooldown(stack, "past"))
-                    player.playSound(SoundEvents.BEE_DEATH, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
             }
         }
     }

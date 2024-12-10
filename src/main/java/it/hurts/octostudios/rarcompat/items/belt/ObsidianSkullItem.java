@@ -63,7 +63,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("buffer")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
                                         .build())
                                 .build())
                         .build())

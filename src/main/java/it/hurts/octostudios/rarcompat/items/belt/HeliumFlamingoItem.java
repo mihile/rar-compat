@@ -61,7 +61,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("flying")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
                                         .build())
                                 .build())
                         .build())
