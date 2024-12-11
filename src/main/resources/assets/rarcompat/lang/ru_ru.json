@@ -170,6 +170,8 @@
   "tooltip.relics.withered_bracelet.leveling_source.withered.description": "+%1$s единиц опыта за каждое срабатывание способности %2$s.",
 
   "tooltip.relics.snowshoes.description": "Повышает мобильность носителя реликвии в суровых снежных условиях.",
+  "tooltip.relics.snowshoes.ability.passive": "Лёгкая поступь",
+  "tooltip.relics.snowshoes.ability.passive.description": "Позволяет передвигаться по рыхлому снегу не проваливаясь.",
   "tooltip.relics.snowshoes.ability.speed": "Снегоход",
   "tooltip.relics.snowshoes.ability.speed.description": "Увеличивает скорость передвижения по снегу на %1$s%%. Позволяет легко передвигаться по рыхлому снегу.",
   "tooltip.relics.snowshoes.leveling_source.speed.title": "Снегоход",
