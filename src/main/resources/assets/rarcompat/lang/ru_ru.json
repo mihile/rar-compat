@@ -70,8 +70,8 @@
   "tooltip.relics.flame_pendant.leveling_source.fire.description": "+%1$s единиц опыта за каждое срабатывание способности %2$s.",
 
   "tooltip.relics.shock_pendant.description": "Разит молнией каждого, кто осмелится напасть на обладателя реликвии.",
-  "tooltip.relics.shock_pendant.ability.passive": "",
-  "tooltip.relics.shock_pendant.ability.passive.description": "",
+  "tooltip.relics.shock_pendant.ability.passive": "Электроустойчивость",
+  "tooltip.relics.shock_pendant.ability.passive.description": "Наделяет полным сопротивлением к урону от молний.",
   "tooltip.relics.shock_pendant.ability.lightning": "Молниеносная оборона",
   "tooltip.relics.shock_pendant.ability.lightning.description": "С шансом в %2$s%% поражает молнией цель, атаковавшую игрока, нанося ей %1$s единиц урона.",
   "tooltip.relics.shock_pendant.leveling_source.lightning.title": "Молниеносная оборона",
@@ -138,8 +138,8 @@
   "tooltip.relics.onion_ring.leveling_source.onion.description": "+%1$s единиц опыта за каждый добытый блок. Вероятность получения опыта прямо пропорциональна текущей сытости. Не работает на блоки с моментальным разрушением.",
 
   "tooltip.relics.digging_claws.description": "Укрепляет руки владельца реликвии, позволяя эффективнее разрубать любые блоки.",
-  "tooltip.relics.digging_claws.ability.passive": "",
-  "tooltip.relics.digging_claws.ability.passive.description": "",
+  "tooltip.relics.digging_claws.ability.passive": "Руки-кирки",
+  "tooltip.relics.digging_claws.ability.passive.description": "Понижает требуемый уровень инструмента для всех блоков на 1.",
   "tooltip.relics.digging_claws.ability.claws": "Скоростная добыча",
   "tooltip.relics.digging_claws.ability.claws.description": "Увеличивает скорость добычи блоков на %1$s%%.",
   "tooltip.relics.digging_claws.leveling_source.claws.title": "Скоростная добыча",
@@ -180,8 +180,8 @@
   "tooltip.relics.steadfast_spikes.ability.resistance.description": "Увеличивает сопротивление отдаче и скользким блокам на %1$s%%.",
   "tooltip.relics.steadfast_spikes.leveling_source.resistance_1.title": "Сцепление с поверхностью",
   "tooltip.relics.steadfast_spikes.leveling_source.resistance_1.description": "+%1$s единиц опыта за каждую ослабленную отдачу способностью %2$s.",
-  "tooltip.relics.steadfast_spikes.leveling_source.resistance_1.title": "Сопротивление скольжению",
-  "tooltip.relics.steadfast_spikes.leveling_source.resistance_1.description": "+%1$s единиц опыта за каждые 3 секунды скольжения по блокам.",
+  "tooltip.relics.steadfast_spikes.leveling_source.resistance_2.title": "Сопротивление скольжению",
+  "tooltip.relics.steadfast_spikes.leveling_source.resistance_2.description": "+%1$s единиц опыта за каждые 3 секунды скольжения по блокам.",
 
   "tooltip.relics.rooted_boots.description": "Наделяет носителя реликвии тайной овечьей силой.",
   "tooltip.relics.rooted_boots.ability.devouring": "Травоядность",
@@ -209,8 +209,8 @@
   "tooltip.relics.whoopee_cushion.leveling_source.push.description": "+%1$s единиц опыта за каждое срабатывание способности %2$s.",
 
   "tooltip.relics.kitty_slippers.description": "Наделяет носителя реликвии свойствами семейства кошачьих, в частности мягкими лапками и неисчисляемыми жизнями.",
-  "tooltip.relics.kitty_slippers.ability.passive": "",
-  "tooltip.relics.kitty_slippers.ability.fall.passive": "",
+  "tooltip.relics.kitty_slippers.ability.passive": "Кошачий взгляд",
+  "tooltip.relics.kitty_slippers.ability.fall.passive": "Распугивает всех криперов и фантомов около игрока.",
   "tooltip.relics.kitty_slippers.ability.fall": "Мягкие лапки",
   "tooltip.relics.kitty_slippers.ability.fall.description": "Увеличивает безопасную для падения высоту на %1$s блоков.",
   "tooltip.relics.kitty_slippers.leveling_source.fall.title": "Мягкие лапки",
@@ -282,12 +282,12 @@
   "tooltip.relics.running_shoes.description": "Укрепляет ноги носителя реликвии, позволяя двигаться быстрее.",
   "tooltip.relics.running_shoes.ability.runner": "Широкий шаг",
   "tooltip.relics.running_shoes.ability.runner.description": "Увеличивает скорость бега игрока на %1$s%%.",
-  "tooltip.relics.running_shoes.leveling_source.runner.title": "Временная петля",
+  "tooltip.relics.running_shoes.leveling_source.runner.title": "Широкий шаг",
   "tooltip.relics.running_shoes.leveling_source.runner.description": "+%1$s единиц опыта за каждую секунду бега.",
 
   "tooltip.relics.flippers.description": "Укрепляет ноги носителя реликвии, позволяя плавать быстрее.",
   "tooltip.relics.flippers.ability.swimmer": "Рыбий хвост",
   "tooltip.relics.flippers.ability.swimmer.description": "Увеличивает скорость плаванья игрока на %1$s%%.",
-  "tooltip.relics.flippers.leveling_source.swimmer.title": "Временная петля",
+  "tooltip.relics.flippers.leveling_source.swimmer.title": "Рыбий хвост",
   "tooltip.relics.flippers.leveling_source.swimmer.description": "+%1$s единиц опыта за каждую секунду плаванья."
 }
