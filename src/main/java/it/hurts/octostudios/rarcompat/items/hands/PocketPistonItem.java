@@ -10,23 +10,22 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class PocketPistonItem extends WearableRelicItem {
     @Override
@@ -103,6 +102,22 @@ public class PocketPistonItem extends WearableRelicItem {
     public static class PocketPistonEvent {
 
         @SubscribeEvent
+        public static void onContacted(PlayerInteractEvent.LeftClickBlock event) {
+            var player = event.getEntity();
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POCKET_PISTON.value());
+
+            if (!(stack.getItem() instanceof PocketPistonItem relic) || event.getAction() != PlayerInteractEvent.LeftClickBlock.Action.START)
+                return;
+
+            int distance = (int) Math.sqrt(event.getPos().distToCenterSqr(player.getX(), player.getY() + player.getEyeHeight(), player.getZ()));
+
+            if (distance >= 5) {
+                relic.spreadRelicExperience(player, stack, 1);
+            }
+        }
+
+        @SubscribeEvent
         public static void onAttacking(AttackEntityEvent event) {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POCKET_PISTON.value());
@@ -114,7 +129,7 @@ public class PocketPistonItem extends WearableRelicItem {
 
             relic.spreadRelicExperience(player, stack, 1);
 
-            if(player.distanceTo(target) > 3)
+            if (player.distanceTo(target) > 3)
                 relic.spreadRelicExperience(player, stack, 1);
 
             Vec3 toEntity = target.position().subtract(player.position()).normalize().scale(modifier);
