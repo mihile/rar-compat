@@ -210,7 +210,7 @@
 
   "tooltip.relics.kitty_slippers.description": "Grants the relic bearer feline traits, including soft paws and countless lives.",
   "tooltip.relics.kitty_slippers.ability.passive": "Cat's Gaze",
-  "tooltip.relics.kitty_slippers.ability.fall.passive": "Scares away all Creepers and Phantoms near the player.",
+  "tooltip.relics.kitty_slippers.ability.passive.description": "Scares away all Creepers and Phantoms near the player.",
   "tooltip.relics.kitty_slippers.ability.fall": "Soft Paws",
   "tooltip.relics.kitty_slippers.ability.fall.description": "Increases safe falling height by %1$s blocks.",
   "tooltip.relics.kitty_slippers.leveling_source.fall.title": "Soft Paws",
@@ -252,7 +252,7 @@
   "tooltip.relics.pocket_piston.leveling_source.discarding.title": "Concentrated Strike",
   "tooltip.relics.pocket_piston.leveling_source.discarding.description": "+%1$s experience points for each melee attack performed.",
   "tooltip.relics.pocket_piston.leveling_source.attacking.title": "Long Reach",
-  "tooltip.relics.pocket_piston.leveling_source.attacking.description": "+%1$s experience points for each interaction with the world at the ability's extended range.",
+  "tooltip.relics.pocket_piston.leveling_source.attacking.description": "+%1$s experience points for each interaction with the world at the %2$s ability's extended range.",
 
   "tooltip.relics.obsidian_skull.description": "Redirects heat aimed at harming the relic bearer onto itself.",
   "tooltip.relics.obsidian_skull.ability.buffer": "Heat Resistance",

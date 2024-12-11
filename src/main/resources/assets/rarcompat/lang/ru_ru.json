@@ -210,7 +210,7 @@
 
   "tooltip.relics.kitty_slippers.description": "Наделяет носителя реликвии свойствами семейства кошачьих, в частности мягкими лапками и неисчисляемыми жизнями.",
   "tooltip.relics.kitty_slippers.ability.passive": "Кошачий взгляд",
-  "tooltip.relics.kitty_slippers.ability.fall.passive": "Распугивает всех криперов и фантомов около игрока.",
+  "tooltip.relics.kitty_slippers.ability.passive.description": "Распугивает всех криперов и фантомов около игрока.",
   "tooltip.relics.kitty_slippers.ability.fall": "Мягкие лапки",
   "tooltip.relics.kitty_slippers.ability.fall.description": "Увеличивает безопасную для падения высоту на %1$s блоков.",
   "tooltip.relics.kitty_slippers.leveling_source.fall.title": "Мягкие лапки",
@@ -252,7 +252,7 @@
   "tooltip.relics.pocket_piston.leveling_source.discarding.title": "Концентрированный удар",
   "tooltip.relics.pocket_piston.leveling_source.discarding.description": "+%1$s единиц опыта за каждую совершённую атаку.",
   "tooltip.relics.pocket_piston.leveling_source.attacking.title": "Длинные руки",
-  "tooltip.relics.pocket_piston.leveling_source.attacking.description": "+%1$s единиц опыта за каждое взаимодействие с миром на дистанции действия способности %1$s.",
+  "tooltip.relics.pocket_piston.leveling_source.attacking.description": "+%1$s единиц опыта за каждое взаимодействие с миром на дистанции действия способности %2$s.",
 
   "tooltip.relics.obsidian_skull.description": "Перенаправляет на себя жар, исходно нацеленный навредить носителю реликвии.",
   "tooltip.relics.obsidian_skull.ability.buffer": "Жаростойкость",
