@@ -88,7 +88,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
             spreadRelicExperience(player, stack, 1);
         }
 
-        int timeWorked = (int) getStatValue(stack, "flying", "time");
+        int timeWorked = (int) MathUtils.round(getStatValue(stack, "flying", "time"), 0);
 
         if (getTime(stack) >= timeWorked || player.onGround()) {
             player.setDeltaMovement(player.getDeltaMovement().x, -0.08, player.getKnownMovement().z);
@@ -125,20 +125,25 @@ public class HeliumFlamingoItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof HeliumFlamingoItem relic) || player.isInWater() || player.getSpeed() >= 0.132)
                 return;
 
-            int timeWorked = (int) relic.getStatValue(stack, "flying", "time");
+            int timeWorked = (int) MathUtils.round(relic.getStatValue(stack, "flying", "time"), 0);
 
-            if (getTime(stack) > timeWorked && player.onGround()) {
+            if (getTime(stack) >= timeWorked && player.onGround()) {
                 addTime(stack, -getTime(stack));
 
-                relic.setAbilityCooldown(stack, "flying", 40);
+                player.setSprinting(false);
+
                 setToggled(stack, false);
-                event.setResult(EventResult.FAIL);
+
+                relic.setAbilityCooldown(stack, "flying", 40);
+
+                event.setResult(EventResult.PASS);
 
                 return;
             }
 
             if (relic.isAbilityTicking(stack, "flying") && getTime(stack) <= timeWorked && player.isSprinting()) {
                 event.setResult(EventResult.SUCCESS);
+
                 setToggled(stack, true);
             }
         }

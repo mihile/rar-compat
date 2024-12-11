@@ -2,7 +2,6 @@ package it.hurts.octostudios.rarcompat.items.hands;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
-import it.hurts.octostudios.rarcompat.items.belt.ObsidianSkullItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -10,29 +9,20 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 
 import java.awt.*;
@@ -95,7 +85,7 @@ public class FireGauntletItem extends WearableRelicItem {
         public static void onAttack(AttackEntityEvent event) {
             Player player = event.getEntity();
 
-            if (!(event.getTarget() instanceof LivingEntity target) || player.level().isClientSide)
+            if (!(event.getTarget() instanceof LivingEntity) || player.getCommandSenderWorld().isClientSide())
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FIRE_GAUNTLET.value());
@@ -117,12 +107,6 @@ public class FireGauntletItem extends WearableRelicItem {
         }
 
         private static void spawnDirectionalArc(LivingEntity player, double arcAngle, double rangeAttack) {
-            Level level = player.level();
-
-            double centerX = player.getX();
-            double centerY = player.getY() + 1;
-            double centerZ = player.getZ();
-
             double centerAngle = Math.toRadians(player.getYRot()) + 20.5;
 
             double startAngle = centerAngle - Math.toRadians(arcAngle);
@@ -137,13 +121,14 @@ public class FireGauntletItem extends WearableRelicItem {
                     double angleStep = (endAngle - startAngle) / particleCount;
 
                     double angle = startAngle + angleStep * i;
-                    double x = centerX + d * Math.cos(angle);
-                    double z = centerZ + d * Math.sin(angle);
+                    double x = player.getX() + d * Math.cos(angle);
+                    double z = player.getZ() + d * Math.sin(angle);
 
-                    ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(
+
+                    ((ServerLevel) player.level()).sendParticles(ParticleUtils.constructSimpleSpark(
                                     new Color(200 + random.nextInt(56), random.nextInt(100), random.nextInt(20)),
                                     0.8F, 20, 0.9F),
-                            x, centerY, z,
+                            x, player.getY() + 1, z,
                             0, 0, 0, 0, 0);
                 }
             }
@@ -156,7 +141,7 @@ public class FireGauntletItem extends WearableRelicItem {
                     .filter(entity -> {
                         double entityY = entity.getY();
                         if (entityY < playerY - 2 || entityY > playerY + 2) return false;
-                        return player.getLookAngle().normalize().dot(entity.position().subtract(player.position()).normalize()) > Math.cos(Math.toRadians(angle) * 0.5);
+                        return player.getLookAngle().normalize().dot(entity.position().subtract(player.position()).normalize()) > Math.cos(Math.toRadians(angle) * 0.1);
                     })
                     .map(entity -> (LivingEntity) entity)
                     .collect(Collectors.toList());
