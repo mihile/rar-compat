@@ -170,6 +170,8 @@
   "tooltip.relics.withered_bracelet.leveling_source.withered.description": "+%1$s единиц опыта за каждое срабатывание способности %2$s.",
 
   "tooltip.relics.snowshoes.description": "Повышает мобильность носителя реликвии в суровых снежных условиях.",
+  "tooltip.relics.snowshoes.ability.passive": "Лёгкая поступь",
+  "tooltip.relics.snowshoes.ability.passive.description": "Позволяет передвигаться по рыхлому снегу не проваливаясь.",
   "tooltip.relics.snowshoes.ability.speed": "Снегоход",
   "tooltip.relics.snowshoes.ability.speed.description": "Увеличивает скорость передвижения по снегу на %1$s%%. Позволяет легко передвигаться по рыхлому снегу.",
   "tooltip.relics.snowshoes.leveling_source.speed.title": "Снегоход",
@@ -210,7 +212,7 @@
 
   "tooltip.relics.kitty_slippers.description": "Наделяет носителя реликвии свойствами семейства кошачьих, в частности мягкими лапками и неисчисляемыми жизнями.",
   "tooltip.relics.kitty_slippers.ability.passive": "Кошачий взгляд",
-  "tooltip.relics.kitty_slippers.ability.fall.passive": "Распугивает всех криперов и фантомов около игрока.",
+  "tooltip.relics.kitty_slippers.ability.passive.description": "Распугивает всех криперов и фантомов около игрока.",
   "tooltip.relics.kitty_slippers.ability.fall": "Мягкие лапки",
   "tooltip.relics.kitty_slippers.ability.fall.description": "Увеличивает безопасную для падения высоту на %1$s блоков.",
   "tooltip.relics.kitty_slippers.leveling_source.fall.title": "Мягкие лапки",
@@ -242,7 +244,7 @@
   "tooltip.relics.helium_flamingo.ability.flying": "Воздушный пловец",
   "tooltip.relics.helium_flamingo.ability.flying.description": "Позволяет игроку плавать в воздухе до %1$s секунд при зажатии клавиши бега.",
   "tooltip.relics.helium_flamingo.leveling_source.flying.title": "Воздушный пловец",
-  "tooltip.relics.helium_flamingo.leveling_source.flying.description": "+%1$s единиц опыта за каждую секунду плаванья в воздухе от способности %2$s.",
+  "tooltip.relics.helium_flamingo.leveling_source.flying.description": "+%1$s единиц опыта за каждую секунду плавания в воздухе от способности %2$s.",
 
   "tooltip.relics.pocket_piston.description": "Наделяет руки носителя реликвии силой, свойственной лишь механизмам.",
   "tooltip.relics.pocket_piston.ability.discarding": "Концентрированный удар",
@@ -252,7 +254,7 @@
   "tooltip.relics.pocket_piston.leveling_source.discarding.title": "Концентрированный удар",
   "tooltip.relics.pocket_piston.leveling_source.discarding.description": "+%1$s единиц опыта за каждую совершённую атаку.",
   "tooltip.relics.pocket_piston.leveling_source.attacking.title": "Длинные руки",
-  "tooltip.relics.pocket_piston.leveling_source.attacking.description": "+%1$s единиц опыта за каждое взаимодействие с миром на дистанции действия способности %1$s.",
+  "tooltip.relics.pocket_piston.leveling_source.attacking.description": "+%1$s единиц опыта за каждое взаимодействие с миром на дистанции действия способности %2$s.",
 
   "tooltip.relics.obsidian_skull.description": "Перенаправляет на себя жар, исходно нацеленный навредить носителю реликвии.",
   "tooltip.relics.obsidian_skull.ability.buffer": "Жаростойкость",
@@ -287,7 +289,7 @@
 
   "tooltip.relics.flippers.description": "Укрепляет ноги носителя реликвии, позволяя плавать быстрее.",
   "tooltip.relics.flippers.ability.swimmer": "Рыбий хвост",
-  "tooltip.relics.flippers.ability.swimmer.description": "Увеличивает скорость плаванья игрока на %1$s%%.",
+  "tooltip.relics.flippers.ability.swimmer.description": "Увеличивает скорость плавания игрока на %1$s%%.",
   "tooltip.relics.flippers.leveling_source.swimmer.title": "Рыбий хвост",
-  "tooltip.relics.flippers.leveling_source.swimmer.description": "+%1$s единиц опыта за каждую секунду плаванья."
+  "tooltip.relics.flippers.leveling_source.swimmer.description": "+%1$s единиц опыта за каждую секунду плавания."
 }
