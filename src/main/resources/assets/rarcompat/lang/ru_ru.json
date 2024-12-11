@@ -242,7 +242,7 @@
   "tooltip.relics.helium_flamingo.ability.flying": "Воздушный пловец",
   "tooltip.relics.helium_flamingo.ability.flying.description": "Позволяет игроку плавать в воздухе до %1$s секунд при зажатии клавиши бега.",
   "tooltip.relics.helium_flamingo.leveling_source.flying.title": "Воздушный пловец",
-  "tooltip.relics.helium_flamingo.leveling_source.flying.description": "+%1$s единиц опыта за каждую секунду плаванья в воздухе от способности %2$s.",
+  "tooltip.relics.helium_flamingo.leveling_source.flying.description": "+%1$s единиц опыта за каждую секунду плавания в воздухе от способности %2$s.",
 
   "tooltip.relics.pocket_piston.description": "Наделяет руки носителя реликвии силой, свойственной лишь механизмам.",
   "tooltip.relics.pocket_piston.ability.discarding": "Концентрированный удар",
@@ -287,7 +287,7 @@
 
   "tooltip.relics.flippers.description": "Укрепляет ноги носителя реликвии, позволяя плавать быстрее.",
   "tooltip.relics.flippers.ability.swimmer": "Рыбий хвост",
-  "tooltip.relics.flippers.ability.swimmer.description": "Увеличивает скорость плаванья игрока на %1$s%%.",
+  "tooltip.relics.flippers.ability.swimmer.description": "Увеличивает скорость плавания игрока на %1$s%%.",
   "tooltip.relics.flippers.leveling_source.swimmer.title": "Рыбий хвост",
-  "tooltip.relics.flippers.leveling_source.swimmer.description": "+%1$s единиц опыта за каждую секунду плаванья."
+  "tooltip.relics.flippers.leveling_source.swimmer.description": "+%1$s единиц опыта за каждую секунду плавания."
 }
