@@ -62,7 +62,7 @@ public class UniversalAttractorItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("attractor")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
                                 .build())
                         .build())

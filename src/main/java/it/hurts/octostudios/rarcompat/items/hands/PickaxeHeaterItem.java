@@ -70,7 +70,7 @@ public class PickaxeHeaterItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("heater")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
                         .build())

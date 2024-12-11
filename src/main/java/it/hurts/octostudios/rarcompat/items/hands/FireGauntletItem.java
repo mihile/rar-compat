@@ -78,7 +78,7 @@ public class FireGauntletItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("arson")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
                         .build())

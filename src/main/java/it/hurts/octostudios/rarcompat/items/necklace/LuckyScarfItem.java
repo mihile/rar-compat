@@ -47,7 +47,7 @@ public class LuckyScarfItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("luck")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.GREEN)
                                         .build())
                                 .build())
                         .build()).loot(LootData.builder()

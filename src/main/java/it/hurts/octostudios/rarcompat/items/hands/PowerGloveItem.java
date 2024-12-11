@@ -60,7 +60,7 @@ public class PowerGloveItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("power")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
                         .build())

@@ -8,15 +8,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
-import net.minecraft.data.worldgen.AncientCityStructurePieces;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -58,6 +55,13 @@ public class ShockPendantItem extends WearableRelicItem {
                                 .build())
                         .ability(AbilityData.builder("passive")
                                 .maxLevel(0)
+                                .research(ResearchData.builder()
+                                        .star(0, 6, 29).star(1, 10, 25).star(2, 12, 29).star(3, 15, 20)
+                                        .star(4, 18, 27).star(5, 8, 17).star(7, 5, 9).star(8, 13, 2).
+                                        star(9, 16, 5).star(10, 20, 12).star(11, 13, 9)
+                                        .link(1, 0).link(1, 2).link(1, 3).link(3, 4).link(5, 7).link(7, 8).link(9, 10).link(3, 5).link(8, 9).link(10, 3)
+                                        .link(1, 3).link(9, 11)
+                                        .build())
                                 .build())
                         .build())
                 .style(StyleData.builder()

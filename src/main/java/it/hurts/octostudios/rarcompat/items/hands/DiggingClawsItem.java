@@ -62,7 +62,7 @@ public class DiggingClawsItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("claws")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.BLUE)
+                                        .gem(GemShape.SQUARE, GemColor.CYAN)
                                         .build())
                                 .build())
                         .build())

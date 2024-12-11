@@ -79,7 +79,7 @@ public class PocketPistonItem extends WearableRelicItem {
                                         .build())
                                 .source(LevelingSourceData.abilityBuilder("attacking")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.RED)
                                         .build())
                                 .build())
                         .build())
