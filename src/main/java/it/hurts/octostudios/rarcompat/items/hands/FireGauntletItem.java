@@ -39,7 +39,7 @@ public class FireGauntletItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("arson")
                                 .stat(StatData.builder("sector")
-                                        .initialValue(0.8D, 0.9D)
+                                        .initialValue(0.7D, 0.9D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.35D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
@@ -90,7 +90,7 @@ public class FireGauntletItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FIRE_GAUNTLET.value());
 
-            if (!(stack.getItem() instanceof FireGauntletItem relic))
+            if (!(stack.getItem() instanceof FireGauntletItem relic) || !relic.canPlayerUseAbility(player, stack, "arson"))
                 return;
 
             double attackRange = Objects.requireNonNull(player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE)).getValue();

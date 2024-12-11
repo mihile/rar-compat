@@ -45,7 +45,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
-                                        .star(0, 7, 13  ).star(1, 15, 13).star(2, 11, 18)
+                                        .star(0, 7, 13).star(1, 15, 13).star(2, 11, 18)
                                         .link(0, 1).link(1, 2).link(2, 0)
                                         .build())
                                 .build())
@@ -106,7 +106,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onPlayerDamage(LivingIncomingDamageEvent event) {
-            if (!(event.getEntity() instanceof Player player))
+            if (!(event.getEntity() instanceof Player player) || !(event.getEntity() instanceof Mob))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PANIC_NECKLACE.value());

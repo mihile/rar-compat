@@ -66,12 +66,6 @@ public class DrinkingHatItem extends WearableRelicItem {
                                         .gem(GemShape.SQUARE, GemColor.CYAN)
                                         .build())
                                 .build())
-                        .sources(LevelingSourcesData.builder()
-                                .source(LevelingSourceData.abilityBuilder("nutrition")
-                                        .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
-                                        .build())
-                                .build())
                         .build())
                 .style(StyleData.builder()
                         .tooltip((player, stack) ->

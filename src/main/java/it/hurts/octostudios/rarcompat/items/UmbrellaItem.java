@@ -59,7 +59,7 @@ public class UmbrellaItem extends WearableRelicItem {
                         .ability(AbilityData.builder("shield")
                                 .requiredLevel(5)
                                 .stat(StatData.builder("knockback")
-                                        .initialValue(2D, 3D)
+                                        .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
                                         .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
@@ -78,7 +78,7 @@ public class UmbrellaItem extends WearableRelicItem {
                         .build())
                 .leveling(LevelingData.builder()
                         .initialCost(100)
-                        .maxLevel(10)
+                        .maxLevel(15)
                         .step(100)
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("glider")
@@ -107,7 +107,7 @@ public class UmbrellaItem extends WearableRelicItem {
         int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
         int statCount = (int) getStatValue(stack, "glider", "count");
 
-        if (charges > statCount)
+        if (charges >= statCount)
             player.getCooldowns().addCooldown(this, 120);
 
         if (player.onGround() && charges != 0)
@@ -139,10 +139,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
             player.startUsingItem(hand);
             player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
-            player.setDeltaMovement(new Vec3
-                    ((lookDirection.x * modifierVal),
-                            (lookDirection.y * modifierVal),
-                            (lookDirection.z * modifierVal)));
+            player.setDeltaMovement(new Vec3((lookDirection.x * modifierVal), (lookDirection.y * modifierVal), (lookDirection.z * modifierVal)));
 
             spreadRelicExperience(player, stack, 1);
 
@@ -222,6 +219,14 @@ public class UmbrellaItem extends WearableRelicItem {
                     && !player.level().isClientSide
                     && attacker != player) {
 
+                Vec3 playerToAttacker = attacker.position().subtract(player.position()).normalize();
+                Vec3 playerLookDirection = player.getLookAngle().normalize();
+
+                double dotProduct = playerToAttacker.dot(playerLookDirection);
+
+                if (dotProduct < 0.8)
+                    return;
+
                 event.setCanceled(true);
 
                 double radius = 2.0;
@@ -264,6 +269,7 @@ public class UmbrellaItem extends WearableRelicItem {
                 player.level().playSound(null, player.blockPosition(), SoundEvents.ALLAY_HURT, SoundSource.MASTER, 0.3f, 1 + (player.getRandom().nextFloat() * 0.25F));
             }
         }
+
 
         @SubscribeEvent
         public static void onLivingRender(RenderLivingEvent.Pre<?, ?> event) {

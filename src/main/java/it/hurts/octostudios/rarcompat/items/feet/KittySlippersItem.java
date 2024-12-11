@@ -137,7 +137,7 @@ public class KittySlippersItem extends WearableRelicItem {
             creeper.yHeadRot = yaw;
         }
 
-        for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(7))) {
+        for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(15))) {
             if (phantom.getTarget() instanceof Player) {
                 Vec3 directionToPlayer = player.position().subtract(phantom.position());
 

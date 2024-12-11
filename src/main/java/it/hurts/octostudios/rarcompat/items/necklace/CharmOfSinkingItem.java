@@ -28,7 +28,7 @@ public class CharmOfSinkingItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("immersion")
                                 .stat(StatData.builder("air")
-                                        .initialValue(2D, 2D)
+                                        .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1)
                                         .formatValue(value -> (int) MathUtils.round(value * 10, 1))
                                         .build())
