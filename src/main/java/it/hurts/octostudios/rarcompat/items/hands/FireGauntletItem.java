@@ -145,7 +145,7 @@ public class FireGauntletItem extends WearableRelicItem {
                         if (entityY < playerY - 2 || entityY > playerY + 2) return false;
 
                         return player.getLookAngle().normalize()
-                                .dot(livingEntity.position().subtract(player.position()).normalize()) > Math.cos(Math.toRadians(angle) * 0.12);
+                                .dot(livingEntity.position().subtract(player.position()).normalize()) > Math.cos(Math.toRadians(angle) * 0.2);
                     })
                     .collect(Collectors.toList());
         }
