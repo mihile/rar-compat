@@ -140,14 +140,11 @@ public class KittySlippersItem extends WearableRelicItem {
         }
 
         for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(5))) {
-            if (!(phantom.getTarget() instanceof Player))
-                return;
+            Vec3 phantomPosition = phantom.position();
 
-            Vec3 creeperPosition = phantom.position();
+            Vec3 escapeDirection = player.position().subtract(phantomPosition).normalize().scale(-1);
 
-            Vec3 escapeDirection = player.position().subtract(creeperPosition).normalize().scale(-1);
-
-            Vec3 escapePosition = creeperPosition.add(escapeDirection.scale(5));
+            Vec3 escapePosition = phantomPosition.add(escapeDirection.scale(5));
 
             PathNavigation navigation = phantom.getNavigation();
 
@@ -167,7 +164,7 @@ public class KittySlippersItem extends WearableRelicItem {
     public static class KittySlippersEvent {
         @SubscribeEvent
         public static void onLivingChangeTargetEvent(LivingChangeTargetEvent event) {
-            if (event.getEntity() instanceof Creeper && event.getNewAboutToBeSetTarget() instanceof Player player) {
+            if ((event.getEntity() instanceof Creeper || event.getEntity() instanceof Phantom) && event.getNewAboutToBeSetTarget() instanceof Player player) {
                 ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
 
                 if (itemStack.getItem() instanceof KittySlippersItem)
