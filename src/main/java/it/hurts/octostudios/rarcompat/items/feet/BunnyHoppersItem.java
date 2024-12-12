@@ -62,7 +62,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("hold")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
                         .build())

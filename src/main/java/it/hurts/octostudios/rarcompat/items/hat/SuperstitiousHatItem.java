@@ -51,7 +51,7 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("looting")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.GREEN)
                                         .build())
                                 .build())
                         .build())

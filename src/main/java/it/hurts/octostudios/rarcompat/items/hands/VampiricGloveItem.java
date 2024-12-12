@@ -54,7 +54,7 @@ public class VampiricGloveItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("vampire")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE   )
                                         .build())
                                 .build())
                         .build())
@@ -77,8 +77,6 @@ public class VampiricGloveItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof VampiricGloveItem relic)) return;
 
             double damageToHeal = event.getAmount() * relic.getStatValue(stack, "vampire", "amount");
-
-            System.out.println(damageToHeal * 5 / player.getMaxHealth());
 
             if ((damageToHeal * 5 / player.getMaxHealth()) >= new Random().nextFloat(1))
                 relic.spreadRelicExperience(player, stack, 1);

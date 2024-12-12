@@ -65,7 +65,7 @@ public class AnglersHatItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("catch")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.BLUE)
                                         .build())
                                 .build())
                         .build())

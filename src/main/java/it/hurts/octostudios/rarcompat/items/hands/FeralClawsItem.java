@@ -56,7 +56,7 @@ public class FeralClawsItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("claws")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
+                                        .gem(GemShape.SQUARE, GemColor.GREEN)
                                         .build())
                                 .build())
                         .build())

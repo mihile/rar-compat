@@ -27,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
@@ -63,7 +64,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("buffer")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
                                         .build())
                                 .build())
                         .build())
@@ -115,9 +116,9 @@ public class ObsidianSkullItem extends WearableRelicItem {
     public static class ObsidianSkull {
 
         @SubscribeEvent
-        public static void onAttack(LivingDamageEvent.Pre event) {
+        public static void onAttack(LivingIncomingDamageEvent event) {
             Level level = event.getEntity().level();
-            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide)
+            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide || player.tickCount % 10 != 0)
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.OBSIDIAN_SKULL.value());
@@ -129,10 +130,9 @@ public class ObsidianSkullItem extends WearableRelicItem {
 
             addCharges(stack, 1);
             addTime(stack, -getTime(stack));
+            event.setCanceled(true);
 
             if (getCharges(stack) <= stat) {
-                event.setNewDamage(0);
-
                 relic.spreadRelicExperience(player, stack, 1);
 
                 RandomSource random = level.getRandom();

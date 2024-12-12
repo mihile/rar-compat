@@ -38,6 +38,9 @@ public class SnowshoesItem extends WearableRelicItem {
                                         .link(0, 1).link(1, 2).link(2, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 0)
                                         .build())
                                 .build())
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
+                                .build())
                         .build())
                 .style(StyleData.builder()
                         .tooltip(TooltipData.builder()
@@ -52,7 +55,7 @@ public class SnowshoesItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("speed")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.BLUE)
+                                        .gem(GemShape.SQUARE, GemColor.CYAN)
                                         .build())
                                 .build())
                         .build())
@@ -80,16 +83,12 @@ public class SnowshoesItem extends WearableRelicItem {
     private boolean isStandingOnSnow(Player player) {
         var blockBelow = player.level().getBlockState(player.blockPosition().below());
 
-        return player.onGround() && (
-                blockBelow.is(Blocks.SNOW_BLOCK)
-                        || blockBelow.is(Blocks.POWDER_SNOW)
-                        || player.level().getBlockState(player.blockPosition()).is(Blocks.SNOW)
-        );
+        return (blockBelow.is(Blocks.SNOW_BLOCK) || blockBelow.is(Blocks.SNOW) || blockBelow.is(Blocks.POWDER_SNOW));
     }
 
     @Override
     public boolean canWalkOnPowderedSnow(SlotContext slotContext, ItemStack stack) {
-        return true;
+        return isAbilityTicking(stack, "passive");
     }
 
     @Override

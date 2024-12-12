@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
@@ -43,6 +44,10 @@ public class PanicNecklaceItem extends WearableRelicItem {
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 7, 13).star(1, 15, 13).star(2, 11, 18)
+                                        .link(0, 1).link(1, 2).link(2, 0)
+                                        .build())
                                 .build())
                         .build())
                 .style(StyleData.builder()
@@ -58,7 +63,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("panic")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
                         .build())
@@ -101,7 +106,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onPlayerDamage(LivingIncomingDamageEvent event) {
-            if (!(event.getEntity() instanceof Player player))
+            if (!(event.getEntity() instanceof Player player) || !(event.getEntity() instanceof Mob))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PANIC_NECKLACE.value());

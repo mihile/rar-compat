@@ -46,7 +46,7 @@ public class VillagerHatItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("discount")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
                                 .build())
                         .build())

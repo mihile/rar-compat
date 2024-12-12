@@ -54,7 +54,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("invulnerability")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
                                 .build())
                         .build())
@@ -76,11 +76,13 @@ public class CrossNecklaceItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onLivingDamaged(LivingDamageEvent.Post event) {
-            if (!(event.getEntity() instanceof Player player)) return;
+            if (!(event.getEntity() instanceof Player player))
+                return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CROSS_NECKLACE.value());
 
-            if (!(stack.getItem() instanceof CrossNecklaceItem relic)) return;
+            if (!(stack.getItem() instanceof CrossNecklaceItem relic))
+                return;
 
             relic.spreadRelicExperience(player, stack, 1);
 

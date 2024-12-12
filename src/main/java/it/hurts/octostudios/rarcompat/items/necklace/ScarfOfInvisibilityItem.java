@@ -91,7 +91,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("invisible")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.BLUE)
                                         .build())
                                 .build())
                         .build())
