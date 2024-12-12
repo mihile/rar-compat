@@ -63,7 +63,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("panic")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
+                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
                                 .build())
                         .build())

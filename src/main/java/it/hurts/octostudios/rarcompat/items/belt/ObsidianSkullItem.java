@@ -64,7 +64,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("buffer")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
                         .build())
@@ -116,9 +116,10 @@ public class ObsidianSkullItem extends WearableRelicItem {
     public static class ObsidianSkull {
 
         @SubscribeEvent
-        public static void onAttack(LivingIncomingDamageEvent event) {
+        public static void onAttack(LivingDamageEvent.Pre event) {
             Level level = event.getEntity().level();
-            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide || player.tickCount % 10 != 0)
+
+            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide)
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.OBSIDIAN_SKULL.value());
@@ -130,9 +131,10 @@ public class ObsidianSkullItem extends WearableRelicItem {
 
             addCharges(stack, 1);
             addTime(stack, -getTime(stack));
-            event.setCanceled(true);
 
             if (getCharges(stack) <= stat) {
+                event.setNewDamage(0);
+
                 relic.spreadRelicExperience(player, stack, 1);
 
                 RandomSource random = level.getRandom();
