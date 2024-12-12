@@ -10,24 +10,16 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.Objects;
 import java.util.Random;
 
 @Data

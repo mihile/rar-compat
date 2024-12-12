@@ -1,6 +1,13 @@
 package it.hurts.octostudios.rarcompat.items;
 
+import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.necklace.ScarfOfInvisibilityItem;
+import it.hurts.octostudios.rarcompat.network.packets.CreateZonePacket;
+import it.hurts.octostudios.rarcompat.network.packets.PowerJumpPacket;
+import it.hurts.octostudios.rarcompat.network.packets.RepulsionUmbrellaPacket;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
+import it.hurts.sskirillss.relics.init.HotkeyRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -11,7 +18,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -29,8 +39,10 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -113,8 +125,7 @@ public class UmbrellaItem extends WearableRelicItem {
         if (player.onGround() && charges != 0)
             stack.set(DataComponentRegistry.CHARGE, 0);
 
-        if (player.isInWater() || !isHoldingUmbrellaUpright(player)
-                || player.hasEffect(MobEffects.SLOW_FALLING) || player.getDeltaMovement().y > 0)
+        if (player.isInWater() || !isHoldingUmbrellaUpright(player) || player.hasEffect(MobEffects.SLOW_FALLING) || player.getDeltaMovement().y > 0)
             return;
 
         Vec3 motion = player.getDeltaMovement();
@@ -129,23 +140,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-
-        int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
-
-        if (!player.onGround()) {
-            double modifierVal = 1.2;
-            Vec3 lookDirection = player.getLookAngle().scale(-1);
-
-            player.startUsingItem(hand);
-            player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
-            player.setDeltaMovement(new Vec3((lookDirection.x * modifierVal), (lookDirection.y * modifierVal), (lookDirection.z * modifierVal)));
-
-            spreadRelicExperience(player, stack, 1);
-
-            stack.set(DataComponentRegistry.CHARGE, charges + 1);
-        } else
-            player.startUsingItem(hand);
+        player.startUsingItem(hand);
 
         return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
@@ -199,9 +194,36 @@ public class UmbrellaItem extends WearableRelicItem {
         }
     }
 
+    @EventBusSubscriber(value = Dist.CLIENT)
+    public static class UmbrellaEventEvent {
+        @SubscribeEvent
+        public static void onMouseInput(InputEvent.MouseButton.Pre event) {
+            Player playerClient = Minecraft.getInstance().player;
+
+            if (playerClient == null || event.getAction() != 1)
+                return;
+
+            ItemStack stack = playerClient.getMainHandItem();
+
+            if (stack.getItem() instanceof UmbrellaItem relic
+                    && event.getButton() == 0
+                    && !HotkeyRegistry.ABILITY_LIST.isDown()
+                    && event.getButton() != HotkeyRegistry.ABILITY_LIST.getKey().getValue()
+                    && !playerClient.hasContainerOpen()
+                    && Minecraft.getInstance().screen == null
+                    && !playerClient.onGround()) {
+                Vec3 lookDirection = playerClient.getLookAngle().scale(-1);
+                double modifierVal = 1.2;
+
+                playerClient.setDeltaMovement(new Vec3((lookDirection.x * modifierVal), (lookDirection.y * modifierVal), (lookDirection.z * modifierVal)));
+
+                NetworkHandler.sendToServer(new RepulsionUmbrellaPacket());
+            }
+        }
+    }
+
     @EventBusSubscriber
     public static class UmbrellaEvent {
-
         @SubscribeEvent
         public static void onLivingFall(LivingFallEvent event) {
             if (!isHoldingUmbrellaUpright(event.getEntity()))
@@ -216,7 +238,7 @@ public class UmbrellaItem extends WearableRelicItem {
                     && player.getUseItem().getItem() instanceof UmbrellaItem relic
                     && player.isUsingItem()
                     && event.getSource().getEntity() instanceof LivingEntity attacker
-                    && !player.level().isClientSide
+                    && !player.getCommandSenderWorld().isClientSide()
                     && attacker != player) {
 
                 Vec3 playerToAttacker = attacker.position().subtract(player.position()).normalize();

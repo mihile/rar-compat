@@ -22,5 +22,6 @@ public class NetworkHandler {
         registrar.playToServer(CreateZonePacket.TYPE, CreateZonePacket.STREAM_CODEC, CreateZonePacket::handle);
         registrar.playToServer(DoubleJumpPacket.TYPE, DoubleJumpPacket.STREAM_CODEC, DoubleJumpPacket::handle);
         registrar.playToServer(PowerJumpPacket.TYPE, PowerJumpPacket.STREAM_CODEC, PowerJumpPacket::handle);
+        registrar.playToServer(RepulsionUmbrellaPacket.TYPE, RepulsionUmbrellaPacket.STREAM_CODEC, RepulsionUmbrellaPacket::handle);
     }
 }
