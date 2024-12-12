@@ -133,6 +133,8 @@ public class KittySlippersItem extends WearableRelicItem {
             if (path != null)
                 navigation.moveTo(path, 1.5);
 
+            creeper.setTarget(null);
+
             float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
 
             creeper.yBodyRot = yaw;
@@ -152,6 +154,8 @@ public class KittySlippersItem extends WearableRelicItem {
 
             if (path != null)
                 navigation.moveTo(path, 1.5);
+
+            phantom.setTarget(null);
 
             float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
 

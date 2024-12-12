@@ -207,6 +207,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
             if (stack.getItem() instanceof UmbrellaItem relic
                     && event.getButton() == 0
+                    && !playerClient.getCooldowns().isOnCooldown(stack.getItem())
                     && !HotkeyRegistry.ABILITY_LIST.isDown()
                     && event.getButton() != HotkeyRegistry.ABILITY_LIST.getKey().getValue()
                     && !playerClient.hasContainerOpen()

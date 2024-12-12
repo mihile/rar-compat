@@ -61,7 +61,7 @@ public class DrinkingHatItem extends WearableRelicItem {
                         .maxLevel(15)
                         .step(100)
                         .sources(LevelingSourcesData.builder()
-                                .source(LevelingSourceData.abilityBuilder("drinking")
+                                .source(LevelingSourceData.abilityBuilder("nutrition")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.CYAN)
                                         .build())

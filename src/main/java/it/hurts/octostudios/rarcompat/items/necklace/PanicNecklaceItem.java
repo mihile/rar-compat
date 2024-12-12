@@ -106,7 +106,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onPlayerDamage(LivingIncomingDamageEvent event) {
-            if (!(event.getEntity() instanceof Player player) || !(event.getEntity() instanceof Mob))
+            if (!(event.getEntity() instanceof Player player) || !(event.getSource().getEntity() instanceof Mob))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PANIC_NECKLACE.value());

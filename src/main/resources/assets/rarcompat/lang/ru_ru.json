@@ -173,7 +173,7 @@
   "tooltip.relics.snowshoes.ability.passive": "Лёгкая поступь",
   "tooltip.relics.snowshoes.ability.passive.description": "Позволяет передвигаться по рыхлому снегу не проваливаясь.",
   "tooltip.relics.snowshoes.ability.speed": "Снегоход",
-  "tooltip.relics.snowshoes.ability.speed.description": "Увеличивает скорость передвижения по снегу на %1$s%%. Позволяет легко передвигаться по рыхлому снегу.",
+  "tooltip.relics.snowshoes.ability.speed.description": "Увеличивает скорость передвижения по снегу на %1$s%%.",
   "tooltip.relics.snowshoes.leveling_source.speed.title": "Снегоход",
   "tooltip.relics.snowshoes.leveling_source.speed.description": "+%1$s единиц опыта за каждые 3 секунды передвижения по снегу.",
 
@@ -230,7 +230,7 @@
 
   "tooltip.relics.charm_of_sinking.description": "Наделяет ноги носителя реликвии способностью к поглощению воздуха из почвы.",
   "tooltip.relics.charm_of_sinking.ability.immersion": "Подводный ходок",
-  "tooltip.relics.charm_of_sinking.ability.immersion.description": "При хождении игрока по подводному дну, замедляет расход воздуха на %1$s%%.",
+  "tooltip.relics.charm_of_sinking.ability.immersion.description": "При передвижении игрока по подводному дну, замедляет расход воздуха на %1$s%%.",
   "tooltip.relics.charm_of_sinking.leveling_source.immersion.title": "Подводный ходок",
   "tooltip.relics.charm_of_sinking.leveling_source.immersion.description": "+%1$s единиц опыта за каждую секунду передвижения по подводному дну при условии наличия у игрока воздуха.",
 

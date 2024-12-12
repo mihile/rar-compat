@@ -173,7 +173,7 @@
   "tooltip.relics.snowshoes.ability.passive": "Light Step",
   "tooltip.relics.snowshoes.ability.passive.description": "Allows walking on powder snow without sinking.",
   "tooltip.relics.snowshoes.ability.speed": "Snow Walker",
-  "tooltip.relics.snowshoes.ability.speed.description": "Increases movement speed on snow by %1$s%%. Allows easy movement on powder snow.",
+  "tooltip.relics.snowshoes.ability.speed.description": "Increases movement speed on snow by %1$s%%.",
   "tooltip.relics.snowshoes.leveling_source.speed.title": "Snow Walker",
   "tooltip.relics.snowshoes.leveling_source.speed.description": "+%1$s experience points for every 3 seconds of movement on snow.",
 
