@@ -107,7 +107,7 @@ public class FireGauntletItem extends WearableRelicItem {
         }
 
         private static void spawnDirectionalArc(LivingEntity player, double arcAngle, double rangeAttack) {
-            double centerAngle = Math.toRadians(player.getYRot()) + 20.5;
+            double centerAngle = Math.toRadians(player.getYRot()) + 20.4;
 
             double startAngle = centerAngle - Math.toRadians(arcAngle);
             double endAngle = centerAngle + Math.toRadians(arcAngle);

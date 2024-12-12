@@ -127,28 +127,39 @@ public class KittySlippersItem extends WearableRelicItem {
             Vec3 escapePosition = creeperPosition.add(escapeDirection.scale(5));
 
             PathNavigation navigation = creeper.getNavigation();
+
             Path path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
 
             if (path != null)
                 navigation.moveTo(path, 1.5);
 
             float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
+
             creeper.yBodyRot = yaw;
             creeper.yHeadRot = yaw;
         }
 
-        for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(15))) {
-            if (phantom.getTarget() instanceof Player) {
-                Vec3 directionToPlayer = player.position().subtract(phantom.position());
+        for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(5))) {
+            if (!(phantom.getTarget() instanceof Player))
+                return;
 
-                Vec3 escapeDirection = directionToPlayer.normalize().scale(-1);
+            Vec3 creeperPosition = phantom.position();
 
-                phantom.setDeltaMovement(escapeDirection.scale(0.5));
+            Vec3 escapeDirection = player.position().subtract(creeperPosition).normalize().scale(-1);
 
-                float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
-                phantom.yBodyRot = yaw;
-                phantom.yHeadRot = yaw;
-            }
+            Vec3 escapePosition = creeperPosition.add(escapeDirection.scale(5));
+
+            PathNavigation navigation = phantom.getNavigation();
+
+            Path path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
+
+            if (path != null)
+                navigation.moveTo(path, 1.5);
+
+            float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
+
+            phantom.yBodyRot = yaw;
+            phantom.yHeadRot = yaw;
         }
     }
 

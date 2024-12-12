@@ -26,6 +26,9 @@ public class SnowshoesItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
+                                .build())
                         .ability(AbilityData.builder("speed")
                                 .stat(StatData.builder("amount")
                                         .initialValue(0.2D, 0.4D)
@@ -37,9 +40,6 @@ public class SnowshoesItem extends WearableRelicItem {
                                         .star(4, 14, 25).star(5, 8, 25).star(6, 9, 17)
                                         .link(0, 1).link(1, 2).link(2, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 0)
                                         .build())
-                                .build())
-                        .ability(AbilityData.builder("passive")
-                                .maxLevel(0)
                                 .build())
                         .build())
                 .style(StyleData.builder()
@@ -67,7 +67,7 @@ public class SnowshoesItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "speed"))
             return;
 
         if (player.onGround() && isStandingOnSnow(player)) {
@@ -83,12 +83,17 @@ public class SnowshoesItem extends WearableRelicItem {
     private boolean isStandingOnSnow(Player player) {
         var blockBelow = player.level().getBlockState(player.blockPosition().below());
 
-        return (blockBelow.is(Blocks.SNOW_BLOCK) || blockBelow.is(Blocks.SNOW) || blockBelow.is(Blocks.POWDER_SNOW));
+        return blockBelow.is(Blocks.SNOW_BLOCK)
+                || blockBelow.is(Blocks.POWDER_SNOW)
+                || player.level().getBlockState(player.blockPosition()).is(Blocks.SNOW);
     }
 
     @Override
     public boolean canWalkOnPowderedSnow(SlotContext slotContext, ItemStack stack) {
-        return isAbilityTicking(stack, "passive");
+        if (!(slotContext.entity() instanceof Player player))
+            return super.canWalkOnPowderedSnow(slotContext, stack);
+
+        return canPlayerUseAbility(player, stack, "passive");
     }
 
     @Override

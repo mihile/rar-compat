@@ -81,12 +81,14 @@ public class DiggingClawsItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-            if (!(stack.getItem() instanceof DiggingClawsItem relic))
+            if (!(stack.getItem() instanceof DiggingClawsItem relic) )
                 return;
 
             if (player.getMainHandItem().getItem() instanceof TieredItem tieredItem) {
-                if (relic.canPlayerUseAbility(player, stack, "passive"))
-                    event.setCanHarvest(isCorrectTierForDrops(getTierFromString((Tiers) tieredItem.getTier()), blockState));
+                int tier = getTierFromString((Tiers) tieredItem.getTier());
+
+                if (relic.canPlayerUseAbility(player, stack, "passive") && tier + 1 >= getRequiredToolTier(blockState))
+                    event.setCanHarvest(true);
             } else if (!event.getTargetBlock().is(BlockTags.INCORRECT_FOR_WOODEN_TOOL))
                 event.setCanHarvest(true);
         }
@@ -126,20 +128,18 @@ public class DiggingClawsItem extends WearableRelicItem {
             };
         }
 
-        public static boolean isCorrectTierForDrops(int i, BlockState state) {
-            if (!state.requiresCorrectToolForDrops()) {
-                return true;
-            }
+        public static int getRequiredToolTier(BlockState state) {
+            if (!state.requiresCorrectToolForDrops())
+                return 0;
 
-            if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
-                return i >= 4;
-            } else if (state.is(BlockTags.NEEDS_IRON_TOOL)) {
-                return i >= 2;
-            } else if (state.is(BlockTags.NEEDS_STONE_TOOL) || !state.is(BlockTags.INCORRECT_FOR_WOODEN_TOOL)) {
-                return i >= 1;
-            }
+            if (state.is(BlockTags.NEEDS_DIAMOND_TOOL))
+                return 5;
+            else if (state.is(BlockTags.NEEDS_IRON_TOOL))
+                return 3;
+            else if (state.is(BlockTags.NEEDS_STONE_TOOL))
+                return 2;
 
-            return false;
+            return 1;
         }
     }
 }
