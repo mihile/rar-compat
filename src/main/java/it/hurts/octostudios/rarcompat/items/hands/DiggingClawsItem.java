@@ -17,6 +17,7 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.state.BlockState;
@@ -81,13 +82,13 @@ public class DiggingClawsItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-            if (!(stack.getItem() instanceof DiggingClawsItem relic) )
+            if (player.getCommandSenderWorld().isClientSide() || !(stack.getItem() instanceof DiggingClawsItem) || event.canHarvest())
                 return;
 
             if (player.getMainHandItem().getItem() instanceof TieredItem tieredItem) {
-                int tier = getTierFromString((Tiers) tieredItem.getTier());
+                int tier = getTierFromString(tieredItem.getTier());
 
-                if (relic.canPlayerUseAbility(player, stack, "passive") && tier + 1 >= getRequiredToolTier(blockState))
+                if (tier + 1 >= getRequiredToolTier(blockState))
                     event.setCanHarvest(true);
             } else if (!event.getTargetBlock().is(BlockTags.INCORRECT_FOR_WOODEN_TOOL))
                 event.setCanHarvest(true);
@@ -117,15 +118,14 @@ public class DiggingClawsItem extends WearableRelicItem {
                 relic.spreadRelicExperience(player, stack, 1);
         }
 
-        public static int getTierFromString(Tiers tier) {
-            return switch (tier) {
-                case Tiers.WOOD -> 1;
-                case Tiers.STONE -> 2;
-                case Tiers.IRON -> 3;
-                case Tiers.GOLD -> 4;
-                case Tiers.DIAMOND -> 5;
-                case Tiers.NETHERITE -> 6;
-            };
+        public static int getTierFromString(Tier tier) {
+            if (tier == Tiers.STONE) return 2;
+            if (tier == Tiers.IRON) return 3;
+            if (tier == Tiers.GOLD) return 4;
+            if (tier == Tiers.DIAMOND) return 5;
+            if (tier == Tiers.NETHERITE) return 6;
+
+            return 1;
         }
 
         public static int getRequiredToolTier(BlockState state) {
