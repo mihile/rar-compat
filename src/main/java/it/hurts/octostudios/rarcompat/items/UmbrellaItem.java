@@ -47,6 +47,7 @@ import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.List;
 
@@ -155,6 +156,11 @@ public class UmbrellaItem extends WearableRelicItem {
     @Override
     public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
         return 72000;
+    }
+
+    @Override
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return false;
     }
 
     public static boolean isHoldingUmbrellaUpright(LivingEntity entity, InteractionHand hand) {
