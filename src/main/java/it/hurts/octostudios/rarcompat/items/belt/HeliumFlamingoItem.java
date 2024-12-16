@@ -134,8 +134,6 @@ public class HeliumFlamingoItem extends WearableRelicItem {
 
                 setToggled(stack, false);
 
-                relic.setAbilityCooldown(stack, "flying", 40);
-
                 event.setResult(EventResult.PASS);
 
                 return;
