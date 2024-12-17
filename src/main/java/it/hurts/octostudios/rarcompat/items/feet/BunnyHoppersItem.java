@@ -19,15 +19,18 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerPlayer;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import top.theillusivec4.curios.api.SlotContext;
+
+import java.awt.*;
+import java.util.Random;
 
 public class BunnyHoppersItem extends WearableRelicItem {
     @Override
@@ -72,42 +75,74 @@ public class BunnyHoppersItem extends WearableRelicItem {
                 .build();
     }
 
-    @EventBusSubscriber
-    public static class BunnyHoppersServerEvent {
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold"))
+            return;
 
+        if (player.onGround() || getTime(stack) <= 0) {
+            addTime(stack, -getTime(stack));
+            setToggled(stack, true);
+        }
+
+        double limit = getStatValue(stack, "hold", "distance");
+
+        if (!player.getCommandSenderWorld().isClientSide() || !(player instanceof LocalPlayer localPlayer) || getTime(stack) >= limit || !getToggled(stack))
+            return;
+
+        if (!localPlayer.input.jumping) {
+            setToggled(stack, false);
+        } else {
+            NetworkHandler.sendToServer(new PowerJumpPacket());
+
+            player.setDeltaMovement(new Vec3(player.getDeltaMovement().x, 0.6 + ((double) getTime(stack) / 80), player.getDeltaMovement().z));
+
+            Random random = new Random();
+
+            for (int i = 0; i < 10; i++) {
+                double offsetX = (random.nextDouble() - 0.5) * 0.5;
+                double offsetY = (random.nextDouble() - 0.5) * 0.5;
+                double offsetZ = (random.nextDouble() - 0.5) * 0.5;
+
+                player.level().addParticle(ParticleUtils.constructSimpleSpark(new Color(200 + random.nextInt(56), 200 + random.nextInt(56), 200 + random.nextInt(56)),
+                                0.7F, 40, 0.9F),
+                        player.getX() + offsetX,
+                        player.getY() + 0.1 + offsetY,
+                        player.getZ() + offsetZ,
+                        0, 0, 0);
+            }
+        }
+    }
+
+    public void addTime(ItemStack stack, int val) {
+        stack.set(DataComponentRegistry.TIME, getTime(stack) + val);
+    }
+
+    public int getTime(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TIME, 0);
+    }
+
+    public void setToggled(ItemStack stack, boolean val) {
+        stack.set(DataComponentRegistry.TOGGLED, val);
+    }
+
+    public boolean getToggled(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TOGGLED, false);
+    }
+
+    @EventBusSubscriber
+    public static class BunnyHoppersEvent {
         @SubscribeEvent
-        public static void onJump(LivingEvent.LivingJumpEvent event) {
-            if (!(event.getEntity() instanceof Player player) || player.level().isClientSide)
+        public static void onFall(LivingFallEvent event) {
+            if (!(event.getEntity() instanceof Player player))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.BUNNY_HOPPERS.value());
 
-            if (!(stack.getItem() instanceof BunnyHoppersItem relic) || !relic.isAbilityTicking(stack, "hold"))
+            if (!(stack.getItem() instanceof BunnyHoppersItem relic) || player.getCommandSenderWorld().isClientSide())
                 return;
 
-            relic.spreadRelicExperience(player, stack, 1);
-
-            PowerJumpPacket.createJump(1, (ServerPlayer) player);
-            stack.set(DataComponentRegistry.TOGGLED, true);
-        }
-    }
-
-    @EventBusSubscriber(value = Dist.CLIENT)
-    public static class BunnyHoppersClintEvent {
-
-        @SubscribeEvent
-        public static void onHoldJump(InputEvent.Key event) {
-            Minecraft minecraft = Minecraft.getInstance();
-
-            Player playerClient = minecraft.player;
-            ItemStack stack = EntityUtils.findEquippedCurio(playerClient, ModItems.BUNNY_HOPPERS.value());
-
-            if (minecraft.screen == null && stack.getItem() instanceof BunnyHoppersItem relic && playerClient != null
-                    && event.getKey() == minecraft.options.keyJump.getKey().getValue() && Boolean.TRUE.equals(stack.get(DataComponentRegistry.TOGGLED))
-                    && relic.isAbilityTicking(stack, "hold")) {
-
-                NetworkHandler.sendToServer(new PowerJumpPacket(event.getAction()));
-            }
+            event.setDistance(event.getDistance() - (float) relic.getTime(stack));
         }
     }
 }
