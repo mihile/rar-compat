@@ -58,9 +58,10 @@ public class UmbrellaItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("glider")
+                                .requiredPoints(2)
                                 .stat(StatData.builder("count")
                                         .initialValue(3D, 5D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
@@ -73,8 +74,8 @@ public class UmbrellaItem extends WearableRelicItem {
                                 .requiredLevel(5)
                                 .stat(StatData.builder("knockback")
                                         .initialValue(1D, 3D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.07D)
-                                        .formatValue(value -> MathUtils.round(value, 0))
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 2, 5).star(1, 11, 3).star(2, 20, 6)
@@ -128,7 +129,8 @@ public class UmbrellaItem extends WearableRelicItem {
         if (player.onGround() && charges != 0)
             stack.set(DataComponentRegistry.CHARGE, 0);
 
-        if (player.isInWater() || !isHoldingUmbrellaUpright(player) || player.hasEffect(MobEffects.SLOW_FALLING) || player.getDeltaMovement().y > 0)
+        if (player.isInWater() || !isHoldingUmbrellaUpright(player) || player.hasEffect(MobEffects.SLOW_FALLING)
+                || player.getDeltaMovement().y > 0 || !canPlayerUseAbility(player, stack, "glider"))
             return;
 
         Vec3 motion = player.getDeltaMovement();
@@ -143,9 +145,13 @@ public class UmbrellaItem extends WearableRelicItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        player.startUsingItem(hand);
+        if (canPlayerUseAbility(player, player.getMainHandItem(), "shield")) {
+            player.startUsingItem(hand);
 
-        return InteractionResultHolder.consume(player.getItemInHand(hand));
+            return InteractionResultHolder.consume(player.getItemInHand(hand));
+        }
+
+        return InteractionResultHolder.fail(player.getItemInHand(hand));
     }
 
     @Override
@@ -220,6 +226,7 @@ public class UmbrellaItem extends WearableRelicItem {
                     && event.getButton() != HotkeyRegistry.ABILITY_LIST.getKey().getValue()
                     && !playerClient.hasContainerOpen()
                     && Minecraft.getInstance().screen == null
+                    && relic.canPlayerUseAbility(playerClient, stack, "glider")
                     && !playerClient.onGround()) {
                 Vec3 lookDirection = playerClient.getLookAngle().scale(-1);
                 double modifierVal = 1.2;
