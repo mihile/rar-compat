@@ -83,9 +83,9 @@
   "tooltip.relics.thorn_pendant.leveling_source.poison.title": "Ядовитая оборона",
   "tooltip.relics.thorn_pendant.leveling_source.poison.description": "+%1$s единиц опыта за каждое срабатывание способности %2$s.",
 
-  "tooltip.relics.cowboy_hat.description": "Повышает ловкость верховых животных владельца реликвии.",
+  "tooltip.relics.cowboy_hat.description": "Повышает ловкость ездовых животных владельца реликвии.",
   "tooltip.relics.cowboy_hat.ability.cowboy": "Галоп",
-  "tooltip.relics.cowboy_hat.ability.cowboy.description": "Увеличивает скорость передвижения на верховых животных на %1$s%%.",
+  "tooltip.relics.cowboy_hat.ability.cowboy.description": "Увеличивает скорость передвижения, высоту прыжка и безопасную высоту падения ездовых животных на %1$s%%.",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Галоп",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s единиц опыта с вероятностью в 50% за каждую секунду передвижения верхом.",
 

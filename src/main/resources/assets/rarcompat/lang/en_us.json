@@ -83,9 +83,9 @@
   "tooltip.relics.thorn_pendant.leveling_source.poison.title": "Poisonous Defense",
   "tooltip.relics.thorn_pendant.leveling_source.poison.description": "+%1$s experience points for each activation of the %2$s ability.",
 
-  "tooltip.relics.cowboy_hat.description": "Enhances the agility of the relic bearer’s mounted animals.",
+  "tooltip.relics.cowboy_hat.description": "Enhances the agility of the relic bearer’s mounts.",
   "tooltip.relics.cowboy_hat.ability.cowboy": "Gallop",
-  "tooltip.relics.cowboy_hat.ability.cowboy.description": "Increases movement speed on mounted animals by %1$s%%.",
+  "tooltip.relics.cowboy_hat.ability.cowboy.description": "Increases the movement speed, jump height, and safe fall height of mounts by %1$s%%.",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Gallop",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s experience points with a 50% chance for each second of riding.",
 
