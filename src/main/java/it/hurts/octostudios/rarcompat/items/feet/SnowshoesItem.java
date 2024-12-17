@@ -13,11 +13,17 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.WorldUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class SnowshoesItem extends WearableRelicItem {
@@ -67,10 +73,10 @@ public class SnowshoesItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "speed"))
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "speed") || player.getCommandSenderWorld().isClientSide())
             return;
 
-        if (player.onGround() && isStandingOnSnow(player)) {
+        if (isStandingOnSnow(player)) {
             if (player.tickCount % 60 == 0 && (player.getKnownMovement().x != 0 || player.getKnownMovement().z != 0))
                 spreadRelicExperience(player, stack, 1);
 
@@ -81,13 +87,18 @@ public class SnowshoesItem extends WearableRelicItem {
     }
 
     private boolean isStandingOnSnow(Player player) {
-        var blockBelow = player.level().getBlockState(player.blockPosition().below());
+        BlockPos startPos = player.blockPosition().atY((int) Math.floor(WorldUtils.getGroundHeight(player, player.position().add(0, 0.1, 0), 8)));
 
-        return blockBelow.is(Blocks.SNOW_BLOCK)
-                || blockBelow.is(Blocks.POWDER_SNOW)
-                || player.level().getBlockState(player.blockPosition()).is(Blocks.SNOW);
+        for (int i = 0; i < 8; i++) {
+            BlockState blockBelow = player.level().getBlockState(startPos.below(i));
+
+            if (blockBelow.is(BlockTags.SNOW))
+                return true;
+
+        }
+
+        return false;
     }
-
     @Override
     public boolean canWalkOnPowderedSnow(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player))

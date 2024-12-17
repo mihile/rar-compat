@@ -80,12 +80,25 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide() || !canPlayerUseAbility(player, stack, "panic"))
             return;
 
         double modifierMovementSpeed = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
 
-        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        float interpolated = (float) interpolateSpeedOverTime(0.0, modifierMovementSpeed);
+        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, interpolated, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    }
+
+    public double interpolateSpeedOverTime(double startSpeed, double targetSpeed) {
+        double currentSpeed = startSpeed;
+        double t = 0;
+
+        while (t < targetSpeed) {
+            t += 0.1;
+            currentSpeed = (1 - t) * startSpeed + t * targetSpeed;
+        }
+
+        return currentSpeed;
     }
 
     public int getLengthRadius(Player player, Level level, ItemStack stack) {
@@ -103,7 +116,6 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class PanicNecklaceEvent {
-
         @SubscribeEvent
         public static void onPlayerDamage(LivingIncomingDamageEvent event) {
             if (!(event.getEntity() instanceof Player player) || !(event.getSource().getEntity() instanceof Mob))

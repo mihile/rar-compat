@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.belt;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -16,12 +17,16 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class ChorusTotemItem extends WearableRelicItem {
@@ -123,27 +128,42 @@ public class ChorusTotemItem extends WearableRelicItem {
         addTime(stack, -getTime(stack));
     }
 
-    public static void setWorldPos(ItemStack stack, WorldPosition worldPosition) {
+    public void setWorldPos(ItemStack stack, WorldPosition worldPosition) {
         stack.set(DataComponentRegistry.WORLD_POSITION, worldPosition);
     }
 
-    public static WorldPosition getWorldPos(ItemStack stack, Player player) {
+    public WorldPosition getWorldPos(ItemStack stack, Player player) {
         return stack.getOrDefault(DataComponentRegistry.WORLD_POSITION, new WorldPosition(player));
     }
 
-    public static void addTime(ItemStack stack, int val) {
+    public void addTime(ItemStack stack, int val) {
         stack.set(DataComponentRegistry.TIME, getTime(stack) + val);
     }
 
-    public static int getTime(ItemStack stack) {
+    public int getTime(ItemStack stack) {
         return stack.getOrDefault(DataComponentRegistry.TIME, 0);
     }
 
-    public static void setToggled(ItemStack stack, boolean val) {
+    public void setToggled(ItemStack stack, boolean val) {
         stack.set(DataComponentRegistry.TOGGLED, val);
     }
 
-    public static boolean getToggled(ItemStack stack) {
+    public boolean getToggled(ItemStack stack) {
         return stack.getOrDefault(DataComponentRegistry.TOGGLED, true);
+    }
+
+    @EventBusSubscriber
+    public static class ChorusTotemEvent {
+        @SubscribeEvent
+        public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+            Player player = event.getEntity();
+
+            ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.CHORUS_TOTEM.value());
+
+            if (!(itemStack.getItem() instanceof ChorusTotemItem relic))
+                return;
+
+            relic.setWorldPos(itemStack, null);
+        }
     }
 }
