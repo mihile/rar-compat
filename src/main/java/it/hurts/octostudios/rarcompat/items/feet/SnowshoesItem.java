@@ -99,6 +99,7 @@ public class SnowshoesItem extends WearableRelicItem {
 
         return false;
     }
+
     @Override
     public boolean canWalkOnPowderedSnow(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player))

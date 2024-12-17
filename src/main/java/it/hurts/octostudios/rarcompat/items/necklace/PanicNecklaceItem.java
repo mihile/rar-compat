@@ -84,8 +84,8 @@ public class PanicNecklaceItem extends WearableRelicItem {
             return;
 
         double modifierMovementSpeed = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
-
         float interpolated = (float) interpolateSpeedOverTime(0.0, modifierMovementSpeed);
+
         EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, interpolated, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
