@@ -22,8 +22,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 
-import java.lang.reflect.Field;
-
 public class AntidoteVesselItem extends WearableRelicItem {
 
     @Override
@@ -72,8 +70,8 @@ public class AntidoteVesselItem extends WearableRelicItem {
         public static void onMobEffect(MobEffectEvent.Added event) {
             MobEffectInstance effectInstance = event.getEffectInstance();
 
-            if (effectInstance == MobEffects.BAD_OMEN || effectInstance == MobEffects.TRIAL_OMEN || effectInstance == MobEffects.RAID_OMEN
-                    || effectInstance.getEffect().value().isBeneficial() || !(event.getEntity() instanceof Player player) || player.level().isClientSide)
+            if (effectInstance == null || effectInstance == MobEffects.BAD_OMEN || effectInstance == MobEffects.TRIAL_OMEN || effectInstance == MobEffects.RAID_OMEN
+                    || effectInstance.getEffect().value().isBeneficial() || !(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
                 return;
 
             ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.ANTIDOTE_VESSEL.value());
@@ -81,19 +79,9 @@ public class AntidoteVesselItem extends WearableRelicItem {
             if (!(itemStack.getItem() instanceof AntidoteVesselItem relic))
                 return;
 
-            int newDuration = (int) (effectInstance.getDuration() * (1 - relic.getStatValue(itemStack, "antidote", "amount")));
+            event.getEffectInstance().duration = (int) (effectInstance.getDuration() * (1 - relic.getStatValue(itemStack, "antidote", "amount")));
 
             relic.spreadRelicExperience(player, itemStack, 1);
-
-            try {
-                Field durationField = MobEffectInstance.class.getDeclaredField("duration");
-
-                durationField.setAccessible(true);
-
-                durationField.setInt(effectInstance, newDuration);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
     }
