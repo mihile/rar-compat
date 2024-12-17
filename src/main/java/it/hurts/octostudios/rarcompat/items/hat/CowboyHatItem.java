@@ -69,15 +69,22 @@ public class CowboyHatItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
             return;
 
         Entity mountedEntity = player.getVehicle();
 
-        if (!(mountedEntity instanceof LivingEntity beingMounted) || mountedEntity instanceof Horse horse && !horse.isTamed())
+        if (!(mountedEntity instanceof LivingEntity beingMounted) || !canPlayerUseAbility(player, stack, "cowboy"))
+            return;
+
+        if (!(beingMounted instanceof Horse horse) || !horse.isTamed())
             return;
 
         EntityUtils.applyAttribute(beingMounted, stack, Attributes.MOVEMENT_SPEED,
+                (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityUtils.applyAttribute(beingMounted, stack, Attributes.JUMP_STRENGTH,
+                (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityUtils.applyAttribute(beingMounted, stack, Attributes.SAFE_FALL_DISTANCE,
                 (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
         if ((mountedEntity.getKnownMovement().x != 0 || mountedEntity.getKnownMovement().z != 0)
@@ -86,8 +93,7 @@ public class CowboyHatItem extends WearableRelicItem {
     }
 
     @EventBusSubscriber
-    public static class Event {
-
+    public static class CowboyEvent {
         @SubscribeEvent
         public static void onEntityMount(EntityMountEvent event) {
             if (!(event.getEntity() instanceof Player player))
@@ -97,6 +103,8 @@ public class CowboyHatItem extends WearableRelicItem {
 
             if (event.isDismounting() && event.getEntityBeingMounted() instanceof LivingEntity mount && stack.getItem() instanceof CowboyHatItem) {
                 EntityUtils.removeAttribute(mount, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+                EntityUtils.removeAttribute(mount, stack, Attributes.JUMP_STRENGTH, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+                EntityUtils.removeAttribute(mount, stack, Attributes.SAFE_FALL_DISTANCE, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
             }
         }
 
