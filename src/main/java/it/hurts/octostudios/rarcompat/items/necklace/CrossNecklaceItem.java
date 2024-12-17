@@ -29,8 +29,8 @@ public class CrossNecklaceItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("invulnerability")
                                 .stat(StatData.builder("modifier")
-                                        .initialValue(0.1D, 0.25D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
+                                        .initialValue(0.3D, 0.5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 2))
                                         .build())
                                 .research(ResearchData.builder()
@@ -72,8 +72,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
     }
 
     @EventBusSubscriber
-    public static class Events {
-
+    public static class CrossNecklaceEvent {
         @SubscribeEvent
         public static void onLivingDamaged(LivingDamageEvent.Post event) {
             if (!(event.getEntity() instanceof Player player))
@@ -81,7 +80,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CROSS_NECKLACE.value());
 
-            if (!(stack.getItem() instanceof CrossNecklaceItem relic))
+            if (!(stack.getItem() instanceof CrossNecklaceItem relic) || relic.canPlayerUseAbility(player, stack, "invulnerability"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);
