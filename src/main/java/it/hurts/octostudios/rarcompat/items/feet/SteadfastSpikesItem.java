@@ -15,6 +15,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -67,8 +68,8 @@ public class SteadfastSpikesItem extends WearableRelicItem {
     @Nullable
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
-        return RelicAttributeModifier
-                .builder().attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) this.getStatValue(stack, "resistance", "modifier")))
+        return RelicAttributeModifier.builder()
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) this.getStatValue(stack, "resistance", "modifier"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
                 .build();
     }
 
@@ -83,7 +84,7 @@ public class SteadfastSpikesItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof SteadfastSpikesItem relic))
                 return;
-
+            event.setStrength(1000);
             relic.spreadRelicExperience(player, stack, 1);
         }
 
