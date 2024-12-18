@@ -61,6 +61,9 @@ public class FlippersItem extends WearableRelicItem {
 
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+        if (!isAbilityUnlocked(stack, "swimmer"))
+            return super.getRelicAttributeModifiers(stack);
+
         return RelicAttributeModifier.builder()
                 .attribute(new RelicAttributeModifier.Modifier(NeoForgeMod.SWIM_SPEED, (float) getStatValue(stack, "swimmer", "modifier")))
                 .build();

@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
@@ -116,15 +117,15 @@ public class ObsidianSkullItem extends WearableRelicItem {
     public static class ObsidianSkull {
 
         @SubscribeEvent
-        public static void onAttack(LivingDamageEvent.Pre event) {
-            Level level = event.getEntity().level();
+        public static void onAttack(EntityInvulnerabilityCheckEvent event) {
+            Level level = event.getEntity().getCommandSenderWorld();
 
-            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide)
+            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide())
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.OBSIDIAN_SKULL.value());
 
-            if (!(stack.getItem() instanceof ObsidianSkullItem relic))
+            if (!(stack.getItem() instanceof ObsidianSkullItem relic) || !relic.canPlayerUseAbility(player, stack, "buffer"))
                 return;
 
             double stat = MathUtils.round(relic.getStatValue(stack, "buffer", "duration") * 2, 0);
@@ -133,7 +134,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
             addTime(stack, -getTime(stack));
 
             if (getCharges(stack) <= stat) {
-                event.setNewDamage(0);
+                event.setInvulnerable(true);
 
                 relic.spreadRelicExperience(player, stack, 1);
 

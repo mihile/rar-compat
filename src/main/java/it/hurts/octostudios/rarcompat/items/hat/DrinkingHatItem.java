@@ -104,7 +104,8 @@ public class DrinkingHatItem extends WearableRelicItem {
             if (stack.isEmpty())
                 stack = EntityUtils.findEquippedCurio(player, ModItems.NOVELTY_DRINKING_HAT.value());
 
-            if (!(stack.getItem() instanceof DrinkingHatItem relic) || event.getItem().getUseAnimation() != UseAnim.DRINK)
+            if (!(stack.getItem() instanceof DrinkingHatItem relic) || event.getItem().getUseAnimation() != UseAnim.DRINK
+                    || !relic.canPlayerUseAbility(player, stack, "drinking"))
                 return;
 
             relic.spreadRelicExperience(player, stack, (int) Math.ceil(event.getDuration() / 20F));

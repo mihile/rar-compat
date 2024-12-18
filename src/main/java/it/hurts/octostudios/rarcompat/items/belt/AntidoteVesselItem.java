@@ -76,7 +76,7 @@ public class AntidoteVesselItem extends WearableRelicItem {
 
             ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.ANTIDOTE_VESSEL.value());
 
-            if (!(itemStack.getItem() instanceof AntidoteVesselItem relic))
+            if (!(itemStack.getItem() instanceof AntidoteVesselItem relic) || !relic.canPlayerUseAbility(player, itemStack, "antidote"))
                 return;
 
             event.getEffectInstance().duration = (int) (effectInstance.getDuration() * (1 - relic.getStatValue(itemStack, "antidote", "amount")));

@@ -110,7 +110,7 @@ public class KittySlippersItem extends WearableRelicItem {
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.SAFE_FALL_DISTANCE, (float) getStatValue(stack, "fall", "modifier") / 2))
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.SAFE_FALL_DISTANCE, (float) getStatValue(stack, "fall", "modifier") / 3))
                 .build();
     }
 

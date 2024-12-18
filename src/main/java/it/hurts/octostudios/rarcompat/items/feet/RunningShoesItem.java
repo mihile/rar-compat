@@ -56,7 +56,7 @@ public class RunningShoesItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player) || !isAbilityUnlocked(stack, "runner"))
             return;
 
         double speedIncrement = getStatValue(stack, "runner", "speed") / 1000;
@@ -85,6 +85,7 @@ public class RunningShoesItem extends WearableRelicItem {
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         if (newStack.getItem() == stack.getItem() || !(slotContext.entity() instanceof Player player))
             return;
+
         AttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (speedAttribute == null)

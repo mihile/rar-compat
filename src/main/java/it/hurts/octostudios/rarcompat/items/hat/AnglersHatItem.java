@@ -86,7 +86,7 @@ public class AnglersHatItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ANGLERS_HAT.value());
 
-            if (!(stack.getItem() instanceof AnglersHatItem relic) || level.isClientSide())
+            if (!(stack.getItem() instanceof AnglersHatItem relic) || level.isClientSide() || !relic.canPlayerUseAbility(player, stack, "catch"))
                 return;
 
             ServerLevel serverLevel = (ServerLevel) level;

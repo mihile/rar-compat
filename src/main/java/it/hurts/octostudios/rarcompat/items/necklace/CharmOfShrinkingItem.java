@@ -82,7 +82,7 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
             return;
 
         if (getProgress(stack) < 70 && stage == CastStage.TICK) {
-            setProgress(stack, 1);
+            setProgress(stack, 0.5);
             EntityUtils.resetAttribute(player, stack, Attributes.SCALE, (float) -getProgress(stack) / 100, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         } else if (stage == CastStage.START && getProgress(stack) > 0) {
             setCurrentTick(stack, -getCurrentTick(stack));
@@ -147,12 +147,12 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
         return stack.getOrDefault(DataComponentRegistry.TIME, 0);
     }
 
-    public void setProgress(ItemStack stack, int val) {
-        stack.set(DataComponentRegistry.PROGRESS, getProgress(stack) + val);
+    public void setProgress(ItemStack stack, double val) {
+        stack.set(DataComponentRegistry.HEIGHT, getProgress(stack) + val);
     }
 
-    public int getProgress(ItemStack stack) {
-        return stack.getOrDefault(DataComponentRegistry.PROGRESS, 0);
+    public double getProgress(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.HEIGHT, 0D);
     }
 
     private void removeAttribute(LivingEntity entity, ItemStack stack) {

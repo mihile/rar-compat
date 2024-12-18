@@ -74,7 +74,7 @@ public class VampiricGloveItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.VAMPIRIC_GLOVE.value());
 
-            if (!(stack.getItem() instanceof VampiricGloveItem relic) || relic.canPlayerUseAbility(player, stack, "vampire"))
+            if (!(stack.getItem() instanceof VampiricGloveItem relic) || !relic.canPlayerUseAbility(player, stack, "vampire"))
                 return;
 
             double damageToHeal = event.getAmount() * relic.getStatValue(stack, "vampire", "amount");

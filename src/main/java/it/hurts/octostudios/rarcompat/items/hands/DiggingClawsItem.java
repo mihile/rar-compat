@@ -96,9 +96,11 @@ public class DiggingClawsItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ModItems.DIGGING_CLAWS.value());
+            Player player = event.getEntity();
 
-            if (!(stack.getItem() instanceof DiggingClawsItem relic))
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
+
+            if (!(stack.getItem() instanceof DiggingClawsItem relic) || !relic.canPlayerUseAbility(player, stack, "claws"))
                 return;
 
             event.setNewSpeed((float) (event.getOriginalSpeed() + relic.getStatValue(stack, "claws", "amount")));

@@ -80,7 +80,9 @@ public class UniversalAttractorItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide) return;
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide()
+                || !canPlayerUseAbility(player, stack, "attractor"))
+            return;
 
         double range = getStatValue(stack, "attractor", "radius");
         int amountItem = 0;

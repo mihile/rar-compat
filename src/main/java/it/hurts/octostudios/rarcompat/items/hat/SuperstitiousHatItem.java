@@ -13,6 +13,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.network.PacketListener;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import org.jetbrains.annotations.Nullable;
@@ -63,13 +65,15 @@ public class SuperstitiousHatItem extends WearableRelicItem {
 
     @Override
     public int getLootingLevel(SlotContext slotContext, @Nullable LootContext lootContext, ItemStack stack) {
-        var entity = slotContext.entity();
-        var random = entity.getRandom();
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "looting"))
+            return super.getLootingLevel(slotContext, lootContext, stack);
+
+        var random = player.getRandom();
 
         var amount = MathUtils.multicast(random, getStatValue(stack, "looting", "chance"), 1F);
 
         if (amount > 0)
-            spreadRelicExperience(entity, stack, random.nextInt(amount) + 1);
+            spreadRelicExperience(player, stack, random.nextInt(amount) + 1);
 
         return amount;
     }
