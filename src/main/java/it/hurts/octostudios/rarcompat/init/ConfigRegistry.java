@@ -8,6 +8,7 @@ public class ConfigRegistry {
     public static MimicConfigData MIMIC_CONFIG = new MimicConfigData();
 
     public static void register() {
-        ConfigManager.registerConfig(RARCompat.MODID + "/mimic", MIMIC_CONFIG);
+        if (it.hurts.sskirillss.relics.init.ConfigRegistry.RELICS_CONFIG.isEnabledExtendedConfigs())
+            ConfigManager.registerConfig(RARCompat.MODID + "/mimic", MIMIC_CONFIG);
     }
 }
