@@ -52,27 +52,7 @@ public class DoubleJumpPacket implements CustomPacketPayload {
             player.hasImpulse = true;
             player.fallDistance = 0;
             player.awardStat(Stats.JUMP);
-
-            player.level().playSound(null, player, SoundEvents.WOOL_PLACE, SoundSource.PLAYERS,
-                    1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
-
-            createJumpParticles(player, (ServerLevel) player.level());
         });
-    }
-
-    private void createJumpParticles(Player player, ServerLevel level) {
-        int particleCount = 70;
-        double radius = 1;
-        double speed = 0.2;
-
-        for (int i = 0; i < particleCount; i++) {
-            double angle = 2 * Math.PI * i / particleCount;
-            double xOffset = Math.cos(angle) * radius;
-            double zOffset = Math.sin(angle) * radius;
-
-            level.sendParticles(ParticleTypes.CLOUD, player.getX() + xOffset, player.getY(), player.getZ() + zOffset, 1,
-                    speed, 0.0, speed, 0.0);
-        }
     }
 
     @Override

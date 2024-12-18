@@ -77,7 +77,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold"))
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold") || player.mayFly())
             return;
 
         if (player.onGround() || getTime(stack) <= 0) {

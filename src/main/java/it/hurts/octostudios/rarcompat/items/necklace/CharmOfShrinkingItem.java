@@ -83,7 +83,10 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
 
         if (getProgress(stack) < 70 && stage == CastStage.TICK) {
             setProgress(stack, 0.5);
+
             EntityUtils.resetAttribute(player, stack, Attributes.SCALE, (float) -getProgress(stack) / 100, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
+            setCurrentTick(stack, -getCurrentTick(stack));
         } else if (stage == CastStage.START && getProgress(stack) > 0) {
             setCurrentTick(stack, -getCurrentTick(stack));
 

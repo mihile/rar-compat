@@ -18,6 +18,10 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -29,6 +33,7 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class CloudInBottleItem extends WearableRelicItem {
 
@@ -98,7 +103,8 @@ public class CloudInBottleItem extends WearableRelicItem {
 
             if (minecraft.screen != null || event.getAction() != 1 || !(stack.getItem() instanceof CloudInBottleItem relic)
                     || !relic.canPlayerUseAbility(player, stack, "jump") || event.getKey() != minecraft.options.keyJump.getKey().getValue() || player.onGround()
-                    || stack.getOrDefault(DataComponentRegistry.COUNT, 0) > Math.round(relic.getStatValue(stack, "jump", "count")))
+                    || stack.getOrDefault(DataComponentRegistry.COUNT, 0) >= Math.round(relic.getStatValue(stack, "jump", "count"))
+                    || player.mayFly())
                 return;
 
             double upwardsMotion = 0.65;
@@ -109,9 +115,28 @@ public class CloudInBottleItem extends WearableRelicItem {
             float direction = (float) (player.getYRot() * Math.PI / 180.0);
             double horizontalFactor = 3;
 
-            player.setDeltaMovement(-Mth.sin(direction) / horizontalFactor, upwardsMotion, Mth.cos(direction) / horizontalFactor);
-
             NetworkHandler.sendToServer(new DoubleJumpPacket());
+
+            createJumpParticles(player);
+
+            player.playSound(SoundEvents.WOOL_PLACE, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
+
+            player.setDeltaMovement(-Mth.sin(direction) / horizontalFactor, upwardsMotion, Mth.cos(direction) / horizontalFactor);
         }
+
+        private static void createJumpParticles(Player player) {
+            int particleCount = 70;
+            double radius = 1;
+
+            for (int i = 0; i < particleCount; i++) {
+                double angle = 2 * Math.PI * i / particleCount;
+                double xOffset = Math.cos(angle) * radius;
+                double zOffset = Math.sin(angle) * radius;
+
+                player.level().addParticle(ParticleTypes.CLOUD, player.getX() + xOffset, player.getY(), player.getZ() + zOffset,
+                        0, 0, 0.0);
+            }
+        }
+
     }
 }
