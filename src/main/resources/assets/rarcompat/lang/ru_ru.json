@@ -99,7 +99,7 @@
   "tooltip.relics.universal_attractor.ability.attractor": "Магнетизм",
   "tooltip.relics.universal_attractor.ability.attractor.description": "Переключаемая способность с 2 режимами: притяжение и отталкивание. В режиме притяжения притягивает предметы в радиусе %1$s блоков к игроку, в режиме отталкивания - отталкивает.",
   "tooltip.relics.universal_attractor.leveling_source.attractor.title": "Магнетизм",
-  "tooltip.relics.universal_attractor.leveling_source.attractor.description": "+%1$s единиц опыта за каждый подобранный предмет, притянутый способностью %2$s. Вероятность получения опыта прямо пропорциональна соотношению текущего количества предметов в стаке и их максимального количества. не работает если предмет был выброшен носителем реликвии.",
+  "tooltip.relics.universal_attractor.leveling_source.attractor.description": "+%1$s единиц опыта за каждый подобранный предмет, притянутый способностью %2$s. Вероятность получения опыта прямо пропорциональна соотношению текущего количества предметов в стаке и их максимального количества. Не работает если предмет был выброшен носителем реликвии.",
 
   "tooltip.relics.cross_necklace.description": "Окутывает владельца реликвии защитной аурой, наделяя его временной неуязвимостью после каждого полученного удара.",
   "tooltip.relics.cross_necklace.ability.invulnerability": "Неприкосновенность",
