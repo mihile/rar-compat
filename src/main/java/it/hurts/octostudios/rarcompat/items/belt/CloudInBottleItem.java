@@ -26,6 +26,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -107,21 +108,26 @@ public class CloudInBottleItem extends WearableRelicItem {
                     || player.mayFly())
                 return;
 
+            createJumpParticles(player);
+
+            player.playSound(SoundEvents.WOOL_PLACE, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
+
             double upwardsMotion = 0.65;
 
             if (player.hasEffect(MobEffects.JUMP))
                 upwardsMotion += 0.1 * (double) Objects.requireNonNull(player.getEffect(MobEffects.JUMP)).getAmplifier();
 
-            float direction = (float) (player.getYRot() * Math.PI / 180.0);
+            Vec3 movement = player.getDeltaMovement();
             double horizontalFactor = 3;
 
-            NetworkHandler.sendToServer(new DoubleJumpPacket());
+            if (movement.horizontalDistanceSqr() < 0.001) {
+                float direction = (float) (player.getYRot() * Math.PI / 180.0);
+                movement = new Vec3(-Mth.sin(direction), 0, Mth.cos(direction));
+            }
 
-            createJumpParticles(player);
+            Vec3 horizontalDirection = new Vec3(movement.x, 0, movement.z).normalize();
 
-            player.playSound(SoundEvents.WOOL_PLACE, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
-
-            player.setDeltaMovement(-Mth.sin(direction) / horizontalFactor, upwardsMotion, Mth.cos(direction) / horizontalFactor);
+            player.setDeltaMovement(horizontalDirection.x / horizontalFactor, upwardsMotion, horizontalDirection.z / horizontalFactor);
         }
 
         private static void createJumpParticles(Player player) {
