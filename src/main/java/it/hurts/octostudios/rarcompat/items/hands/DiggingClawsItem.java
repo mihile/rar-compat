@@ -34,20 +34,20 @@ public class DiggingClawsItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("claws")
-                                .stat(StatData.builder("amount")
-                                        .initialValue(0.5D, 1.5D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
+                                .build())
+                        .ability(AbilityData.builder("fast_mining")
+                                .stat(StatData.builder("modifier")
+                                        .initialValue(0.1D, 0.25D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
+                                        .formatValue(value -> (int) (MathUtils.round(value * 100, 0)))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 4, 15).star(1, 12, 3).star(2, 6, 19).star(3, 16, 6)
                                         .star(4, 9, 23).star(5, 17, 12).star(6, 13, 24).star(7, 17, 18)
                                         .link(0, 1).link(2, 3).link(4, 5).link(6, 7)
                                         .build())
-                                .build())
-                        .ability(AbilityData.builder("passive")
-                                .maxLevel(0)
                                 .build())
                         .build())
                 .style(StyleData.builder()
@@ -61,7 +61,7 @@ public class DiggingClawsItem extends WearableRelicItem {
                         .maxLevel(10)
                         .step(100)
                         .sources(LevelingSourcesData.builder()
-                                .source(LevelingSourceData.abilityBuilder("claws")
+                                .source(LevelingSourceData.abilityBuilder("fast_mining")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.CYAN)
                                         .build())
@@ -100,11 +100,12 @@ public class DiggingClawsItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-            if (!(stack.getItem() instanceof DiggingClawsItem relic) || !relic.canPlayerUseAbility(player, stack, "claws"))
+            if (!(stack.getItem() instanceof DiggingClawsItem relic) || !relic.canPlayerUseAbility(player, stack, "fast_mining"))
                 return;
 
+            var original = event.getOriginalSpeed();
 
-            event.setNewSpeed((float) (event.getOriginalSpeed() + relic.getStatValue(stack, "claws", "amount")));
+            event.setNewSpeed((float) (original + (original * relic.getStatValue(stack, "fast_mining", "modifier"))));
         }
 
         @SubscribeEvent
