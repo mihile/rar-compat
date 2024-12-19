@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -77,7 +78,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold") || player.mayFly())
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold"))
             return;
 
         if (player.onGround() || getTime(stack) <= 0) {
@@ -87,7 +88,8 @@ public class BunnyHoppersItem extends WearableRelicItem {
 
         double limit = getStatValue(stack, "hold", "distance");
 
-        if (!player.getCommandSenderWorld().isClientSide() || !(player instanceof LocalPlayer localPlayer) || getTime(stack) >= limit || !getToggled(stack))
+        if (!player.getCommandSenderWorld().isClientSide() || !(player instanceof LocalPlayer localPlayer)
+                || getTime(stack) >= limit || player.isFallFlying() || !getToggled(stack))
             return;
 
         if (!localPlayer.input.jumping) {
@@ -110,6 +112,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
                         player.getY() + 0.1 + offsetY,
                         player.getZ() + offsetZ,
                         0, 0, 0);
+
             }
         }
     }
@@ -132,6 +135,19 @@ public class BunnyHoppersItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class BunnyHoppersEvent {
+        @SubscribeEvent
+        public static void onJumping(LivingEvent.LivingJumpEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.BUNNY_HOPPERS.value());
+
+            if (!(stack.getItem() instanceof BunnyHoppersItem relic))
+                return;
+
+            relic.addTime(stack, -relic.getTime(stack));
+        }
+
         @SubscribeEvent
         public static void onFall(LivingFallEvent event) {
             if (!(event.getEntity() instanceof Player player))

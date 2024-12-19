@@ -2,7 +2,6 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -71,10 +70,13 @@ public class CharmOfSinkingItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !player.isUnderWater())
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
-        EntityUtils.applyAttribute(player, stack, Attributes.GRAVITY, 5F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        if (player.isUnderWater())
+            EntityUtils.applyAttribute(player, stack, Attributes.GRAVITY, 2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        else
+            EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class CharmOfSinkingItem extends WearableRelicItem {
         if (newStack.getItem() == stack.getItem() || !(slotContext.entity() instanceof Player player))
             return;
 
-        EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
     @EventBusSubscriber
@@ -95,7 +97,8 @@ public class CharmOfSinkingItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CHARM_OF_SINKING.value());
 
-            if (!(stack.getItem() instanceof CharmOfSinkingItem relic) || !player.isUnderWater() || !player.onGround())
+            if (!(stack.getItem() instanceof CharmOfSinkingItem relic) || !player.isUnderWater()
+                    || !relic.isAbilityUnlocked(stack, "immersion") || !player.onGround())
                 return;
 
             if (player.tickCount % 20 == 0 && player.onGround() && player.getAirSupply() > 1)

@@ -43,9 +43,10 @@ public class CloudInBottleItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("jump")
+                                .requiredPoints(2)
                                 .stat(StatData.builder("count")
-                                        .initialValue(1D, 2D)
-                                        .upgradeModifier(UpgradeOperation.ADD, 0.5)
+                                        .initialValue(1D, 3D)
+                                        .upgradeModifier(UpgradeOperation.ADD, 1)
                                         .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .research(ResearchData.builder()
@@ -103,9 +104,9 @@ public class CloudInBottleItem extends WearableRelicItem {
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CLOUD_IN_A_BOTTLE.value());
 
             if (minecraft.screen != null || event.getAction() != 1 || !(stack.getItem() instanceof CloudInBottleItem relic)
-                    || !relic.canPlayerUseAbility(player, stack, "jump") || event.getKey() != minecraft.options.keyJump.getKey().getValue() || player.onGround()
+                    || !relic.canPlayerUseAbility(player, stack, "jump") || event.getKey() != minecraft.options.keyJump.getKey().getValue()
                     || stack.getOrDefault(DataComponentRegistry.COUNT, 0) >= Math.round(relic.getStatValue(stack, "jump", "count"))
-                    || player.mayFly())
+                    || player.isFallFlying() || player.onGround())
                 return;
 
             createJumpParticles(player);
@@ -118,7 +119,10 @@ public class CloudInBottleItem extends WearableRelicItem {
                 upwardsMotion += 0.1 * (double) Objects.requireNonNull(player.getEffect(MobEffects.JUMP)).getAmplifier();
 
             Vec3 movement = player.getDeltaMovement();
+
+            double horizontalFactorX = player.getKnownMovement().x / 2;
             double horizontalFactor = 3;
+            double horizontalFactorZ = player.getKnownMovement().z / 2;
 
             if (movement.horizontalDistanceSqr() < 0.001) {
                 float direction = (float) (player.getYRot() * Math.PI / 180.0);
@@ -127,7 +131,11 @@ public class CloudInBottleItem extends WearableRelicItem {
 
             Vec3 horizontalDirection = new Vec3(movement.x, 0, movement.z).normalize();
 
-            player.setDeltaMovement(horizontalDirection.x / horizontalFactor, upwardsMotion, horizontalDirection.z / horizontalFactor);
+            player.setDeltaMovement((horizontalDirection.x / horizontalFactor) + horizontalFactorX,
+                    upwardsMotion,
+                    (horizontalDirection.z / horizontalFactor) + horizontalFactorZ);
+
+            NetworkHandler.sendToServer(new DoubleJumpPacket());
         }
 
         private static void createJumpParticles(Player player) {

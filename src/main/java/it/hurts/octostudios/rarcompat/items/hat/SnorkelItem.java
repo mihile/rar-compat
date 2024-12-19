@@ -79,7 +79,7 @@ public class SnorkelItem extends WearableRelicItem {
                 var resultDuration = (int) getStatValue(stack, "diving", "duration");
 
                 if (resultDuration * 20 > currentDuration) {
-                    spreadRelicExperience(player, stack, (int) Math.ceil((resultDuration - currentDuration) / 20F));
+                    spreadRelicExperience(player, stack, (int) Math.abs(Math.ceil((resultDuration - currentDuration) / 20F)));
 
                     player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, resultDuration * 20, 0, true, true));
                 }

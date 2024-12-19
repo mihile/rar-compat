@@ -43,7 +43,7 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
                                 .stat(StatData.builder("time")
                                         .initialValue(8D, 10D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
-                                        .formatValue(value -> (int) MathUtils.round(value, 1))
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 11, 28).star(1, 11, 17).star(2, 11, 11).star(3, 11, 4)

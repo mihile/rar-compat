@@ -16,12 +16,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import top.theillusivec4.curios.api.SlotContext;
 
 public class DrinkingHatItem extends WearableRelicItem {
     @Override
@@ -87,9 +90,20 @@ public class DrinkingHatItem extends WearableRelicItem {
 
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+        if (!isAbilityUnlocked(stack, "drinking"))
+            return super.getRelicAttributeModifiers(stack);
+
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed")))
+                .attribute(new RelicAttributeModifier.Modifier(ModAttributes.DRINKING_SPEED, (float) getStatValue(stack, "drinking", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
                 .build();
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || newStack.getItem() == stack.getItem())
+            return;
+
+        EntityUtils.removeAttribute(player, stack, ModAttributes.DRINKING_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
     @EventBusSubscriber
@@ -105,7 +119,7 @@ public class DrinkingHatItem extends WearableRelicItem {
                 stack = EntityUtils.findEquippedCurio(player, ModItems.NOVELTY_DRINKING_HAT.value());
 
             if (!(stack.getItem() instanceof DrinkingHatItem relic) || event.getItem().getUseAnimation() != UseAnim.DRINK
-                    || !relic.canPlayerUseAbility(player, stack, "drinking"))
+                    || !relic.isAbilityUnlocked(stack, "drinking"))
                 return;
 
             relic.spreadRelicExperience(player, stack, (int) Math.ceil(event.getDuration() / 20F));

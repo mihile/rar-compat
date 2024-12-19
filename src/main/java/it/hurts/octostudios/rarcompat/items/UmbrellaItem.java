@@ -34,6 +34,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
@@ -60,7 +61,7 @@ public class UmbrellaItem extends WearableRelicItem {
                         .ability(AbilityData.builder("glider")
                                 .requiredPoints(2)
                                 .stat(StatData.builder("count")
-                                        .initialValue(3D, 5D)
+                                        .initialValue(1D, 3D)
                                         .upgradeModifier(UpgradeOperation.ADD, 1D)
                                         .formatValue(value -> (int) MathUtils.round(value, 1))
                                         .build())
@@ -95,10 +96,6 @@ public class UmbrellaItem extends WearableRelicItem {
                         .maxLevel(15)
                         .step(100)
                         .sources(LevelingSourcesData.builder()
-                                .source(LevelingSourceData.abilityBuilder("shield")
-                                        .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
-                                        .build())
                                 .source(LevelingSourceData.abilityBuilder("glider_1", "glider")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.CYAN)
@@ -106,6 +103,10 @@ public class UmbrellaItem extends WearableRelicItem {
                                 .source(LevelingSourceData.abilityBuilder("glider_2", "glider")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.BLUE)
+                                        .build())
+                                .source(LevelingSourceData.abilityBuilder("shield")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
                                 .build())
                         .build())
@@ -136,6 +137,7 @@ public class UmbrellaItem extends WearableRelicItem {
         Vec3 motion = player.getDeltaMovement();
 
         player.setDeltaMovement(motion.x, -0.15, motion.z);
+        player.fallDistance = 0;
 
         if (player.tickCount % 20 == 0 && !player.onGround())
             spreadRelicExperience(player, stack, 1);
@@ -227,7 +229,8 @@ public class UmbrellaItem extends WearableRelicItem {
                     && !playerClient.hasContainerOpen()
                     && Minecraft.getInstance().screen == null
                     && relic.canPlayerUseAbility(playerClient, stack, "glider")
-                    && !playerClient.onGround()) {
+                    && !playerClient.onGround()
+                    && !playerClient.isFallFlying()) {
                 Vec3 lookDirection = playerClient.getLookAngle().scale(-1);
                 double modifierVal = 1.2;
 
@@ -240,13 +243,6 @@ public class UmbrellaItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class UmbrellaEvent {
-        @SubscribeEvent
-        public static void onLivingFall(LivingFallEvent event) {
-            if (!isHoldingUmbrellaUpright(event.getEntity()))
-                return;
-
-            event.setDamageMultiplier(0);
-        }
 
         @SubscribeEvent
         public static void onPlayerHurt(LivingIncomingDamageEvent event) {

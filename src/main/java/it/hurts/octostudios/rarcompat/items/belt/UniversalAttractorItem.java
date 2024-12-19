@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.belt;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -15,13 +16,20 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.advancements.critereon.PickedUpItemTrigger;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.util.Random;
 
 public class UniversalAttractorItem extends WearableRelicItem {
 
@@ -103,14 +111,6 @@ public class UniversalAttractorItem extends WearableRelicItem {
                 if (Math.sqrt(motion.x * motion.x + motion.y * motion.y + motion.z * motion.z) > 1)
                     motion = motion.normalize();
 
-                ItemStack itemStack = item.getItem();
-
-                int currentAmount = itemStack.getCount();
-                int maxAmount = itemStack.getMaxStackSize();
-
-                if (item.getRandom().nextFloat() <= (double) currentAmount / maxAmount)
-                    spreadRelicExperience(player, stack, 1);
-
                 item.setDeltaMovement(motion.scale(0.6));
             } else {
                 if (item.isAlive() && !item.hasPickUpDelay()) {
@@ -128,4 +128,22 @@ public class UniversalAttractorItem extends WearableRelicItem {
         }
     }
 
+    @EventBusSubscriber
+    public static class UniversalAttractorEvent {
+        @SubscribeEvent
+        public static void onItemPickedUp(ItemEntityPickupEvent.Post event) {
+            Player player = event.getPlayer();
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.UNIVERSAL_ATTRACTOR.value());
+
+            if (!(stack.getItem() instanceof UniversalAttractorItem relic) || !stack.getOrDefault(DataComponentRegistry.TOGGLED, true)
+                    || player.getCommandSenderWorld().isClientSide())
+                return;
+
+            ItemEntity item = event.getItemEntity();
+
+            if (item.getRandom().nextFloat() >= new Random().nextFloat() && item.getOwner() != player)
+                relic.spreadRelicExperience(player, stack, 1);
+        }
+    }
 }

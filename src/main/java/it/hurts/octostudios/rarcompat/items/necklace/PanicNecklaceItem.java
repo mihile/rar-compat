@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -83,22 +84,32 @@ public class PanicNecklaceItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide() || !canPlayerUseAbility(player, stack, "panic"))
             return;
 
-        double modifierMovementSpeed = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
-        float interpolated = (float) interpolateSpeedOverTime(0.0, modifierMovementSpeed);
+        double potential = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
 
-        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, interpolated, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        stack.set(DataComponentRegistry.SPEED, potential);
+
+        double speed = getSpeed(stack);
+
+        if (speed < potential)
+            speed += 0.01;
+        else if (speed > potential)
+            speed -= 0.01;
+
+        setSpeed(stack, speed);
+
+        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) speed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
-    public double interpolateSpeedOverTime(double startSpeed, double targetSpeed) {
-        double currentSpeed = startSpeed;
-        double t = 0;
+    public void addSpeed(ItemStack stack, double val) {
+        setSpeed(stack, getSpeed(stack) + val);
+    }
 
-        while (t < targetSpeed) {
-            t += 0.1;
-            currentSpeed = (1 - t) * startSpeed + t * targetSpeed;
-        }
+    public double getSpeed(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.SPEED, 0D);
+    }
 
-        return currentSpeed;
+    public void setSpeed(ItemStack stack, double val) {
+        stack.set(DataComponentRegistry.SPEED, Math.max(val, 0D));
     }
 
     public int getLengthRadius(Player player, Level level, ItemStack stack) {
@@ -123,7 +134,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PANIC_NECKLACE.value());
 
-            if (!(stack.getItem() instanceof PanicNecklaceItem relic))
+            if (!(stack.getItem() instanceof PanicNecklaceItem relic) || !relic.isAbilityUnlocked(stack, "panic"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);

@@ -80,7 +80,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CROSS_NECKLACE.value());
 
-            if (!(stack.getItem() instanceof CrossNecklaceItem relic) || relic.canPlayerUseAbility(player, stack, "invulnerability"))
+            if (!(stack.getItem() instanceof CrossNecklaceItem relic) || !relic.canPlayerUseAbility(player, stack, "invulnerability"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);

@@ -36,7 +36,7 @@ public class DiggingClawsItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("claws")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(1D, 3D)
+                                        .initialValue(0.5D, 1.5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
@@ -102,6 +102,7 @@ public class DiggingClawsItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof DiggingClawsItem relic) || !relic.canPlayerUseAbility(player, stack, "claws"))
                 return;
+
 
             event.setNewSpeed((float) (event.getOriginalSpeed() + relic.getStatValue(stack, "claws", "amount")));
         }

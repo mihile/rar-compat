@@ -56,7 +56,7 @@ public class RepulsionUmbrellaPacket implements CustomPacketPayload {
                 return;
 
             Level level = player.level();
-            level.playSound(null, player.blockPosition(), SoundEvents.PHANTOM_FLAP, SoundSource.MASTER, 0.5F, 1 + (player.getRandom().nextFloat() * 0.25F));
+            level.playSound(null, player.blockPosition(), SoundEvents.PHANTOM_FLAP, SoundSource.MASTER, 1F, 1 + (player.getRandom().nextFloat() * 0.25F));
 
             relic.spreadRelicExperience(player, stack, 1);
 

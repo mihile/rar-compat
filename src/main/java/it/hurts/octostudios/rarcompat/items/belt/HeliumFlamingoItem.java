@@ -139,7 +139,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                 return;
             }
 
-            if (relic.isAbilityTicking(stack, "flying") && getTime(stack) < timeWorked && player.isSprinting()) {
+            if (relic.isAbilityTicking(stack, "flying") && getTime(stack) < timeWorked && player.isSprinting() && !player.onGround()) {
                 event.setResult(EventResult.SUCCESS);
 
                 setToggled(stack, true);

@@ -3,6 +3,7 @@ package it.hurts.octostudios.rarcompat.network.packets;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.RARCompat;
 import it.hurts.octostudios.rarcompat.items.belt.CloudInBottleItem;
+import it.hurts.octostudios.rarcompat.items.feet.BunnyHoppersItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,6 +17,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
@@ -42,7 +45,8 @@ public class DoubleJumpPacket implements CustomPacketPayload {
             Player player = ctx.player();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CLOUD_IN_A_BOTTLE.value());
 
-            if (!(stack.getItem() instanceof CloudInBottleItem relic) || player.onGround())
+            if (!(stack.getItem() instanceof CloudInBottleItem relic) || player.onGround()
+                    || stack.getOrDefault(DataComponentRegistry.COUNT, 0) >= Math.round(relic.getStatValue(stack, "jump", "count")))
                 return;
 
             stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
@@ -52,6 +56,8 @@ public class DoubleJumpPacket implements CustomPacketPayload {
             player.hasImpulse = true;
             player.fallDistance = 0;
             player.awardStat(Stats.JUMP);
+
+            NeoForge.EVENT_BUS.post(new LivingEvent.LivingJumpEvent(player));
         });
     }
 
