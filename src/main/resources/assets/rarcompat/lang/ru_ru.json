@@ -200,7 +200,7 @@
 
   "tooltip.relics.charm_of_shrinking.description": "Позволяет владельцу реликвии сжать собственное тело, чтобы проникнуть в ранее недосягаемые места.",
   "tooltip.relics.charm_of_shrinking.ability.shrinking": "Компрессия",
-  "tooltip.relics.charm_of_shrinking.ability.shrinking.description": "При использовании в 2 раза уменьшает игрока на время до %1$s секунд. По истечении времени или при ручной деактивации способности уходит на перезарядку на 10 секунд.",
+  "tooltip.relics.charm_of_shrinking.ability.shrinking.description": "При зажатии ПКМ плавно уменьшает игрока на время до %1$s секунд. По истечении времени или при ручной деактивации способности уходит на перезарядку на 10 секунд.",
   "tooltip.relics.charm_of_shrinking.leveling_source.shrinking.title": "Компрессия",
   "tooltip.relics.charm_of_shrinking.leveling_source.shrinking.description": "+%1$s единиц опыта за каждую секунду, проведённую в уменьшенном состоянии от способности %2$s.",
 

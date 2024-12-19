@@ -200,7 +200,7 @@
 
   "tooltip.relics.charm_of_shrinking.description": "Allows the relic bearer to shrink their body to access previously unreachable places.",
   "tooltip.relics.charm_of_shrinking.ability.shrinking": "Compression",
-  "tooltip.relics.charm_of_shrinking.ability.shrinking.description": "Halves the player's size for up to %1$s seconds. After the time expires or manual deactivation, the ability goes on a 10-second cooldown.",
+  "tooltip.relics.charm_of_shrinking.ability.shrinking.description": "When holding the right mouse button, gradually shrinks the player for up to %1$s seconds. After the duration ends or upon manual deactivation, the ability enters a 10-second cooldown.",
   "tooltip.relics.charm_of_shrinking.leveling_source.shrinking.title": "Compression",
   "tooltip.relics.charm_of_shrinking.leveling_source.shrinking.description": "+%1$s experience points for each second spent in a shrunken state using the %2$s ability.",
 
