@@ -238,7 +238,7 @@
 
   "tooltip.relics.panic_necklace.description": "Quickens the relic bearer's heartbeat, warning of impending danger.",
   "tooltip.relics.panic_necklace.ability.panic": "Panic",
-  "tooltip.relics.panic_necklace.ability.panic.description": "Increases the player's movement speed by %1$s%% for each mob within a %2$s-block radius targeting the player for attack.",
+  "tooltip.relics.panic_necklace.ability.panic.description": "Increases the player's movement speed by %1$s%% for each mob within a %2$s blocks radius targeting the player for attack.",
   "tooltip.relics.panic_necklace.leveling_source.panic.title": "Panic",
   "tooltip.relics.panic_necklace.leveling_source.panic.description": "+%1$s experience points for each instance of damage taken from mobs affected by the %2$s ability.",
 

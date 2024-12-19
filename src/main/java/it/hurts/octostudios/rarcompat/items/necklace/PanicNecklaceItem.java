@@ -25,9 +25,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class PanicNecklaceItem extends WearableRelicItem {
 
     @Override
@@ -84,20 +81,16 @@ public class PanicNecklaceItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide() || !canPlayerUseAbility(player, stack, "panic"))
             return;
 
-        double potential = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
-
-        stack.set(DataComponentRegistry.SPEED, potential);
+        double target = getMobsCount(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
 
         double speed = getSpeed(stack);
+        double step = 0.01D;
+        double modifier = speed < target ? step : speed > target ? -step : 0D;
 
-        if (speed < potential)
-            speed += 0.01;
-        else if (speed > potential)
-            speed -= 0.01;
+        if (modifier != 0D)
+            addSpeed(stack, modifier);
 
-        setSpeed(stack, speed);
-
-        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) speed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getSpeed(stack), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
     public void addSpeed(ItemStack stack, double val) {
@@ -112,17 +105,8 @@ public class PanicNecklaceItem extends WearableRelicItem {
         stack.set(DataComponentRegistry.SPEED, Math.max(val, 0D));
     }
 
-    public int getLengthRadius(Player player, Level level, ItemStack stack) {
-        Set<Monster> trackedMobs = new HashSet<>();
-
-        for (Monster mob : level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius")), entity -> entity instanceof Mob))
-            if (mob.getTarget() == player)
-                trackedMobs.add(mob);
-
-        trackedMobs.removeIf(mob -> mob.getTarget() != player || !mob.isAlive() || !mob.getBoundingBox()
-                .intersects(player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))));
-
-        return trackedMobs.toArray().length;
+    public int getMobsCount(Player player, Level level, ItemStack stack) {
+        return (int) level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))).stream().filter(mob -> mob.getTarget() == player && !mob.isDeadOrDying()).count();
     }
 
     @EventBusSubscriber
