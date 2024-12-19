@@ -229,6 +229,8 @@
   "tooltip.relics.bunny_hoppers.leveling_source.hold.description": "+%1$s единиц опыта за каждый совершённый высокий прыжок от способности %2$s.",
 
   "tooltip.relics.charm_of_sinking.description": "Наделяет ноги носителя реликвии способностью к поглощению воздуха из почвы.",
+  "tooltip.relics.charm_of_sinking.ability.dive": "Якорь",
+  "tooltip.relics.charm_of_sinking.ability.dive.description": "Увеличивает скорость потопления игрока в 2 раза.",
   "tooltip.relics.charm_of_sinking.ability.immersion": "Подводный ходок",
   "tooltip.relics.charm_of_sinking.ability.immersion.description": "При передвижении игрока по подводному дну, замедляет расход воздуха на %1$s%%.",
   "tooltip.relics.charm_of_sinking.leveling_source.immersion.title": "Подводный ходок",

@@ -229,6 +229,8 @@
   "tooltip.relics.bunny_hoppers.leveling_source.hold.description": "+%1$s experience points for each high jump performed using the %2$s ability.",
 
   "tooltip.relics.charm_of_sinking.description": "Grants the relic bearer's legs the ability to absorb air from the ground.",
+  "tooltip.relics.charm_of_sinking.ability.dive": "Anchor",
+  "tooltip.relics.charm_of_sinking.ability.dive.description": "Doubles the player's sinking speed.",
   "tooltip.relics.charm_of_sinking.ability.immersion": "Underwater Walker",
   "tooltip.relics.charm_of_sinking.ability.immersion.description": "Reduces air consumption by %1$s%% while walking on the ocean floor.",
   "tooltip.relics.charm_of_sinking.leveling_source.immersion.title": "Underwater Walker",
