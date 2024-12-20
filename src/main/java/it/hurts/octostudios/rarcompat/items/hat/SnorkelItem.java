@@ -64,7 +64,7 @@ public class SnorkelItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 10 != 0)
+        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 10 != 0 || !canPlayerUseAbility(player, stack, "diving"))
             return;
 
         var toggled = stack.getOrDefault(TOGGLED, false);
@@ -78,8 +78,8 @@ public class SnorkelItem extends WearableRelicItem {
                 var currentDuration = effect != null ? effect.getDuration() : 0;
                 var resultDuration = (int) getStatValue(stack, "diving", "duration");
 
-                if (resultDuration > currentDuration) {
-                    spreadRelicExperience(player, stack, (int) Math.ceil((resultDuration - currentDuration) / 20F));
+                if (resultDuration * 20 > currentDuration) {
+                    spreadRelicExperience(player, stack, (int) Math.abs(Math.ceil((resultDuration - currentDuration) / 20F)));
 
                     player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, resultDuration * 20, 0, true, true));
                 }

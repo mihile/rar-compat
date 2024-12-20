@@ -68,8 +68,10 @@ public class FeralClawsItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0)
+        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0
+                || !canPlayerUseAbility(player, stack, "claws"))
             return;
+
         addTime(stack, 1);
 
         int time = getTime(stack);
@@ -130,7 +132,7 @@ public class FeralClawsItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FERAL_CLAWS.value());
 
-            if (!(stack.getItem() instanceof FeralClawsItem relic))
+            if (!(stack.getItem() instanceof FeralClawsItem relic) || !relic.canPlayerUseAbility(player, stack, "claws"))
                 return;
 
             if (player.getAttackStrengthScale(0) != 1F)

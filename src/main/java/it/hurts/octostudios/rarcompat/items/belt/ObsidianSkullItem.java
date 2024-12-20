@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
@@ -64,7 +65,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("buffer")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.PURPLE)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
                         .build())
@@ -116,23 +117,25 @@ public class ObsidianSkullItem extends WearableRelicItem {
     public static class ObsidianSkull {
 
         @SubscribeEvent
-        public static void onAttack(LivingIncomingDamageEvent event) {
-            Level level = event.getEntity().level();
-            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide || player.tickCount % 10 != 0)
+        public static void onAttack(EntityInvulnerabilityCheckEvent event) {
+            Level level = event.getEntity().getCommandSenderWorld();
+
+            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide())
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.OBSIDIAN_SKULL.value());
 
-            if (!(stack.getItem() instanceof ObsidianSkullItem relic))
+            if (!(stack.getItem() instanceof ObsidianSkullItem relic) || !relic.canPlayerUseAbility(player, stack, "buffer"))
                 return;
 
             double stat = MathUtils.round(relic.getStatValue(stack, "buffer", "duration") * 2, 0);
 
             addCharges(stack, 1);
             addTime(stack, -getTime(stack));
-            event.setCanceled(true);
 
             if (getCharges(stack) <= stat) {
+                event.setInvulnerable(true);
+
                 relic.spreadRelicExperience(player, stack, 1);
 
                 RandomSource random = level.getRandom();

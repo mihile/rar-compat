@@ -24,8 +24,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDestroyBlockEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import top.theillusivec4.curios.api.SlotContext;
 
 public class PocketPistonItem extends WearableRelicItem {
     @Override
@@ -33,7 +36,7 @@ public class PocketPistonItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("discarding")
-                                .stat(StatData.builder("range")
+                                .stat(StatData.builder("interaction")
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
@@ -46,9 +49,9 @@ public class PocketPistonItem extends WearableRelicItem {
                                         .link(4, 6).link(3, 0).link(0, 5).link(5, 4).link(2, 3).link(6, 8).link(6, 9).link(7, 8).link(7, 9)
                                         .build())
                                 .build())
-                        .ability(AbilityData.builder("attacking")
+                        .ability(AbilityData.builder("interaction")
                                 .requiredLevel(5)
-                                .stat(StatData.builder("interaction")
+                                .stat(StatData.builder("range")
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
@@ -75,9 +78,9 @@ public class PocketPistonItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("discarding")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.CYAN)
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
-                                .source(LevelingSourceData.abilityBuilder("attacking")
+                                .source(LevelingSourceData.abilityBuilder("interaction")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.RED)
                                         .build())
@@ -91,7 +94,10 @@ public class PocketPistonItem extends WearableRelicItem {
 
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
-        float modifier = (float) getStatValue(stack, "discarding", "range");
+        float modifier = (float) getStatValue(stack, "interaction", "range");
+
+        if (!isAbilityUnlocked(stack, "interaction"))
+            return super.getRelicAttributeModifiers(stack);
 
         return RelicAttributeModifier.builder()
                 .attribute(new RelicAttributeModifier.Modifier(Attributes.ENTITY_INTERACTION_RANGE, modifier, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
@@ -99,23 +105,48 @@ public class PocketPistonItem extends WearableRelicItem {
                 .build();
     }
 
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || newStack.getItem() == stack.getItem())
+            return;
+
+        EntityUtils.removeAttribute(player, stack, Attributes.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityUtils.removeAttribute(player, stack, Attributes.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    }
+
     @EventBusSubscriber
     public static class PocketPistonEvent {
 
         @SubscribeEvent
-        public static void onContacted(PlayerInteractEvent.LeftClickBlock event) {
-            var player = event.getEntity();
+        public static void onContacted(BlockEvent.EntityPlaceEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POCKET_PISTON.value());
 
-            if (!(stack.getItem() instanceof PocketPistonItem relic) || event.getAction() != PlayerInteractEvent.LeftClickBlock.Action.START)
+            if (!(stack.getItem() instanceof PocketPistonItem relic) || !relic.canPlayerUseAbility(player, stack, "discarding"))
                 return;
 
             int distance = (int) Math.sqrt(event.getPos().distToCenterSqr(player.getX(), player.getY() + player.getEyeHeight(), player.getZ()));
 
-            if (distance >= 5) {
+            if (distance >= 5)
                 relic.spreadRelicExperience(player, stack, 1);
-            }
+        }
+
+        @SubscribeEvent
+        public static void onContacted(LivingDestroyBlockEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POCKET_PISTON.value());
+
+            if (!(stack.getItem() instanceof PocketPistonItem relic) || !relic.canPlayerUseAbility(player, stack, "discarding"))
+                return;
+
+            int distance = (int) Math.sqrt(event.getPos().distToCenterSqr(player.getX(), player.getY() + player.getEyeHeight(), player.getZ()));
+
+            if (distance >= 5)
+                relic.spreadRelicExperience(player, stack, 1);
         }
 
         @SubscribeEvent
@@ -123,10 +154,11 @@ public class PocketPistonItem extends WearableRelicItem {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POCKET_PISTON.value());
 
-            if (!(event.getTarget() instanceof LivingEntity target) || !(stack.getItem() instanceof PocketPistonItem relic))
+            if (!(event.getTarget() instanceof LivingEntity target) || !(stack.getItem() instanceof PocketPistonItem relic)
+                    || !relic.canPlayerUseAbility(player, stack, "discarding"))
                 return;
 
-            float modifier = (float) relic.getStatValue(stack, "attacking", "interaction");
+            float modifier = (float) relic.getStatValue(stack, "discarding", "interaction");
 
             relic.spreadRelicExperience(player, stack, 1);
 

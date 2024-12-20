@@ -15,6 +15,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +25,10 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import top.theillusivec4.curios.api.SlotContext;
+
+import java.util.Random;
 
 public class CrystalHeartItem extends WearableRelicItem {
 
@@ -67,27 +74,39 @@ public class CrystalHeartItem extends WearableRelicItem {
 
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
+        if (!isAbilityUnlocked(stack, "heart"))
+            return super.getRelicAttributeModifiers(stack);
+
         return RelicAttributeModifier.builder()
                 .attribute(new RelicAttributeModifier.Modifier(Attributes.MAX_HEALTH, (float) getStatValue(stack, "heart", "amount"), AttributeModifier.Operation.ADD_VALUE))
                 .build();
     }
 
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || newStack.getItem() == stack.getItem())
+            return;
+
+        EntityUtils.removeAttribute(player, stack, Attributes.MAX_HEALTH, AttributeModifier.Operation.ADD_VALUE);
+    }
+
     @EventBusSubscriber
     public static class CrystalHeartEvent {
-
         @SubscribeEvent
         public static void onLivingHealEvent(LivingHealEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
             ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ModItems.CRYSTAL_HEART.value());
 
-            if (!(stack.getItem() instanceof CrystalHeartItem relic) || !(event.getEntity() instanceof Player player))
+            if (!(stack.getItem() instanceof CrystalHeartItem relic) || !relic.isAbilityUnlocked(stack, "heart"))
                 return;
 
             float currentHealth = player.getHealth();
             float maxHealth = player.getMaxHealth();
 
-            if (Math.random() < Math.max(0.1, (maxHealth - currentHealth) / maxHealth))
+            if (new Random().nextFloat() >= Math.max(0.1, (maxHealth - currentHealth) / maxHealth))
                 relic.spreadRelicExperience(player, stack, 1);
-
         }
     }
 }

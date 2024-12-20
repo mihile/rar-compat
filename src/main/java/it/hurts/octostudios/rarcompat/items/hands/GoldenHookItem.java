@@ -73,7 +73,7 @@ public class GoldenHookItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.GOLDEN_HOOK.value());
 
-            if (!(stack.getItem() instanceof GoldenHookItem relic))
+            if (!(stack.getItem() instanceof GoldenHookItem relic) || !relic.isAbilityUnlocked(stack, "hook"))
                 return;
 
             double boostedExperience = event.getOriginalExperience() * relic.getStatValue(stack, "hook", "amount");

@@ -79,7 +79,7 @@ public class WhoopeeCushionItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide() || !isAbilityUnlocked(stack, "push"))
             return;
 
         boolean isSneaking = player.isShiftKeyDown();
@@ -118,7 +118,8 @@ public class WhoopeeCushionItem extends WearableRelicItem {
 
             Level level = player.level();
 
-            if (!(stack.getItem() instanceof WhoopeeCushionItem relic) || new Random().nextDouble(1) > relic.getStatValue(stack, "push", "chance"))
+            if (!(stack.getItem() instanceof WhoopeeCushionItem relic) || new Random().nextDouble(1) > relic.getStatValue(stack, "push", "chance")
+                    || !relic.isAbilityUnlocked(stack, "push"))
                 return;
 
             WhoopeeCushionItem.createWhoopee(level, player, relic, stack);

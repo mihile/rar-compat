@@ -3,6 +3,7 @@ package it.hurts.octostudios.rarcompat.items.hands;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
+import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
@@ -72,7 +74,8 @@ public class PowerGloveItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0)
+        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0
+                || !canPlayerUseAbility(player, stack, "power"))
             return;
 
         stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
@@ -88,7 +91,8 @@ public class PowerGloveItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POWER_GLOVE.value());
 
-            if (!(stack.getItem() instanceof PowerGloveItem relic) || stack.getOrDefault(DataComponentRegistry.COUNT, 0) < 5)
+            if (!(stack.getItem() instanceof PowerGloveItem relic) || stack.getOrDefault(DataComponentRegistry.COUNT, 0) < 5
+                    || !relic.canPlayerUseAbility(player, stack, "power"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);

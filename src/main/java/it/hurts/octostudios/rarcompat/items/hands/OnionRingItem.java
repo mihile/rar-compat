@@ -31,7 +31,7 @@ public class OnionRingItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("onion")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(0.02D, 0.05D)
+                                        .initialValue(0.01D, 0.025D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
@@ -75,7 +75,7 @@ public class OnionRingItem extends WearableRelicItem {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ONION_RING.value());
 
-            if (!(stack.getItem() instanceof OnionRingItem relic))
+            if (!(stack.getItem() instanceof OnionRingItem relic) || !relic.isAbilityUnlocked(stack, "onion"))
                 return;
 
             int currentHunger = player.getFoodData().getFoodLevel();
@@ -89,7 +89,7 @@ public class OnionRingItem extends WearableRelicItem {
             Player player = event.getPlayer();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ONION_RING.value());
 
-            if (!(stack.getItem() instanceof OnionRingItem relic))
+            if (!(stack.getItem() instanceof OnionRingItem relic) || !relic.isAbilityUnlocked(stack, "onion"))
                 return;
 
             float hardness = event.getState().getDestroySpeed(player.level(), player.blockPosition());

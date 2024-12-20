@@ -44,6 +44,9 @@ public class KittySlippersItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
+                                .build())
                         .ability(AbilityData.builder("fall")
                                 .stat(StatData.builder("modifier")
                                         .initialValue(2D, 4D)
@@ -75,9 +78,6 @@ public class KittySlippersItem extends WearableRelicItem {
                                         .link(8, 9).link(9, 10).link(10, 11).link(9, 12).link(12, 13)
                                         .build())
                                 .build())
-                        .ability(AbilityData.builder("passive")
-                                .maxLevel(0)
-                                .build())
                         .build())
                 .style(StyleData.builder()
                         .tooltip(TooltipData.builder()
@@ -87,7 +87,7 @@ public class KittySlippersItem extends WearableRelicItem {
                         .build())
                 .leveling(LevelingData.builder()
                         .initialCost(100)
-                        .maxLevel(20)
+                        .maxLevel(15)
                         .step(100)
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("fall")
@@ -110,7 +110,7 @@ public class KittySlippersItem extends WearableRelicItem {
     @Override
     public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
         return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.SAFE_FALL_DISTANCE, (float) getStatValue(stack, "fall", "modifier") / 2))
+                .attribute(new RelicAttributeModifier.Modifier(Attributes.SAFE_FALL_DISTANCE, (float) getStatValue(stack, "fall", "modifier") / 3))
                 .build();
     }
 
@@ -127,28 +127,40 @@ public class KittySlippersItem extends WearableRelicItem {
             Vec3 escapePosition = creeperPosition.add(escapeDirection.scale(5));
 
             PathNavigation navigation = creeper.getNavigation();
+
             Path path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
 
             if (path != null)
                 navigation.moveTo(path, 1.5);
 
+            creeper.setTarget(null);
+
             float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
+
             creeper.yBodyRot = yaw;
             creeper.yHeadRot = yaw;
         }
 
-        for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(15))) {
-            if (phantom.getTarget() instanceof Player) {
-                Vec3 directionToPlayer = player.position().subtract(phantom.position());
+        for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(5))) {
+            Vec3 phantomPosition = phantom.position();
 
-                Vec3 escapeDirection = directionToPlayer.normalize().scale(-1);
+            Vec3 escapeDirection = player.position().subtract(phantomPosition).normalize().scale(-1);
 
-                phantom.setDeltaMovement(escapeDirection.scale(0.5));
+            Vec3 escapePosition = phantomPosition.add(escapeDirection.scale(5));
 
-                float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
-                phantom.yBodyRot = yaw;
-                phantom.yHeadRot = yaw;
-            }
+            PathNavigation navigation = phantom.getNavigation();
+
+            Path path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
+
+            if (path != null)
+                navigation.moveTo(path, 1.5);
+
+            phantom.setTarget(null);
+
+            float yaw = (float) Math.toDegrees(Math.atan2(escapeDirection.z, escapeDirection.x));
+
+            phantom.yBodyRot = yaw;
+            phantom.yHeadRot = yaw;
         }
     }
 
@@ -156,7 +168,7 @@ public class KittySlippersItem extends WearableRelicItem {
     public static class KittySlippersEvent {
         @SubscribeEvent
         public static void onLivingChangeTargetEvent(LivingChangeTargetEvent event) {
-            if (event.getEntity() instanceof Creeper && event.getNewAboutToBeSetTarget() instanceof Player player) {
+            if ((event.getEntity() instanceof Creeper || event.getEntity() instanceof Phantom) && event.getNewAboutToBeSetTarget() instanceof Player player) {
                 ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
 
                 if (itemStack.getItem() instanceof KittySlippersItem)

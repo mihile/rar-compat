@@ -1,6 +1,7 @@
 package it.hurts.octostudios.rarcompat.items;
 
 import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.RARCompat;
 import it.hurts.sskirillss.relics.init.CreativeTabRegistry;
 import it.hurts.sskirillss.relics.items.misc.CreativeContentConstructor;
 import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
@@ -23,5 +24,10 @@ public abstract class WearableRelicItem extends RelicItem implements IRelicItem,
     @Override
     public List<Component> getAttributesTooltip(List<Component> tooltips, ItemStack stack) {
         return new ArrayList<>();
+    }
+
+    @Override
+    public String getConfigRoute() {
+        return RARCompat.MODID;
     }
 }

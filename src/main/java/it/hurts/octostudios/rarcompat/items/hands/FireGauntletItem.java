@@ -16,6 +16,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -107,7 +108,7 @@ public class FireGauntletItem extends WearableRelicItem {
         }
 
         private static void spawnDirectionalArc(LivingEntity player, double arcAngle, double rangeAttack) {
-            double centerAngle = Math.toRadians(player.getYRot()) + 20.5;
+            double centerAngle = Math.toRadians(player.getYRot()) + 20.4;
 
             double startAngle = centerAngle - Math.toRadians(arcAngle);
             double endAngle = centerAngle + Math.toRadians(arcAngle);
@@ -138,12 +139,14 @@ public class FireGauntletItem extends WearableRelicItem {
             double playerY = player.getY();
 
             return player.level().getEntities(player, new AABB(player.blockPosition()).inflate(attackRange), entity -> entity instanceof LivingEntity).stream()
-                    .filter(entity -> {
-                        double entityY = entity.getY();
-                        if (entityY < playerY - 2 || entityY > playerY + 2) return false;
-                        return player.getLookAngle().normalize().dot(entity.position().subtract(player.position()).normalize()) > Math.cos(Math.toRadians(angle) * 0.1);
-                    })
                     .map(entity -> (LivingEntity) entity)
+                    .filter(livingEntity -> {
+                        double entityY = livingEntity.getY();
+                        if (entityY < playerY - 2 || entityY > playerY + 2) return false;
+
+                        return player.getLookAngle().normalize()
+                                .dot(livingEntity.position().subtract(player.position()).normalize()) > Math.cos(Math.toRadians(angle) * 0.2);
+                    })
                     .collect(Collectors.toList());
         }
     }

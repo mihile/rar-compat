@@ -20,6 +20,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -37,12 +38,12 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("shrinking")
-                                .active(CastData.builder().type(CastType.TOGGLEABLE)
+                                .active(CastData.builder().type(CastType.CYCLICAL)
                                         .build())
                                 .stat(StatData.builder("time")
                                         .initialValue(8D, 10D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
-                                        .formatValue(value -> (int) MathUtils.round(value, 1))
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 11, 28).star(1, 11, 17).star(2, 11, 11).star(3, 11, 4)
@@ -75,56 +76,70 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
                 .build();
     }
 
-    @Nullable
-    @Override
-    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
-        if (isAbilityTicking(stack, "shrinking"))
-            return RelicAttributeModifier.builder()
-                    .attribute(new RelicAttributeModifier.Modifier(Attributes.SCALE, -0.5F))
-                    .build();
-
-        return super.getRelicAttributeModifiers(stack);
-    }
-
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (stage == CastStage.START)
-            playSound(player, SoundEvents.PUFFER_FISH_BLOW_OUT);
-        else if (stage == CastStage.END) {
+        if ((player.getCommandSenderWorld().isClientSide()))
+            return;
+
+        if (getProgress(stack) < 70 && stage == CastStage.TICK) {
+            setProgress(stack, 0.5);
+
+            EntityUtils.resetAttribute(player, stack, Attributes.SCALE, (float) -getProgress(stack) / 100, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
+            setCurrentTick(stack, -getCurrentTick(stack));
+        } else if (stage == CastStage.START && getProgress(stack) > 0) {
+            setCurrentTick(stack, -getCurrentTick(stack));
+
+            removeAttribute(player, stack);
+
+            setProgress(stack, -getProgress(stack));
+
+            addAbilityCooldown(stack, "shrinking", 200);
+
             playSound(player, SoundEvents.PUFFER_FISH_BLOW_UP);
-
-            setAbilityCooldown(stack, "shrinking", 200);
-
-            this.removeAttribute(player, stack);
         }
 
-        if (player.tickCount % 20 == 0)
-            setCurrentTick(stack, 1);
+        if (stage == CastStage.START)
+            playSound(player, SoundEvents.PUFFER_FISH_BLOW_OUT);
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
             return;
 
         double time = getStatValue(stack, "shrinking", "time");
 
-        if (getCurrentTick(stack) >= time) {
-            playSound(player, SoundEvents.PUFFER_FISH_BLOW_UP);
-
-            setAbilityCooldown(stack, "shrinking", 200);
-
+        if (getCurrentTick(stack) >= time && getProgress(stack) > 0) {
             setCurrentTick(stack, -getCurrentTick(stack));
 
+            setProgress(stack, -getProgress(stack));
+
             removeAttribute(player, stack);
+
+            playSound(player, SoundEvents.PUFFER_FISH_BLOW_UP);
+
+            addAbilityCooldown(stack, "shrinking", 200);
         }
 
-        if (player.tickCount % 20 == 0 && isAbilityTicking(stack, "shrinking"))
+        if (player.tickCount % 20 == 0 && getProgress(stack) >= 5) {
             spreadRelicExperience(player, stack, 1);
+            setCurrentTick(stack, 1);
+        }
+
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (newStack.getItem() == stack.getItem() || !(slotContext.entity() instanceof Player player))
+            return;
+
+        removeAttribute(player, stack);
     }
 
     public void playSound(Player player, SoundEvent events) {
-        player.playSound(events, 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
+        player.level().playSound(null, player, events, SoundSource.PLAYERS,
+                1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
     }
 
     public void setCurrentTick(ItemStack stack, int val) {
@@ -133,6 +148,14 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
 
     public int getCurrentTick(ItemStack stack) {
         return stack.getOrDefault(DataComponentRegistry.TIME, 0);
+    }
+
+    public void setProgress(ItemStack stack, double val) {
+        stack.set(DataComponentRegistry.HEIGHT, getProgress(stack) + val);
+    }
+
+    public double getProgress(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.HEIGHT, 0D);
     }
 
     private void removeAttribute(LivingEntity entity, ItemStack stack) {

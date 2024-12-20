@@ -83,9 +83,9 @@
   "tooltip.relics.thorn_pendant.leveling_source.poison.title": "Ядовитая оборона",
   "tooltip.relics.thorn_pendant.leveling_source.poison.description": "+%1$s единиц опыта за каждое срабатывание способности %2$s.",
 
-  "tooltip.relics.cowboy_hat.description": "Повышает ловкость верховых животных владельца реликвии.",
+  "tooltip.relics.cowboy_hat.description": "Повышает ловкость ездовых животных владельца реликвии.",
   "tooltip.relics.cowboy_hat.ability.cowboy": "Галоп",
-  "tooltip.relics.cowboy_hat.ability.cowboy.description": "Увеличивает скорость передвижения на верховых животных на %1$s%%.",
+  "tooltip.relics.cowboy_hat.ability.cowboy.description": "Увеличивает скорость передвижения, высоту прыжка и безопасную высоту падения ездовых животных на %1$s%%.",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Галоп",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s единиц опыта с вероятностью в 50% за каждую секунду передвижения верхом.",
 
@@ -99,7 +99,7 @@
   "tooltip.relics.universal_attractor.ability.attractor": "Магнетизм",
   "tooltip.relics.universal_attractor.ability.attractor.description": "Переключаемая способность с 2 режимами: притяжение и отталкивание. В режиме притяжения притягивает предметы в радиусе %1$s блоков к игроку, в режиме отталкивания - отталкивает.",
   "tooltip.relics.universal_attractor.leveling_source.attractor.title": "Магнетизм",
-  "tooltip.relics.universal_attractor.leveling_source.attractor.description": "+%1$s единиц опыта за каждый подобранный предмет, притянутый способностью %2$s. Вероятность получения опыта прямо пропорциональна соотношению текущего количества предметов в стаке и их максимального количества. не работает если предмет был выброшен носителем реликвии.",
+  "tooltip.relics.universal_attractor.leveling_source.attractor.description": "+%1$s единиц опыта за каждый подобранный предмет, притянутый способностью %2$s. Вероятность получения опыта прямо пропорциональна соотношению текущего количества предметов в стаке и их максимального количества. Не работает если предмет был выброшен носителем реликвии.",
 
   "tooltip.relics.cross_necklace.description": "Окутывает владельца реликвии защитной аурой, наделяя его временной неуязвимостью после каждого полученного удара.",
   "tooltip.relics.cross_necklace.ability.invulnerability": "Неприкосновенность",
@@ -140,10 +140,10 @@
   "tooltip.relics.digging_claws.description": "Укрепляет руки владельца реликвии, позволяя эффективнее разрубать любые блоки.",
   "tooltip.relics.digging_claws.ability.passive": "Руки-кирки",
   "tooltip.relics.digging_claws.ability.passive.description": "Понижает требуемый уровень инструмента для всех блоков на 1.",
-  "tooltip.relics.digging_claws.ability.claws": "Скоростная добыча",
-  "tooltip.relics.digging_claws.ability.claws.description": "Увеличивает скорость добычи блоков на %1$s%%.",
-  "tooltip.relics.digging_claws.leveling_source.claws.title": "Скоростная добыча",
-  "tooltip.relics.digging_claws.leveling_source.claws.description": "+%1$s единиц опыта за каждый добытый блок. Вероятность получения опыта прямо пропорциональна прочности блока. Не работает на блоки с моментальным разрушением.",
+  "tooltip.relics.digging_claws.ability.fast_mining": "Скоростная добыча",
+  "tooltip.relics.digging_claws.ability.fast_mining.description": "Увеличивает скорость добычи блоков на %1$s%%.",
+  "tooltip.relics.digging_claws.leveling_source.fast_mining.title": "Скоростная добыча",
+  "tooltip.relics.digging_claws.leveling_source.fast_mining.description": "+%1$s единиц опыта за каждый добытый блок. Вероятность получения опыта прямо пропорциональна прочности блока. Не работает на блоки с моментальным разрушением.",
 
   "tooltip.relics.feral_claws.description": "Пробуждает в носителе реликвии жажду крови, заставляя его драться быстрее с каждой следующей атакой.",
   "tooltip.relics.feral_claws.ability.claws": "Ярость зверя",
@@ -173,7 +173,7 @@
   "tooltip.relics.snowshoes.ability.passive": "Лёгкая поступь",
   "tooltip.relics.snowshoes.ability.passive.description": "Позволяет передвигаться по рыхлому снегу не проваливаясь.",
   "tooltip.relics.snowshoes.ability.speed": "Снегоход",
-  "tooltip.relics.snowshoes.ability.speed.description": "Увеличивает скорость передвижения по снегу на %1$s%%. Позволяет легко передвигаться по рыхлому снегу.",
+  "tooltip.relics.snowshoes.ability.speed.description": "Увеличивает скорость передвижения по снегу на %1$s%%.",
   "tooltip.relics.snowshoes.leveling_source.speed.title": "Снегоход",
   "tooltip.relics.snowshoes.leveling_source.speed.description": "+%1$s единиц опыта за каждые 3 секунды передвижения по снегу.",
 
@@ -200,7 +200,7 @@
 
   "tooltip.relics.charm_of_shrinking.description": "Позволяет владельцу реликвии сжать собственное тело, чтобы проникнуть в ранее недосягаемые места.",
   "tooltip.relics.charm_of_shrinking.ability.shrinking": "Компрессия",
-  "tooltip.relics.charm_of_shrinking.ability.shrinking.description": "При использовании в 2 раза уменьшает игрока на время до %1$s секунд. По истечении времени или при ручной деактивации способности уходит на перезарядку на 10 секунд.",
+  "tooltip.relics.charm_of_shrinking.ability.shrinking.description": "При зажатии ПКМ плавно уменьшает игрока на время до %1$s секунд. По истечении времени или при ручной деактивации способности уходит на перезарядку на 10 секунд.",
   "tooltip.relics.charm_of_shrinking.leveling_source.shrinking.title": "Компрессия",
   "tooltip.relics.charm_of_shrinking.leveling_source.shrinking.description": "+%1$s единиц опыта за каждую секунду, проведённую в уменьшенном состоянии от способности %2$s.",
 
@@ -229,8 +229,10 @@
   "tooltip.relics.bunny_hoppers.leveling_source.hold.description": "+%1$s единиц опыта за каждый совершённый высокий прыжок от способности %2$s.",
 
   "tooltip.relics.charm_of_sinking.description": "Наделяет ноги носителя реликвии способностью к поглощению воздуха из почвы.",
+  "tooltip.relics.charm_of_sinking.ability.dive": "Якорь",
+  "tooltip.relics.charm_of_sinking.ability.dive.description": "Увеличивает скорость потопления игрока в 2 раза.",
   "tooltip.relics.charm_of_sinking.ability.immersion": "Подводный ходок",
-  "tooltip.relics.charm_of_sinking.ability.immersion.description": "При хождении игрока по подводному дну, замедляет расход воздуха на %1$s%%.",
+  "tooltip.relics.charm_of_sinking.ability.immersion.description": "При передвижении игрока по подводному дну, замедляет расход воздуха на %1$s%%.",
   "tooltip.relics.charm_of_sinking.leveling_source.immersion.title": "Подводный ходок",
   "tooltip.relics.charm_of_sinking.leveling_source.immersion.description": "+%1$s единиц опыта за каждую секунду передвижения по подводному дну при условии наличия у игрока воздуха.",
 
@@ -249,12 +251,12 @@
   "tooltip.relics.pocket_piston.description": "Наделяет руки носителя реликвии силой, свойственной лишь механизмам.",
   "tooltip.relics.pocket_piston.ability.discarding": "Концентрированный удар",
   "tooltip.relics.pocket_piston.ability.discarding.description": "Увеличивает отбрасывание при совершении атак в ближнем бою на %1$s%%.",
-  "tooltip.relics.pocket_piston.ability.attacking": "Длинные руки",
-  "tooltip.relics.pocket_piston.ability.attacking.description": "Увеличивает максимальную дистанцию взаимодействия с миром на %1$s%%.",
+  "tooltip.relics.pocket_piston.ability.interaction": "Длинные руки",
+  "tooltip.relics.pocket_piston.ability.interaction.description": "Увеличивает максимальную дистанцию взаимодействия с миром на %1$s%%.",
   "tooltip.relics.pocket_piston.leveling_source.discarding.title": "Концентрированный удар",
   "tooltip.relics.pocket_piston.leveling_source.discarding.description": "+%1$s единиц опыта за каждую совершённую атаку.",
-  "tooltip.relics.pocket_piston.leveling_source.attacking.title": "Длинные руки",
-  "tooltip.relics.pocket_piston.leveling_source.attacking.description": "+%1$s единиц опыта за каждое взаимодействие с миром на дистанции действия способности %2$s.",
+  "tooltip.relics.pocket_piston.leveling_source.interaction.title": "Длинные руки",
+  "tooltip.relics.pocket_piston.leveling_source.interaction.description": "+%1$s единиц опыта за каждое взаимодействие с миром на дистанции действия способности %2$s.",
 
   "tooltip.relics.obsidian_skull.description": "Перенаправляет на себя жар, исходно нацеленный навредить носителю реликвии.",
   "tooltip.relics.obsidian_skull.ability.buffer": "Жаростойкость",

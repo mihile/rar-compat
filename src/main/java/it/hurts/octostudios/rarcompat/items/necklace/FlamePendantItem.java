@@ -9,19 +9,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -71,7 +67,7 @@ public class FlamePendantItem extends WearableRelicItem {
                                         .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
-                        .build())                .loot(LootData.builder()
+                        .build()).loot(LootData.builder()
                         .entry(LootCollections.NETHER)
                         .build())
                 .build();
@@ -93,7 +89,8 @@ public class FlamePendantItem extends WearableRelicItem {
 
             Random random = new Random();
 
-            if (!(stack.getItem() instanceof FlamePendantItem relic) || random.nextDouble(1) >= relic.getStatValue(stack, "fire", "chance"))
+            if (!(stack.getItem() instanceof FlamePendantItem relic) || random.nextDouble(1) >= relic.getStatValue(stack, "fire", "chance")
+                    || !relic.canPlayerUseAbility(player, stack, "fire"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);

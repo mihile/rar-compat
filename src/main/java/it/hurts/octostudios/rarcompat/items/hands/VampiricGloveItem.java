@@ -54,7 +54,7 @@ public class VampiricGloveItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("vampire")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.ORANGE   )
+                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
                         .build())
@@ -74,14 +74,15 @@ public class VampiricGloveItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.VAMPIRIC_GLOVE.value());
 
-            if (!(stack.getItem() instanceof VampiricGloveItem relic)) return;
+            if (!(stack.getItem() instanceof VampiricGloveItem relic) || !relic.canPlayerUseAbility(player, stack, "vampire"))
+                return;
 
             double damageToHeal = event.getAmount() * relic.getStatValue(stack, "vampire", "amount");
 
             if ((damageToHeal * 5 / player.getMaxHealth()) >= new Random().nextFloat(1))
                 relic.spreadRelicExperience(player, stack, 1);
 
-            player.heal((float) damageToHeal);
+            player.heal((float) Math.min(event.getEntity().getMaxHealth(), damageToHeal));
         }
 
     }

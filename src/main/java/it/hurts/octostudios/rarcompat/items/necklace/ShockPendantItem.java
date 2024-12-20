@@ -102,7 +102,8 @@ public class ShockPendantItem extends WearableRelicItem {
 
             Level level = player.getCommandSenderWorld();
 
-            if (!(stack.getItem() instanceof ShockPendantItem relic) || level.isClientSide())
+            if (!(stack.getItem() instanceof ShockPendantItem relic) || level.isClientSide()
+                    || !relic.canPlayerUseAbility(player, stack, "lightning"))
                 return;
 
             if (damageSource.is(DamageTypeTags.IS_LIGHTNING) && relic.canPlayerUseAbility(player, stack, "passive"))

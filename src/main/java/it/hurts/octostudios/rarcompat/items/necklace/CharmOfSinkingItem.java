@@ -14,11 +14,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
+import top.theillusivec4.curios.api.SlotContext;
 
 public class CharmOfSinkingItem extends WearableRelicItem {
 
@@ -26,6 +29,9 @@ public class CharmOfSinkingItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("dive")
+                                .maxLevel(0)
+                                .build())
                         .ability(AbilityData.builder("immersion")
                                 .stat(StatData.builder("air")
                                         .initialValue(1D, 3D)
@@ -62,6 +68,25 @@ public class CharmOfSinkingItem extends WearableRelicItem {
                 .build();
     }
 
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player))
+            return;
+
+        if (player.isUnderWater())
+            EntityUtils.applyAttribute(player, stack, Attributes.GRAVITY, 2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        else
+            EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (newStack.getItem() == stack.getItem() || !(slotContext.entity() instanceof Player player))
+            return;
+
+        EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    }
+
     @EventBusSubscriber
     public static class CharmOfSinkingEvent {
 
@@ -72,10 +97,11 @@ public class CharmOfSinkingItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CHARM_OF_SINKING.value());
 
-            if (!(stack.getItem() instanceof CharmOfSinkingItem relic))
+            if (!(stack.getItem() instanceof CharmOfSinkingItem relic) || !player.isUnderWater()
+                    || !relic.isAbilityUnlocked(stack, "immersion") || !player.onGround())
                 return;
 
-            if (player.isInWater() && player.onGround() && player.getAirSupply() > 1)
+            if (player.tickCount % 20 == 0 && player.onGround() && player.getAirSupply() > 1)
                 relic.spreadRelicExperience(player, stack, 1);
 
             if (player.tickCount % (int) relic.getStatValue(stack, "immersion", "air") == 0) {

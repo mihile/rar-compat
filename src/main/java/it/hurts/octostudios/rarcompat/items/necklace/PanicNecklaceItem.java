@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -23,9 +24,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class PanicNecklaceItem extends WearableRelicItem {
 
@@ -63,7 +61,7 @@ public class PanicNecklaceItem extends WearableRelicItem {
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("panic")
                                         .initialValue(1)
-                                        .gem(GemShape.SQUARE, GemColor.ORANGE)
+                                        .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
                                 .build())
                         .build())
@@ -80,38 +78,47 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide)
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide() || !canPlayerUseAbility(player, stack, "panic"))
             return;
 
-        double modifierMovementSpeed = getLengthRadius(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
+        double target = getMobsCount(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
 
-        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) modifierMovementSpeed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        double speed = getSpeed(stack);
+        double step = 0.01D;
+        double modifier = speed < target ? step : speed > target ? -step : 0D;
+
+        if (modifier != 0D)
+            addSpeed(stack, modifier);
+
+        EntityUtils.resetAttribute(player, stack, Attributes.MOVEMENT_SPEED, (float) getSpeed(stack), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
-    public int getLengthRadius(Player player, Level level, ItemStack stack) {
-        Set<Monster> trackedMobs = new HashSet<>();
+    public void addSpeed(ItemStack stack, double val) {
+        setSpeed(stack, getSpeed(stack) + val);
+    }
 
-        for (Monster mob : level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius")), entity -> entity instanceof Mob))
-            if (mob.getTarget() == player)
-                trackedMobs.add(mob);
+    public double getSpeed(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.SPEED, 0D);
+    }
 
-        trackedMobs.removeIf(mob -> mob.getTarget() != player || !mob.isAlive() || !mob.getBoundingBox()
-                .intersects(player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))));
+    public void setSpeed(ItemStack stack, double val) {
+        stack.set(DataComponentRegistry.SPEED, Math.max(val, 0D));
+    }
 
-        return trackedMobs.toArray().length;
+    public int getMobsCount(Player player, Level level, ItemStack stack) {
+        return (int) level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))).stream().filter(mob -> mob.getTarget() == player && !mob.isDeadOrDying()).count();
     }
 
     @EventBusSubscriber
     public static class PanicNecklaceEvent {
-
         @SubscribeEvent
         public static void onPlayerDamage(LivingIncomingDamageEvent event) {
-            if (!(event.getEntity() instanceof Player player) || !(event.getEntity() instanceof Mob))
+            if (!(event.getEntity() instanceof Player player) || !(event.getSource().getEntity() instanceof Mob))
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.PANIC_NECKLACE.value());
 
-            if (!(stack.getItem() instanceof PanicNecklaceItem relic))
+            if (!(stack.getItem() instanceof PanicNecklaceItem relic) || !relic.isAbilityUnlocked(stack, "panic"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);

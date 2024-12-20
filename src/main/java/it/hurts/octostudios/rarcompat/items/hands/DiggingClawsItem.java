@@ -17,6 +17,7 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,20 +34,20 @@ public class DiggingClawsItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
-                        .ability(AbilityData.builder("claws")
-                                .stat(StatData.builder("amount")
-                                        .initialValue(1D, 3D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
+                                .build())
+                        .ability(AbilityData.builder("fast_mining")
+                                .stat(StatData.builder("modifier")
+                                        .initialValue(0.15D, 0.35D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.4D)
+                                        .formatValue(value -> (int) (MathUtils.round(value * 100, 0)))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 4, 15).star(1, 12, 3).star(2, 6, 19).star(3, 16, 6)
                                         .star(4, 9, 23).star(5, 17, 12).star(6, 13, 24).star(7, 17, 18)
                                         .link(0, 1).link(2, 3).link(4, 5).link(6, 7)
                                         .build())
-                                .build())
-                        .ability(AbilityData.builder("passive")
-                                .maxLevel(0)
                                 .build())
                         .build())
                 .style(StyleData.builder()
@@ -60,7 +61,7 @@ public class DiggingClawsItem extends WearableRelicItem {
                         .maxLevel(10)
                         .step(100)
                         .sources(LevelingSourcesData.builder()
-                                .source(LevelingSourceData.abilityBuilder("claws")
+                                .source(LevelingSourceData.abilityBuilder("fast_mining")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.CYAN)
                                         .build())
@@ -81,24 +82,30 @@ public class DiggingClawsItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
 
-            if (!(stack.getItem() instanceof DiggingClawsItem relic))
+            if (player.getCommandSenderWorld().isClientSide() || !(stack.getItem() instanceof DiggingClawsItem) || event.canHarvest())
                 return;
 
             if (player.getMainHandItem().getItem() instanceof TieredItem tieredItem) {
-                if (relic.canPlayerUseAbility(player, stack, "passive"))
-                    event.setCanHarvest(isCorrectTierForDrops(getTierFromString((Tiers) tieredItem.getTier()), blockState));
+                int tier = getTierFromString(tieredItem.getTier());
+
+                if (tier + 1 >= getRequiredToolTier(blockState))
+                    event.setCanHarvest(true);
             } else if (!event.getTargetBlock().is(BlockTags.INCORRECT_FOR_WOODEN_TOOL))
                 event.setCanHarvest(true);
         }
 
         @SubscribeEvent
         public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-            ItemStack stack = EntityUtils.findEquippedCurio(event.getEntity(), ModItems.DIGGING_CLAWS.value());
+            Player player = event.getEntity();
 
-            if (!(stack.getItem() instanceof DiggingClawsItem relic))
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.DIGGING_CLAWS.value());
+
+            if (!(stack.getItem() instanceof DiggingClawsItem relic) || !relic.canPlayerUseAbility(player, stack, "fast_mining"))
                 return;
 
-            event.setNewSpeed((float) (event.getOriginalSpeed() + relic.getStatValue(stack, "claws", "amount")));
+            var original = event.getOriginalSpeed();
+
+            event.setNewSpeed((float) (original + (original * relic.getStatValue(stack, "fast_mining", "modifier"))));
         }
 
         @SubscribeEvent
@@ -115,31 +122,28 @@ public class DiggingClawsItem extends WearableRelicItem {
                 relic.spreadRelicExperience(player, stack, 1);
         }
 
-        public static int getTierFromString(Tiers tier) {
-            return switch (tier) {
-                case Tiers.WOOD -> 1;
-                case Tiers.STONE -> 2;
-                case Tiers.IRON -> 3;
-                case Tiers.GOLD -> 4;
-                case Tiers.DIAMOND -> 5;
-                case Tiers.NETHERITE -> 6;
-            };
+        public static int getTierFromString(Tier tier) {
+            if (tier == Tiers.STONE) return 2;
+            if (tier == Tiers.IRON) return 3;
+            if (tier == Tiers.GOLD) return 4;
+            if (tier == Tiers.DIAMOND) return 5;
+            if (tier == Tiers.NETHERITE) return 6;
+
+            return 1;
         }
 
-        public static boolean isCorrectTierForDrops(int i, BlockState state) {
-            if (!state.requiresCorrectToolForDrops()) {
-                return true;
-            }
+        public static int getRequiredToolTier(BlockState state) {
+            if (!state.requiresCorrectToolForDrops())
+                return 0;
 
-            if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
-                return i >= 4;
-            } else if (state.is(BlockTags.NEEDS_IRON_TOOL)) {
-                return i >= 2;
-            } else if (state.is(BlockTags.NEEDS_STONE_TOOL) || !state.is(BlockTags.INCORRECT_FOR_WOODEN_TOOL)) {
-                return i >= 1;
-            }
+            if (state.is(BlockTags.NEEDS_DIAMOND_TOOL))
+                return 5;
+            else if (state.is(BlockTags.NEEDS_IRON_TOOL))
+                return 3;
+            else if (state.is(BlockTags.NEEDS_STONE_TOOL))
+                return 2;
 
-            return false;
+            return 1;
         }
     }
 }

@@ -18,9 +18,9 @@ public class NetworkHandler {
         final PayloadRegistrar registrar = event.registrar(RARCompat.MODID)
                 .versioned("1.0")
                 .optional();
-        registrar.playToClient(PlayerMotionPacket.TYPE, PlayerMotionPacket.STREAM_CODEC, PlayerMotionPacket::handle);
         registrar.playToServer(CreateZonePacket.TYPE, CreateZonePacket.STREAM_CODEC, CreateZonePacket::handle);
         registrar.playToServer(DoubleJumpPacket.TYPE, DoubleJumpPacket.STREAM_CODEC, DoubleJumpPacket::handle);
         registrar.playToServer(PowerJumpPacket.TYPE, PowerJumpPacket.STREAM_CODEC, PowerJumpPacket::handle);
+        registrar.playToServer(RepulsionUmbrellaPacket.TYPE, RepulsionUmbrellaPacket.STREAM_CODEC, RepulsionUmbrellaPacket::handle);
     }
 }

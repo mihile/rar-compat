@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import top.theillusivec4.curios.api.SlotContext;
@@ -58,6 +59,9 @@ public class LuckyScarfItem extends WearableRelicItem {
 
     @Override
     public int getFortuneLevel(SlotContext slotContext, LootContext lootContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "luck"))
+            return super.getFortuneLevel(slotContext, lootContext, stack);
+
         var entity = slotContext.entity();
         var random = entity.getRandom();
 

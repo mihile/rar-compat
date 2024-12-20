@@ -134,14 +134,12 @@ public class HeliumFlamingoItem extends WearableRelicItem {
 
                 setToggled(stack, false);
 
-                relic.setAbilityCooldown(stack, "flying", 40);
-
                 event.setResult(EventResult.PASS);
 
                 return;
             }
 
-            if (relic.isAbilityTicking(stack, "flying") && getTime(stack) < timeWorked && player.isSprinting()) {
+            if (relic.isAbilityTicking(stack, "flying") && getTime(stack) < timeWorked && player.isSprinting() && !player.onGround()) {
                 event.setResult(EventResult.SUCCESS);
 
                 setToggled(stack, true);
