@@ -1,5 +1,7 @@
 package it.hurts.octostudios.rarcompat.items.hat;
 
+import artifacts.registry.ModItems;
+import com.mojang.blaze3d.shaders.FogShape;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
@@ -11,11 +13,18 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TOGGLED;
@@ -37,6 +46,9 @@ public class SnorkelItem extends WearableRelicItem {
                                         .star(6, 9, 24)
                                         .link(0, 1).link(1, 2).link(1, 3).link(4, 2).link(4, 3).link(1, 5).link(5, 6).link(6, 4)
                                         .build())
+                                .build())
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
                                 .build())
                         .build())
                 .style(StyleData.builder()
@@ -86,5 +98,23 @@ public class SnorkelItem extends WearableRelicItem {
             }
         } else if (toggled)
             stack.set(TOGGLED, false);
+    }
+
+    @EventBusSubscriber(value = Dist.CLIENT)
+    public static class SnorkelEvent {
+        @SubscribeEvent
+        public static void onFogRender(ViewportEvent.RenderFog event) {
+            Player player = Minecraft.getInstance().player;
+
+            if (player == null)
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SNORKEL.value());
+
+            if (!(stack.getItem() instanceof SnorkelItem) || !player.isUnderWater())
+                return;
+
+            event.setCanceled(true);
+        }
     }
 }

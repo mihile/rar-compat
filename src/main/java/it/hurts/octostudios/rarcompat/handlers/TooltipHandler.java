@@ -12,7 +12,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 @EventBusSubscriber
 public class TooltipHandler {
     @SubscribeEvent
-    public static void sub(ItemTooltipEvent event) {
+    public static void onTooltip(ItemTooltipEvent event) {
         ItemStack itemStack = event.getItemStack();
 
         if (!(itemStack.getItem() instanceof WearableRelicItem))
@@ -21,6 +21,5 @@ public class TooltipHandler {
         var tooltip = event.getToolTip();
 
         tooltip.add(4, Component.translatable("tooltip.rar_compat").setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GRAY)));
-
     }
 }
