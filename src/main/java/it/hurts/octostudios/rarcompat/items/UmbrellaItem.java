@@ -112,19 +112,13 @@ public class UmbrellaItem extends WearableRelicItem {
         if (!(entity instanceof Player player))
             return;
 
-        int charges = getCharges(stack);
-        int statCount = (int) getStatValue(stack, "glider", "count");
-
-        if (charges >= statCount)
-            player.getCooldowns().addCooldown(this, 120);
-
-        if (player.onGround() && charges != 0) {
+        if (player.onGround() && getCharges(stack) != 0) {
             setCharges(stack, 0);
             player.getCooldowns().addCooldown(this, 0);
         }
 
-        if (player.isUnderWater() || !isHoldingUmbrellaUpright(player, player.getUsedItemHand()) || player.getDeltaMovement().y > 0
-                || player.hasEffect(MobEffects.SLOW_FALLING) || !canPlayerUseAbility(player, stack, "glider"))
+        if (player.isInWater() || !isHoldingUmbrellaUpright(player, player.getUsedItemHand()) || player.getDeltaMovement().y > 0 || player.getAbilities().flying
+                || player.isFallFlying() || player.hasEffect(MobEffects.SLOW_FALLING) || !canPlayerUseAbility(player, stack, "glider"))
             return;
 
         Vec3 motion = player.getDeltaMovement();
@@ -175,12 +169,12 @@ public class UmbrellaItem extends WearableRelicItem {
     }
 
     @Override
-    public boolean isBarVisible(ItemStack p_150899_) {
-        return true;
+    public boolean isBarVisible(@NotNull ItemStack stack) {
+        return this.getCharges(stack) != 0;
     }
 
     @Override
-    public int getBarColor(ItemStack stack) {
+    public int getBarColor(@NotNull ItemStack stack) {
         int charges = getCharges(stack);
         int statCount = (int) getStatValue(stack, "glider", "count");
 
@@ -211,20 +205,19 @@ public class UmbrellaItem extends WearableRelicItem {
 
             ItemStack stack = playerClient.getMainHandItem();
 
-            if (stack.getItem() instanceof UmbrellaItem relic
-                    && event.getButton() == 0
+            if (event.getButton() == 0
                     && !HotkeyRegistry.ABILITY_LIST.isDown()
                     && event.getButton() != HotkeyRegistry.ABILITY_LIST.getKey().getValue()
                     && !playerClient.hasContainerOpen()
                     && !playerClient.getCooldowns().isOnCooldown(stack.getItem())
                     && Minecraft.getInstance().screen == null
+                    && stack.getItem() instanceof UmbrellaItem relic
                     && relic.canPlayerUseAbility(playerClient, stack, "glider")
+                    && relic.getCharges(stack) < relic.getStatValue(stack, "glider", "count")
                     && !playerClient.onGround()
                     && !playerClient.isFallFlying()) {
-                Vec3 lookDirection = playerClient.getLookAngle().scale(-1);
-                double modifierVal = 1.2;
 
-                playerClient.setDeltaMovement(new Vec3((lookDirection.x * modifierVal), (lookDirection.y * modifierVal), (lookDirection.z * modifierVal)));
+                playerClient.setDeltaMovement(playerClient.getLookAngle().scale(-1).scale(1.1));
 
                 NetworkHandler.sendToServer(new RepulsionUmbrellaPacket());
             }
@@ -235,38 +228,29 @@ public class UmbrellaItem extends WearableRelicItem {
     public static class UmbrellaEvent {
         @SubscribeEvent
         public static void onPlayerHurt(LivingIncomingDamageEvent event) {
-            if (event.getEntity() instanceof Player player
-                    && player.getUseItem().getItem() instanceof UmbrellaItem relic
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            ItemStack stack = player.getMainHandItem();
+
+            if (stack.getItem() instanceof UmbrellaItem relic
                     && player.isUsingItem()
                     && event.getSource().getEntity() instanceof LivingEntity attacker
-                    && !player.getCommandSenderWorld().isClientSide()
                     && attacker != player) {
 
-                Vec3 playerToAttacker = attacker.position().subtract(player.position()).normalize();
-                Vec3 playerLookDirection = player.getLookAngle().normalize();
-
-                double dotProduct = playerToAttacker.dot(playerLookDirection);
-
-                if (dotProduct < 0.8)
+                if (attacker.position().subtract(player.position()).normalize().dot(player.getLookAngle().normalize()) < 0.8)
                     return;
 
                 event.setCanceled(true);
 
-                double radius = 2.0;
-                double height = 2.0;
+                AABB boundingBox = new AABB(player.blockPosition()).inflate(2, 1, 2);
 
-                Vec3 zoneCenter = player.position().add(player.getLookAngle().normalize().scale(1.0));
-
-                AABB boundingBox = new AABB(zoneCenter.x - radius, zoneCenter.y - height / 2.0, zoneCenter.z - radius,
-                        zoneCenter.x + radius, zoneCenter.y + height / 2.0, zoneCenter.z + radius);
-
-                relic.spreadRelicExperience(player, player.getUseItem(), 1);
+                relic.spreadRelicExperience(player, stack, 1);
 
                 for (LivingEntity entity : player.level().getEntitiesOfClass(LivingEntity.class, boundingBox, entity -> entity != player && entity.isAlive())) {
-                    double stat = relic.getStatValue(player.getUseItem(), "shield", "knockback");
-                    Vec3 toEntity = entity.position().subtract(player.position()).normalize().scale(stat * 0.5);
+                    Vec3 toEntity = entity.position().subtract(player.position()).normalize().scale(0.4 + (relic.getStatValue(stack, "glider", "count") * 0.2));
 
-                    entity.setDeltaMovement(toEntity.x, toEntity.y / 2, toEntity.z);
+                    entity.setDeltaMovement(toEntity);
 
                     Vec3 startPosition = attacker.position().add(new Vec3(0, attacker.getBbHeight() / 2.0, 0));
                     Vec3 particleVelocity = toEntity.normalize().scale(0.5);
@@ -275,7 +259,8 @@ public class UmbrellaItem extends WearableRelicItem {
                             10, particleVelocity.x, particleVelocity.y, particleVelocity.z, 0.1);
                 }
 
-                player.level().playSound(null, player.blockPosition(), SoundEvents.ALLAY_HURT, SoundSource.MASTER, 0.3f, 1 + (player.getRandom().nextFloat() * 0.25F));
+                player.level().playSound(null, player.blockPosition(), SoundEvents.ALLAY_HURT, SoundSource.MASTER, 0.3f,
+                        1 + (player.getRandom().nextFloat() * 0.25F));
             }
         }
 
