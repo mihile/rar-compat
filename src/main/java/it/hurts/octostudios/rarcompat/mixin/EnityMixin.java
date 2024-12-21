@@ -16,8 +16,7 @@ public class EnityMixin {
 
     @Inject(method = "getControllingPassenger", at = @At("HEAD"), cancellable = true)
     public void getControllingPassenger(CallbackInfoReturnable<LivingEntity> cir) {
-
-        System.out.println(getFirstPassenger());
+        cir.setReturnValue(Minecraft.getInstance().player);
     }
 
     @Shadow
