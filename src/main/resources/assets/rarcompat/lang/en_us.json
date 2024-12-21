@@ -1,4 +1,6 @@
 {
+  "tooltip.rar_compat" : "Modified [Relics: Artifacts Compat]",
+
   "tooltip.relics.umbrella.description": "Softens the fall, providing safe landing from any height. When skillfully used, it can serve as a reliable shield, keeping enemies at bay.",
   "tooltip.relics.umbrella.ability.glider": "Soft Fall",
   "tooltip.relics.umbrella.ability.glider.description": "When held in hand, reduces the player's vertical speed, negating fall damage. Pressing LMB while falling propels the player backward. This propulsion can be used up to %1$s times in a row before the player touches the ground.",
