@@ -53,6 +53,8 @@ public class CowboyHatItem extends WearableRelicItem {
                                         .link(4, 0).link(4, 1).link(4, 2).link(4, 3)
                                         .build())
                                 .build())
+                        .ability(AbilityData.builder("overlord")
+                                .build())
                         .build())
                 .style(StyleData.builder()
                         .tooltip(TooltipData.builder()
@@ -88,8 +90,9 @@ public class CowboyHatItem extends WearableRelicItem {
         if (beingMounted instanceof Horse horse && !horse.isTamed())
             return;
 
-//        this.tickRidden(beingMounted, player);
-//        beingMounted.travel(this.getRiddenInput(player));
+        this.tickRidden(beingMounted, player);
+        beingMounted.travel(this.getRiddenInput(player));
+
 
         EntityUtils.applyAttribute(beingMounted, stack, Attributes.MOVEMENT_SPEED,
                 (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
@@ -106,9 +109,8 @@ public class CowboyHatItem extends WearableRelicItem {
     protected Vec3 getRiddenInput(Player player) {
         float f = player.xxa * 0.5F;
         float f1 = player.zza;
-        if (f1 <= 0.0F) {
+        if (f1 <= 0.0F)
             f1 *= 0.25F;
-        }
 
         return new Vec3(f, 0.0, f1);
     }

@@ -32,12 +32,16 @@
   "tooltip.relics.snorkel.description": "Allows for longer underwater exploration without the risk of drowning.",
   "tooltip.relics.snorkel.ability.diving": "Breath Control",
   "tooltip.relics.snorkel.ability.diving.description": "Applies a water breathing effect for %1$s seconds upon full submersion.",
+  "tooltip.relics.snorkel.ability.passive": "",
+  "tooltip.relics.snorkel.ability.passive.description": "",
   "tooltip.relics.snorkel.leveling_source.diving.title": "Breath Control",
   "tooltip.relics.snorkel.leveling_source.diving.description": "+%1$s experience points for each second of the water breathing effect from the %2$s ability. If the player already has a water breathing effect, its duration is subtracted from the gained experience proportionally.",
 
   "tooltip.relics.villager_hat.description": "Reduces trading prices with villagers, making deals more profitable.",
   "tooltip.relics.villager_hat.ability.discount": "Trade Secret",
   "tooltip.relics.villager_hat.ability.discount.description": "Increases the discount when trading with villagers by %1$s%%.",
+  "tooltip.relics.villager_hat.ability.passive": "",
+  "tooltip.relics.villager_hat.ability.passive.description": "",
   "tooltip.relics.villager_hat.leveling_source.discount.title": "Trade Secret",
   "tooltip.relics.villager_hat.leveling_source.discount.description": "+%1$s experience points for each trade with villagers. The amount of experience gained increases by the discount value provided by the %2$s ability.",
 
@@ -88,6 +92,8 @@
   "tooltip.relics.cowboy_hat.description": "Enhances the agility of the relic bearer’s mounts.",
   "tooltip.relics.cowboy_hat.ability.cowboy": "Gallop",
   "tooltip.relics.cowboy_hat.ability.cowboy.description": "Increases the movement speed, jump height, and safe fall height of mounts by %1$s%%.",
+  "tooltip.relics.cowboy_hat.ability.overlord": "",
+  "tooltip.relics.cowboy_hat.ability.overlord.description": "",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Gallop",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s experience points with a 50% chance for each second of riding.",
 
