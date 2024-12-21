@@ -1,7 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.hat;
 
 import artifacts.registry.ModItems;
-import com.mojang.blaze3d.shaders.FogShape;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import top.theillusivec4.curios.api.SlotContext;
 

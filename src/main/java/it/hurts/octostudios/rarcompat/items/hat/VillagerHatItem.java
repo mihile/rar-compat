@@ -1,6 +1,8 @@
 package it.hurts.octostudios.rarcompat.items.hat;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.items.feet.KittySlippersItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -8,11 +10,17 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 
 public class VillagerHatItem extends WearableRelicItem {
     @Override
@@ -31,6 +39,9 @@ public class VillagerHatItem extends WearableRelicItem {
                                         .star(6, 15, 15)
                                         .link(0, 1).link(0, 2).link(0, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 3)
                                         .build())
+                                .build())
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
                                 .build())
                         .build())
                 .style(StyleData.builder()
@@ -54,5 +65,20 @@ public class VillagerHatItem extends WearableRelicItem {
                         .entry(LootCollections.VILLAGE)
                         .build())
                 .build();
+    }
+
+    @EventBusSubscriber
+    public static class VillagerHatEvent {
+        @SubscribeEvent
+        public static void onLivingChangeTargetEvent(LivingChangeTargetEvent event) {
+            if (!(event.getEntity() instanceof IronGolem) || !(event.getNewAboutToBeSetTarget() instanceof Player player))
+                return;
+
+            ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.VILLAGER_HAT.value());
+
+            if (itemStack.getItem() instanceof VillagerHatItem)
+                event.setCanceled(true);
+        }
+
     }
 }
