@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat.items.hat;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.items.feet.KittySlippersItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -14,16 +15,25 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class CowboyHatItem extends WearableRelicItem {
@@ -72,13 +82,14 @@ public class CowboyHatItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
             return;
 
-        Entity mountedEntity = player.getVehicle();
-
-        if (!(mountedEntity instanceof LivingEntity beingMounted) || !canPlayerUseAbility(player, stack, "cowboy"))
+        if (!(player.getRootVehicle() instanceof Mob beingMounted) || !canPlayerUseAbility(player, stack, "cowboy"))
             return;
 
-        if (!(beingMounted instanceof Horse horse) || !horse.isTamed())
+        if (beingMounted instanceof Horse horse && !horse.isTamed())
             return;
+
+//        this.tickRidden(beingMounted, player);
+//        beingMounted.travel(this.getRiddenInput(player));
 
         EntityUtils.applyAttribute(beingMounted, stack, Attributes.MOVEMENT_SPEED,
                 (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
@@ -87,13 +98,44 @@ public class CowboyHatItem extends WearableRelicItem {
         EntityUtils.applyAttribute(beingMounted, stack, Attributes.SAFE_FALL_DISTANCE,
                 (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
-        if ((mountedEntity.getKnownMovement().x != 0 || mountedEntity.getKnownMovement().z != 0)
-                && mountedEntity.getRandom().nextFloat() > 0.5F && player.tickCount % 20 == 0)
+        if ((beingMounted.getKnownMovement().x != 0 || beingMounted.getKnownMovement().z != 0)
+                && beingMounted.getRandom().nextFloat() > 0.5F && player.tickCount % 20 == 0)
             spreadRelicExperience(player, stack, 1);
+    }
+
+    protected Vec3 getRiddenInput(Player player) {
+        float f = player.xxa * 0.5F;
+        float f1 = player.zza;
+        if (f1 <= 0.0F) {
+            f1 *= 0.25F;
+        }
+
+        return new Vec3(f, 0.0, f1);
+    }
+
+    protected void tickRidden(Mob mob, Player player) {
+        Vec2 vec2 = new Vec2(player.getXRot() * 0.5F, player.getYRot());
+
+        mob.setXRot(vec2.x % 360.0F);
+        mob.setYRot(vec2.y % 360.0F);
+        mob.yRotO = mob.yBodyRot = mob.yHeadRot = mob.getYRot();
     }
 
     @EventBusSubscriber
     public static class CowboyEvent {
+        @SubscribeEvent
+        public static void onLivingChangeTargetEvent(LivingChangeTargetEvent event) {
+            if (!(event.getNewAboutToBeSetTarget() instanceof Player player) || player.getVehicle() == null)
+                return;
+
+            ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
+
+            if (!(itemStack.getItem() instanceof CowboyHatItem relic))
+                return;
+
+            //event.setCanceled(true);
+        }
+
         @SubscribeEvent
         public static void onEntityMount(EntityMountEvent event) {
             if (!(event.getEntity() instanceof Player player))
@@ -108,5 +150,14 @@ public class CowboyHatItem extends WearableRelicItem {
             }
         }
 
+        @SubscribeEvent
+        public static void onEntityInteract(PlayerInteractEvent.EntityInteractSpecific event) {
+            Player player = event.getEntity();
+            Entity target = event.getTarget();
+
+            if (player instanceof ServerPlayer && target instanceof Mob && !player.isPassenger()) {
+                player.startRiding(target, true);
+            }
+        }
     }
 }
