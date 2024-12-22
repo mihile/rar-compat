@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.player.Player;
@@ -58,7 +59,8 @@ public class CowboyHatItem extends WearableRelicItem {
                         .ability(AbilityData.builder("overlord")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
                                         .predicate("overlord", PredicateType.CAST, (player, stack) -> rayTraceEntity(player, entity -> entity instanceof Mob
-                                                        && !(entity instanceof Saddleable) && !(entity instanceof FlyingMob) && !(entity instanceof WaterAnimal),
+                                                        && !(entity instanceof Saddleable) && !(entity instanceof FlyingMob) && !(entity instanceof WaterAnimal)
+                                                        && !(entity instanceof FlyingAnimal),
                                                 Objects.requireNonNull(player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE)).getValue()) != null && !player.isPassenger())
                                         .build())
                                 .requiredLevel(5)
@@ -121,13 +123,12 @@ public class CowboyHatItem extends WearableRelicItem {
                 player.stopRiding();
 
             setTime(stack, 0);
-            addAbilityCooldown(stack, "overlord", 1200);
         }
 
         if (!(player.getRootVehicle() instanceof Mob beingMounted))
             return;
 
-        if (player.tickCount % 20 == 0)
+        if (player.tickCount % 20 == 0 && !(beingMounted instanceof Saddleable))
             addTime(stack, 1);
 
         if (!canPlayerUseAbility(player, stack, "cowboy") || (beingMounted instanceof Horse horse && !horse.isTamed()))
@@ -175,7 +176,11 @@ public class CowboyHatItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
-            if (event.isDismounting() && event.getEntityBeingMounted() instanceof LivingEntity mount && stack.getItem() instanceof CowboyHatItem) {
+            if (event.isDismounting() && event.getEntityBeingMounted() instanceof LivingEntity mount && stack.getItem() instanceof CowboyHatItem relic) {
+
+                if (!(mount instanceof Saddleable))
+                    relic.addAbilityCooldown(stack, "overlord", 1200);
+
                 EntityUtils.removeAttribute(mount, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
                 EntityUtils.removeAttribute(mount, stack, Attributes.JUMP_STRENGTH, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
                 EntityUtils.removeAttribute(mount, stack, Attributes.SAFE_FALL_DISTANCE, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);

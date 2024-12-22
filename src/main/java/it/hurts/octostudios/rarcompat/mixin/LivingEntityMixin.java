@@ -34,19 +34,12 @@ abstract class LivingEntityMixin extends Entity {
         this.tickRidden(livingEntity, player, vec);
 
         if (this.isControlledByLocalInstance()) {
-            if (riddenInput.lengthSqr() > 0.0) {
-                this.setSpeed((float) livingEntity.getAttributeValue(Attributes.MOVEMENT_SPEED));
-
-                this.travel(riddenInput);
-            } else {
-                this.setDeltaMovement(Vec3.ZERO);
-                this.setSpeed(0.0F);
-                this.calculateEntityAnimation(false);
-            }
+            this.setSpeed((float) 0.7);
+            this.travel(riddenInput);
         } else {
-            this.calculateEntityAnimation(false);
             this.setDeltaMovement(Vec3.ZERO);
-            this.tryCheckInsideBlocks();
+            this.setSpeed(0.0F);
+            this.calculateEntityAnimation(false);
         }
 
         ci.cancel();
