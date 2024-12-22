@@ -119,8 +119,6 @@ public class CowboyHatItem extends WearableRelicItem {
             setTime(stack, 0);
             addAbilityCooldown(stack, "overlord", 1200);
         }
-        System.out.println(getStatValue(stack, "overlord", "time"));
-        System.out.println(getTime(stack) + " TT");
 
         if (!(player.getRootVehicle() instanceof Mob beingMounted))
             return;

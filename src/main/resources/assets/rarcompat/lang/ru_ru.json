@@ -94,6 +94,7 @@
   "tooltip.relics.cowboy_hat.ability.cowboy.description": "Увеличивает скорость передвижения, высоту прыжка и безопасную высоту падения ездовых животных на %1$s%%.",
   "tooltip.relics.cowboy_hat.ability.overlord": "Лассо",
   "tooltip.relics.cowboy_hat.ability.overlord.description": "При использовании способности позволяет оседлать и контролировать любого моба на время до %1$s секунд. По истечении времени или при спешивании уходит на перезарядку на 1 минуту.",
+  "tooltip.relics.cowboy_hat.ability.overlord.predicate.overlord": "Взгляд на моба",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Галоп",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s единиц опыта с вероятностью в 25% за каждую секунду передвижения верхом.",
   "tooltip.relics.cowboy_hat.leveling_source.overlord.title": "Лассо",

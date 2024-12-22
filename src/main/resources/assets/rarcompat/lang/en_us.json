@@ -94,6 +94,7 @@
   "tooltip.relics.cowboy_hat.ability.cowboy.description": "Increases the movement speed, jump height, and safe fall height of mounts by %1$s%%.",
   "tooltip.relics.cowboy_hat.ability.overlord": "Lasso",
   "tooltip.relics.cowboy_hat.ability.overlord.description": "When used, this ability allows you to ride and control any mob for up to %1$s seconds. After the time expires or dismounting, it goes on a 1-minute cooldown.",
+  "tooltip.relics.cowboy_hat.ability.overlord.predicate.overlord": "Look at the mob",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Gallop",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s experience points with a 25% chance for each second of riding.",
   "tooltip.relics.cowboy_hat.leveling_source.overlord.title": "Lasso",
