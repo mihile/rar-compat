@@ -87,6 +87,12 @@ public class CowboyHatItem extends WearableRelicItem {
                                         .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
                                 .build())
+                        .sources(LevelingSourcesData.builder()
+                                .source(LevelingSourceData.abilityBuilder("overlord")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.BLUE)
+                                        .build())
+                                .build())
                         .build())
                 .loot(LootData.builder()
                         .entry(LootCollections.VILLAGE)
@@ -103,6 +109,8 @@ public class CowboyHatItem extends WearableRelicItem {
 
         if (result == null)
             return;
+
+        spreadRelicExperience(player, stack, 1);
 
         player.startRiding(result.getEntity());
     }
