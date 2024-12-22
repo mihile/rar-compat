@@ -163,9 +163,9 @@ public class UmbrellaItem extends WearableRelicItem {
     @Override
     public int getBarWidth(ItemStack stack) {
         int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
-        int statCount = (int) getStatValue(stack, "glider", "count");
+        int statCount = (int) MathUtils.round(getStatValue(stack, "glider", "count"), 0);
 
-        return Math.round(13.0F * (statCount - charges) / statCount);
+        return Math.max(0, Math.round(13.0F * (statCount - charges) / statCount));
     }
 
     @Override
@@ -213,7 +213,7 @@ public class UmbrellaItem extends WearableRelicItem {
                     && Minecraft.getInstance().screen == null
                     && stack.getItem() instanceof UmbrellaItem relic
                     && relic.canPlayerUseAbility(playerClient, stack, "glider")
-                    && relic.getCharges(stack) < relic.getStatValue(stack, "glider", "count")
+                    && relic.getCharges(stack) < (int) Math.round(relic.getStatValue(stack, "glider", "count"))
                     && !playerClient.onGround()
                     && !playerClient.isFallFlying()) {
 

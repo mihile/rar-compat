@@ -2,6 +2,8 @@ package it.hurts.octostudios.rarcompat.mixin;
 
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
@@ -14,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
-abstract class EntityMixin extends Entity {
+abstract class LivingEntityMixin extends Entity {
 
-    public EntityMixin(EntityType<?> p_19870_, Level p_19871_) {
+    public LivingEntityMixin(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
     }
 
@@ -24,7 +26,7 @@ abstract class EntityMixin extends Entity {
     private void travelRidden(Player player, Vec3 vec, CallbackInfo ci) {
         Mob livingEntity = (Mob) (Object) this;
 
-        if (livingEntity instanceof Saddleable)
+        if (livingEntity instanceof Saddleable || livingEntity instanceof FlyingMob || livingEntity instanceof WaterAnimal)
             return;
 
         Vec3 riddenInput = this.getRiddenInput(player);
@@ -32,17 +34,10 @@ abstract class EntityMixin extends Entity {
         this.tickRidden(livingEntity, player, vec);
 
         if (this.isControlledByLocalInstance()) {
-            Vec3 deltaMovement = riddenInput;
-
-            if (livingEntity instanceof FlyingMob) {
-                float verticalMovement = -player.getXRot() * 0.1F;
-
-                deltaMovement = deltaMovement.add(0.0, verticalMovement, 0.0);
-            }
-
             if (riddenInput.lengthSqr() > 0.0) {
                 this.setSpeed((float) livingEntity.getAttributeValue(Attributes.MOVEMENT_SPEED));
-                this.travel(deltaMovement);
+
+                this.travel(riddenInput);
             } else {
                 this.setDeltaMovement(Vec3.ZERO);
                 this.setSpeed(0.0F);

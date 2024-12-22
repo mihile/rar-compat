@@ -15,6 +15,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +25,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidType;
 import top.theillusivec4.curios.api.SlotContext;
 
 import static it.hurts.sskirillss.relics.init.DataComponentRegistry.TOGGLED;
@@ -32,6 +36,9 @@ public class SnorkelItem extends WearableRelicItem {
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
+                        .ability(AbilityData.builder("passive")
+                                .maxLevel(0)
+                                .build())
                         .ability(AbilityData.builder("diving")
                                 .stat(StatData.builder("duration")
                                         .initialValue(5D, 10D)
@@ -44,9 +51,6 @@ public class SnorkelItem extends WearableRelicItem {
                                         .star(6, 9, 24)
                                         .link(0, 1).link(1, 2).link(1, 3).link(4, 2).link(4, 3).link(1, 5).link(5, 6).link(6, 4)
                                         .build())
-                                .build())
-                        .ability(AbilityData.builder("passive")
-                                .maxLevel(0)
                                 .build())
                         .build())
                 .style(StyleData.builder()
@@ -108,11 +112,12 @@ public class SnorkelItem extends WearableRelicItem {
                 return;
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SNORKEL.value());
+            player.level().getFluidState(BlockPos.containing(player.getEyePosition()));
 
             if (!(stack.getItem() instanceof SnorkelItem) || !player.isInLiquid())
                 return;
 
-            event.scaleFarPlaneDistance(5);
+            event.scaleFarPlaneDistance(150);
             event.setCanceled(true);
         }
     }

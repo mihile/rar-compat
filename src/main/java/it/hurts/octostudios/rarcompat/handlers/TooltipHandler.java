@@ -20,6 +20,16 @@ public class TooltipHandler {
 
         var tooltip = event.getToolTip();
 
-        tooltip.add(4, Component.translatable("tooltip.rar_compat").setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GRAY)));
+        int modIdIndex = -1;
+        for (int i = 0; i < tooltip.size(); i++) {
+            if (tooltip.get(i).getString().contains("artifacts")) {
+                modIdIndex = i;
+                break;
+            }
+        }
+
+        if (modIdIndex != -1) {
+            tooltip.add(modIdIndex, Component.translatable("tooltip.rar_compat").setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GRAY)));
+        }
     }
 }

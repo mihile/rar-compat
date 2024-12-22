@@ -16,11 +16,16 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import top.theillusivec4.curios.api.SlotContext;
+
+import java.util.List;
 
 public class VillagerHatItem extends WearableRelicItem {
     @Override
@@ -65,6 +70,23 @@ public class VillagerHatItem extends WearableRelicItem {
                         .entry(LootCollections.VILLAGE)
                         .build())
                 .build();
+    }
+
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || getIronGolems(player, player.getCommandSenderWorld()) == null)
+            return;
+
+        for (IronGolem mob : getIronGolems(player, player.getCommandSenderWorld())) {
+            if (mob.getTarget() != player)
+                break;
+
+            mob.setTarget(null);
+        }
+    }
+
+    public List<IronGolem> getIronGolems(Player player, Level level) {
+        return level.getEntitiesOfClass(IronGolem.class, player.getBoundingBox().inflate(5)).stream().filter(mob -> mob.getTarget() == player && !mob.isDeadOrDying()).toList();
     }
 
     @EventBusSubscriber

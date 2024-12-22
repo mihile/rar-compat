@@ -20,12 +20,10 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Saddleable;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -59,9 +57,9 @@ public class CowboyHatItem extends WearableRelicItem {
                                 .build())
                         .ability(AbilityData.builder("overlord")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
-                                        .predicate("overlord", PredicateType.CAST, (player, stack) -> rayTraceEntity(player, entity -> entity instanceof Mob,
-                                                Objects.requireNonNull(player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE)).getValue()) != null
-                                                && !(player.getRootVehicle() instanceof Mob) && !player.isPassenger())
+                                        .predicate("overlord", PredicateType.CAST, (player, stack) -> rayTraceEntity(player, entity -> entity instanceof Mob
+                                                        && !(entity instanceof Saddleable) && !(entity instanceof FlyingMob) && !(entity instanceof WaterAnimal),
+                                                Objects.requireNonNull(player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE)).getValue()) != null && !player.isPassenger())
                                         .build())
                                 .requiredLevel(5)
                                 .stat(StatData.builder("time")
@@ -86,8 +84,6 @@ public class CowboyHatItem extends WearableRelicItem {
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.ORANGE)
                                         .build())
-                                .build())
-                        .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("overlord")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.BLUE)
