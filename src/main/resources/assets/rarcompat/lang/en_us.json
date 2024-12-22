@@ -93,9 +93,11 @@
   "tooltip.relics.cowboy_hat.ability.cowboy": "Gallop",
   "tooltip.relics.cowboy_hat.ability.cowboy.description": "Increases the movement speed, jump height, and safe fall height of mounts by %1$s%%.",
   "tooltip.relics.cowboy_hat.ability.overlord": "Lasso",
-  "tooltip.relics.cowboy_hat.ability.overlord.description": "When used, this ability allows you to ride and control any mob for up to %1$s seconds.",
+  "tooltip.relics.cowboy_hat.ability.overlord.description": "When used, this ability allows you to ride and control any mob for up to %1$s seconds. After the time expires or dismounting, it goes on a 1-minute cooldown.",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Gallop",
-  "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s experience points with a 50% chance for each second of riding.",
+  "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s experience points with a 25% chance for each second of riding.",
+  "tooltip.relics.cowboy_hat.leveling_source.overlord.title": "Lasso",
+  "tooltip.relics.cowboy_hat.leveling_source.overlord.description": "+%1$s experience points for each use of the %2$s ability.",
 
   "tooltip.relics.crystal_heart.description": "Grants the relic bearer extra strength by increasing their maximum health.",
   "tooltip.relics.crystal_heart.ability.heart": "Will to Live",
