@@ -113,6 +113,7 @@ public class SnorkelItem extends WearableRelicItem {
                 return;
 
             event.scaleFarPlaneDistance(5);
+            event.setCanceled(true);
         }
     }
 }
