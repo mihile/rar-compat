@@ -1,4 +1,6 @@
 {
+  "tooltip.rar_compat" : "수정됨 [유물: 아티팩트 호환]",
+
   "tooltip.relics.umbrella.description": "유물 소지자의 낙하 속도를 완화하여 어떤 높이에서도 안전한 착지를 보장합니다. 숙련된 사용자의 손에 맡겨지면 신뢰할 수 있는 방패로 변해 적을 막아낼 수 있습니다.",
   "tooltip.relics.umbrella.ability.glider": "안전한 착지",
   "tooltip.relics.umbrella.ability.glider.description": "우산을 들고 있으면 플레이어의 낙하 속도가 점차 감소하고, 낙하 속도에 따라 피해가 줄어듭니다. 낙하 속도가 느릴수록 피해 감소량이 커져 최대 피해 무효화까지 가능합니다.",
@@ -29,13 +31,17 @@
 
   "tooltip.relics.snorkel.description": "유물 소지자가 물속에서 더 오래 탐험할 수 있도록 해주며, 익사 위험을 줄여줍니다.",
   "tooltip.relics.snorkel.ability.diving": "호흡 컨트롤",
-  "tooltip.relics.snorkel.ability.diving.description": "숨이 턱까지 찼을 때, %1$s초 동안 추가적인 호흡을 부여해줍니다",
+  "tooltip.relics.snorkel.ability.diving.description": "숨이 턱까지 찼을 때, %1$s초 동안 추가적인 호흡을 부여해줍니다.",
+  "tooltip.relics.snorkel.ability.passive": "선명한 시력",
+  "tooltip.relics.snorkel.ability.passive.description": "물 속에 있을 때 뿌연 시야가 깨끗하게 보입니다.",
   "tooltip.relics.snorkel.leveling_source.diving.title": "호흡 컨트롤",
   "tooltip.relics.snorkel.leveling_source.diving.description": "%2$s 능력을 통해 수중 호흡 효과를 얻은 상태로 잠수 시 초당 +%1$s 유물 경험치를 획득합니다. 플레이어가 수중 호흡 효과를 따로 가지고 있는 경우, 획득하는 경험치가 남은 지속 시간에 비례하여 차감적용됩니다.",
 
   "tooltip.relics.villager_hat.description": "유물 소지자가 마을 주민과의 거래 시 가격을 낮춰 더욱 수익성 있는 거래를 가능하게 합니다.",
   "tooltip.relics.villager_hat.ability.discount": "단골",
   "tooltip.relics.villager_hat.ability.discount.description": "주민과 %1$s%% 할인된 가격으로 거래할 수 있습니다.",
+  "tooltip.relics.villager_hat.ability.passive": "선량한 시민",
+  "tooltip.relics.villager_hat.ability.passive.description": "플레이어가 철골렘에게 공격받지 않습니다.",
   "tooltip.relics.villager_hat.leveling_source.discount.title": "단골",
   "tooltip.relics.villager_hat.leveling_source.discount.description": "주민과의 거래마다 +%1$s 유물 경험치를 획득합니다. %2$s 능력으로 제공되는 할인률만큼 획득 경험치가 증가합니다.",
 
@@ -86,8 +92,13 @@
   "tooltip.relics.cowboy_hat.description": "유물 소지자가 탑승한 동물의 속도가 증가합니다.",
   "tooltip.relics.cowboy_hat.ability.cowboy": "질주",
   "tooltip.relics.cowboy_hat.ability.cowboy.description": "탑승한 동물의 속도가 %1$s%% 증가합니다.",
+  "tooltip.relics.cowboy_hat.ability.overlord": "올가미",
+  "tooltip.relics.cowboy_hat.ability.overlord.description": "이 능력을 사용하면 최대 %1$s초 동안 어떤 몹이든 타고 조종할 수 있습니다. 시간이 다 되거나 내리면 1분 동안 재사용할 수 없습니다. ",
+  "tooltip.relics.cowboy_hat.ability.overlord.predicate.overlord": "몹을 보세요",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "질주",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "동물을 탑승한 시간 초당 50%확률로 +%1$s 유물 경험치를 획득합니다.",
+  "tooltip.relics.cowboy_hat.leveling_source.overlord.title": "올가미",
+  "tooltip.relics.cowboy_hat.leveling_source.overlord.description": "%2$s 능력을 사용할 때마다 +%1$s 유물 경험치를 얻습니다.",
 
   "tooltip.relics.crystal_heart.description": "유물 소지자에게 추가적인 힘을 부여하여 최대 체력을 증가시킵니다.",
   "tooltip.relics.crystal_heart.ability.heart": "생존 본능",
