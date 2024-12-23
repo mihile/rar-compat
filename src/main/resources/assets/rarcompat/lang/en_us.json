@@ -1,5 +1,5 @@
 {
-  "tooltip.rar_compat" : "Modified [Relics: Artifacts Compat]",
+  "tooltip.rarcompat.modified" : "Modified by [Relics: Artifacts Compat]",
 
   "tooltip.relics.umbrella.description": "Softens the fall, providing safe landing from any height. When skillfully used, it can serve as a reliable shield, keeping enemies at bay.",
   "tooltip.relics.umbrella.ability.glider": "Soft Fall",
