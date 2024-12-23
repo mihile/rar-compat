@@ -1,4 +1,6 @@
 {
+  "tooltip.rar_compat" : "Modified [Relics: Artifacts Compat]",
+
   "tooltip.relics.umbrella.description": "Softens the fall, providing safe landing from any height. When skillfully used, it can serve as a reliable shield, keeping enemies at bay.",
   "tooltip.relics.umbrella.ability.glider": "Soft Fall",
   "tooltip.relics.umbrella.ability.glider.description": "When held in hand, reduces the player's vertical speed, negating fall damage. Pressing LMB while falling propels the player backward. This propulsion can be used up to %1$s times in a row before the player touches the ground.",
@@ -30,12 +32,16 @@
   "tooltip.relics.snorkel.description": "Allows for longer underwater exploration without the risk of drowning.",
   "tooltip.relics.snorkel.ability.diving": "Breath Control",
   "tooltip.relics.snorkel.ability.diving.description": "Applies a water breathing effect for %1$s seconds upon full submersion.",
+  "tooltip.relics.snorkel.ability.passive": "Clear Vision",
+  "tooltip.relics.snorkel.ability.passive.description": "Removes the fog effect in liquids.",
   "tooltip.relics.snorkel.leveling_source.diving.title": "Breath Control",
   "tooltip.relics.snorkel.leveling_source.diving.description": "+%1$s experience points for each second of the water breathing effect from the %2$s ability. If the player already has a water breathing effect, its duration is subtracted from the gained experience proportionally.",
 
   "tooltip.relics.villager_hat.description": "Reduces trading prices with villagers, making deals more profitable.",
   "tooltip.relics.villager_hat.ability.discount": "Trade Secret",
   "tooltip.relics.villager_hat.ability.discount.description": "Increases the discount when trading with villagers by %1$s%%.",
+  "tooltip.relics.villager_hat.ability.passive": "Innocent Appearance",
+  "tooltip.relics.villager_hat.ability.passive.description": "Prevents Iron Golems from attacking the player.",
   "tooltip.relics.villager_hat.leveling_source.discount.title": "Trade Secret",
   "tooltip.relics.villager_hat.leveling_source.discount.description": "+%1$s experience points for each trade with villagers. The amount of experience gained increases by the discount value provided by the %2$s ability.",
 
@@ -86,8 +92,13 @@
   "tooltip.relics.cowboy_hat.description": "Enhances the agility of the relic bearer’s mounts.",
   "tooltip.relics.cowboy_hat.ability.cowboy": "Gallop",
   "tooltip.relics.cowboy_hat.ability.cowboy.description": "Increases the movement speed, jump height, and safe fall height of mounts by %1$s%%.",
+  "tooltip.relics.cowboy_hat.ability.overlord": "Lasso",
+  "tooltip.relics.cowboy_hat.ability.overlord.description": "When used, this ability allows you to ride and control any mob for up to %1$s seconds. After the time expires or dismounting, it goes on a 1-minute cooldown.",
+  "tooltip.relics.cowboy_hat.ability.overlord.predicate.overlord": "Look at the mob",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Gallop",
-  "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s experience points with a 50% chance for each second of riding.",
+  "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s experience points with a 25% chance for each second of riding.",
+  "tooltip.relics.cowboy_hat.leveling_source.overlord.title": "Lasso",
+  "tooltip.relics.cowboy_hat.leveling_source.overlord.description": "+%1$s experience points for each use of the %2$s ability.",
 
   "tooltip.relics.crystal_heart.description": "Grants the relic bearer extra strength by increasing their maximum health.",
   "tooltip.relics.crystal_heart.ability.heart": "Will to Live",

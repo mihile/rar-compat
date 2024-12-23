@@ -1,4 +1,6 @@
 {
+  "tooltip.rar_compat" : "Модифицировано [Relics: Artifacts Compat]",
+
   "tooltip.relics.umbrella.description": "Смягчает падение, обеспечивая безопасное приземление с любой высоты. При умелом использовании может послужить верным щитом, не подпускающим врагов.",
   "tooltip.relics.umbrella.ability.glider": "Мягкое падение",
   "tooltip.relics.umbrella.ability.glider.description": "При удержании в руке снижает вертикальную скорость игрока, подавляя урон от падения. При нажатии ЛКМ в падении отталкивает игрока назад. Использовать отталкивание можно до %1$s раз подряд, прежде чем игрок коснётся земли.",
@@ -30,12 +32,16 @@
   "tooltip.relics.snorkel.description": "Позволяет на дольше погружаться под воду и исследовать глубины без рисков захлебнуться.",
   "tooltip.relics.snorkel.ability.diving": "Контроль дыхания",
   "tooltip.relics.snorkel.ability.diving.description": "Применяет эффект подводного дыхания на %1$s секунд при полном погружении в воду.",
+  "tooltip.relics.snorkel.ability.passive": "Чистое зрение",
+  "tooltip.relics.snorkel.ability.passive.description": "Убирает эффект тумана в жидкостях.",
   "tooltip.relics.snorkel.leveling_source.diving.title": "Контроль дыхания",
   "tooltip.relics.snorkel.leveling_source.diving.description": "+%1$s единиц опыта за каждую секунду полученного эффекта подводного дыхания от способности %2$s. Если при срабатывании способности на игроке уже был эффект подводного дыхания - его длительность вычитается из суммы получаемого опыта в том же соотношении.",
 
   "tooltip.relics.villager_hat.description": "Снижает цены при обмене с крестьянами, делая торговлю более выгодной.",
   "tooltip.relics.villager_hat.ability.discount": "Секрет торговли",
   "tooltip.relics.villager_hat.ability.discount.description": "Увеличивает скидку при торгах с крестьянами на %1$s%%.",
+  "tooltip.relics.villager_hat.ability.passive": "Беззащитный вид",
+  "tooltip.relics.villager_hat.ability.passive.description": "Запрещает железным големам атаковать игрока.",
   "tooltip.relics.villager_hat.leveling_source.discount.title": "Секрет торговли",
   "tooltip.relics.villager_hat.leveling_source.discount.description": "+%1$s единиц опыта за каждый совершённый торг с крестьянами. Количество получаемого опыта дополнительно увеличивается на сумму скидки от способности %2$s.",
 
@@ -86,8 +92,13 @@
   "tooltip.relics.cowboy_hat.description": "Повышает ловкость ездовых животных владельца реликвии.",
   "tooltip.relics.cowboy_hat.ability.cowboy": "Галоп",
   "tooltip.relics.cowboy_hat.ability.cowboy.description": "Увеличивает скорость передвижения, высоту прыжка и безопасную высоту падения ездовых животных на %1$s%%.",
+  "tooltip.relics.cowboy_hat.ability.overlord": "Лассо",
+  "tooltip.relics.cowboy_hat.ability.overlord.description": "При использовании способности позволяет оседлать и контролировать любого моба на время до %1$s секунд. По истечении времени или при спешивании уходит на перезарядку на 1 минуту.",
+  "tooltip.relics.cowboy_hat.ability.overlord.predicate.overlord": "Взгляд на моба",
   "tooltip.relics.cowboy_hat.leveling_source.cowboy.title": "Галоп",
-  "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s единиц опыта с вероятностью в 50% за каждую секунду передвижения верхом.",
+  "tooltip.relics.cowboy_hat.leveling_source.cowboy.description": "+%1$s единиц опыта с вероятностью в 25% за каждую секунду передвижения верхом.",
+  "tooltip.relics.cowboy_hat.leveling_source.overlord.title": "Лассо",
+  "tooltip.relics.cowboy_hat.leveling_source.overlord.description": "+%1$s единиц опыта за каждое применение способности %2$s.",
 
   "tooltip.relics.crystal_heart.description": "Наделяет обладателя реликвии дополнительной силой, увеличивая его максимальное здоровье.",
   "tooltip.relics.crystal_heart.ability.heart": "Воля к жизни",
