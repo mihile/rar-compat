@@ -136,7 +136,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (canPlayerUseAbility(player, player.getMainHandItem(), "shield")) {
+        if (canPlayerUseAbility(player, player.getItemInHand(hand), "shield")) {
             player.startUsingItem(hand);
 
             return InteractionResultHolder.consume(player.getItemInHand(hand));
@@ -250,9 +250,24 @@ public class UmbrellaItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
-            var stack = player.getMainHandItem();
+            var stack = ItemStack.EMPTY;
 
-            if (!(stack.getItem() instanceof UmbrellaItem relic) || !player.isUsingItem() || !(event.getSource().getEntity() instanceof LivingEntity source)
+            for (var hand : InteractionHand.values()) {
+                var entry = player.getItemInHand(hand);
+
+                if (entry.getItem() instanceof UmbrellaItem) {
+                    stack = entry;
+
+                    break;
+                }
+            }
+
+            if (stack.isEmpty())
+                return;
+
+            var relic = (UmbrellaItem) stack.getItem();
+
+            if (!player.isUsingItem() || !(event.getSource().getEntity() instanceof LivingEntity source)
                     || source.position().subtract(player.position()).normalize().dot(player.getLookAngle().normalize()) < 0.8F)
                 return;
 
