@@ -85,7 +85,7 @@
 
   "tooltip.relics.thorn_pendant.description": "유물 소지자가 피격 시 적에게 독 상태이상을 부여합니다.",
   "tooltip.relics.thorn_pendant.ability.poison": "중독 방패",
-  "tooltip.relics.thorn_pendant.ability.poison.description": "피격 시 적에게 %3$s%% 확률로 %1$s%%의 피해를 반사하며 %2$s초 동안 독 상태이상을 부여합니다.",
+  "tooltip.relics.thorn_pendant.ability.poison.description": "피격 시 적에게 %3$s%% 확률로 %1$s%% 의 피해를 반사하며 %2$s초 동안 독 상태이상을 부여합니다.",
   "tooltip.relics.thorn_pendant.leveling_source.poison.title": "중독 방패",
   "tooltip.relics.thorn_pendant.leveling_source.poison.description": "%2$s 능력을 사용할 때 마다 +%1$s 유물 경험치를 획득합니다.",
 
@@ -132,7 +132,7 @@
 
   "tooltip.relics.vampiric_glove.description": "유물 소지자의 공격에 흡혈 효과를 부여하여, 입힌 피해의 일부를 체력으로 회복시킵니다.",
   "tooltip.relics.vampiric_glove.ability.vampire": "흡혈",
-  "tooltip.relics.vampiric_glove.ability.vampire.description": "입힌 피해의 %1$s%%를 흡혈합니다.",
+  "tooltip.relics.vampiric_glove.ability.vampire.description": "입힌 피해의 %1$s%% 를 흡혈합니다.",
   "tooltip.relics.vampiric_glove.leveling_source.vampire.title": "흡혈",
   "tooltip.relics.vampiric_glove.leveling_source.vampire.description": "%2$s 능력을 사용할 때 마다 +%1$s 유물 경험치를 획득합니다. 플레이어가 받은 회복량과 최대 체력에 비례하여 경험치 획득량이 결정됩니다.",
 
@@ -170,13 +170,13 @@
 
   "tooltip.relics.power_glove.description": "유물 소지자에게 강력한 공격을 할 수 있는 능력을 부여합니다.",
   "tooltip.relics.power_glove.ability.power": "파워 스트라이크",
-  "tooltip.relics.power_glove.ability.power.description": "플레이어의 공격력을 %1$s%% 증가시키지만, 공격 후 5초의 재사용 대기시간이 발생합니다.",
+  "tooltip.relics.power_glove.ability.power.description": "5초의 재사용 대기시간을 가진 일격을 날립니다. 해당 일격은 %1$s%% 증가된 피해를 줍니다.",
   "tooltip.relics.power_glove.leveling_source.power.title": "파워 스트라이크",
   "tooltip.relics.power_glove.leveling_source.power.description": "%2$s 능력을 사용할 때 마다 +%1$s 유물 경험치를 획득합니다.",
 
   "tooltip.relics.withered_bracelet.description": "유물 소지자의 무기를 시듦 에너지로 채워, 닿는 모든 것에 영향을 미칩니다.",
   "tooltip.relics.withered_bracelet.ability.withered": "시듦 감염",
-  "tooltip.relics.withered_bracelet.ability.withered.description": "공격 시 %1$s%%의 확률로 시듦 디버프를 %2$s초 동안 입힙니다.",
+  "tooltip.relics.withered_bracelet.ability.withered.description": "공격 시 %1$s%% 확률로 시듦 디버프를 %2$s초 동안 입힙니다.",
   "tooltip.relics.withered_bracelet.leveling_source.withered.title": "시듦 감염",
   "tooltip.relics.withered_bracelet.leveling_source.withered.description": "%2$s 능력을 사용할 때 마다 +%1$s 유물 경험치를 획득합니다.",
 
@@ -249,7 +249,7 @@
 
   "tooltip.relics.panic_necklace.description": "유물 소지자의 심장 박동을 가속시켜 다가올 위험을 감지하게 합니다.",
   "tooltip.relics.panic_necklace.ability.panic": "패닉",
-  "tooltip.relics.panic_necklace.ability.panic.description": "플레이어를 노리는 몬스터가 %2$s 블록 반경 내에 있을 때, 플레이어의 이동 속도가 %1$s%%씩 증가합니다.",
+  "tooltip.relics.panic_necklace.ability.panic.description": "플레이어를 노리는 몬스터가 %2$s 블록 반경 내에 있을 때, 몹 하나당 플레이어의 이동 속도가 %1$s%% 씩 증가합니다.",
   "tooltip.relics.panic_necklace.leveling_source.panic.title": "패닉",
   "tooltip.relics.panic_necklace.leveling_source.panic.description": "%2$s 능력의 영향을 받는 몬스터로부터 피해를 입을 때마다 +%1$s 유물 경험치를 획득합니다.",
 
