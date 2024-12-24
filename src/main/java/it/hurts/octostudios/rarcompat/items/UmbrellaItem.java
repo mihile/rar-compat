@@ -1,7 +1,10 @@
 package it.hurts.octostudios.rarcompat.items;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.network.packets.RepulsionUmbrellaPacket;
+import it.hurts.sskirillss.relics.init.CreativeTabRegistry;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
+import it.hurts.sskirillss.relics.items.misc.CreativeContentConstructor;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -26,6 +29,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
@@ -103,14 +107,24 @@ public class UmbrellaItem extends WearableRelicItem {
     }
 
     @Override
+    public void gatherCreativeTabContent(CreativeContentConstructor constructor) {
+        ItemStack stack = this.getDefaultInstance();
+
+        setCharges(stack, getMaxCharges(stack));
+
+        constructor.entry(CreativeTabRegistry.RELICS_TAB.get(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY, stack);
+        constructor.entry(ModItems.CREATIVE_TAB.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS, stack);
+    }
+
+    @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         if (!(entity instanceof Player player) || !canPlayerUseAbility(player, stack, "glider"))
             return;
 
         var isOnGround = player.onGround();
 
-        if (isOnGround && getCharges(stack) != 0)
-            setCharges(stack, 0);
+        if (isOnGround && getCharges(stack) != getMaxCharges(stack))
+            setCharges(stack, getMaxCharges(stack));
 
         var hasUmbrella = false;
 
@@ -127,7 +141,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
         var motion = player.getDeltaMovement();
 
-        player.setDeltaMovement(motion.x(), -(player.isShiftKeyDown() ? 0.5F : 0.15F), motion.z());
+        player.setDeltaMovement(motion.x(), -(player.isShiftKeyDown() ? 0.65F : 0.15F), motion.z());
         player.fallDistance = 0;
 
         if (player.tickCount % 20 == 0 && !isOnGround)
@@ -162,23 +176,21 @@ public class UmbrellaItem extends WearableRelicItem {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        var charges = getMaxCharges(stack);
-
-        return Math.max(0, Math.round(13F * (charges - getCharges(stack)) / charges));
+        return Math.round((13F * getCharges(stack)) / getMaxCharges(stack));
     }
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return this.getCharges(stack) != 0;
+        return this.getCharges(stack) != getMaxCharges(stack);
     }
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return Mth.hsvToRgb(Math.max(0F, 1F - ((float) getCharges(stack) / getMaxCharges(stack))) / 3F, 1F, 1F);
+        return Mth.hsvToRgb(Math.max(0F, (float) getCharges(stack) / getMaxCharges(stack)) / 3F, 1F, 1F);
     }
 
     public int getMaxCharges(ItemStack stack) {
-        return (int) getStatValue(stack, "glider", "count");
+        return (int) MathUtils.round(getStatValue(stack, "glider", "count"), 0);
     }
 
     public int getCharges(ItemStack stack) {
@@ -206,16 +218,17 @@ public class UmbrellaItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-            handleLeftClick(event);
+            if (event.getAction() == PlayerInteractEvent.LeftClickBlock.Action.START && event.getEntity().level().isClientSide())
+                handleLeftClick(event);
         }
 
-        private static void handleLeftClick(PlayerInteractEvent event) {
+        private static boolean handleLeftClick(PlayerInteractEvent event) {
             var player = event.getEntity();
             var stack = player.getMainHandItem();
 
             if (!(stack.getItem() instanceof UmbrellaItem relic) || !relic.canPlayerUseAbility(player, stack, "glider")
-                    || relic.getCharges(stack) >= relic.getMaxCharges(stack) || player.isFallFlying())
-                return;
+                    || player.getCooldowns().isOnCooldown(relic) || relic.getCharges(stack) <= 0 || player.isFallFlying())
+                return false;
 
             var angle = player.getLookAngle().scale(-1.15F);
             var motion = player.getDeltaMovement().add(angle);
@@ -223,6 +236,8 @@ public class UmbrellaItem extends WearableRelicItem {
             player.setDeltaMovement(motion.x(), angle.y(), motion.z());
 
             NetworkHandler.sendToServer(new RepulsionUmbrellaPacket());
+
+            return true;
         }
 
         @SubscribeEvent
@@ -268,7 +283,7 @@ public class UmbrellaItem extends WearableRelicItem {
             var relic = (UmbrellaItem) stack.getItem();
 
             if (!player.isUsingItem() || !(event.getSource().getEntity() instanceof LivingEntity source)
-                    || source.position().subtract(player.position()).normalize().dot(player.getLookAngle().normalize()) < 0.8F)
+                    || source.position().subtract(player.position()).normalize().dot(player.getLookAngle().normalize()) < 0.65F)
                 return;
 
             var level = player.getCommandSenderWorld();
@@ -277,7 +292,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
             relic.spreadRelicExperience(player, stack, 1);
 
-            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(2, 1, 2), entity -> entity != player && entity.isAlive())) {
+            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(2), entity -> entity != player && entity.isAlive())) {
                 var motion = entity.position().subtract(player.position()).normalize().scale(0.4F + (relic.getStatValue(stack, "glider", "count") * 0.2F));
 
                 entity.setDeltaMovement(motion);
