@@ -70,7 +70,7 @@ public class SuperstitiousHatItem extends WearableRelicItem {
 
         var random = player.getRandom();
 
-        var amount = MathUtils.multicast(random, getStatValue(stack, "looting", "chance"), 1F);
+        var amount = MathUtils.multicast(random, getStatValue(stack, "looting", "chance"));
 
         if (amount > 0)
             spreadRelicExperience(player, stack, random.nextInt(amount) + 1);
