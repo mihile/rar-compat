@@ -42,21 +42,6 @@ public class MimicConfigData implements OctoConfig {
 
     @Override
     public void onLoadObject(Object object) {
-        var data = (MimicConfigData) object;
-        var entries = data.getItems();
-
-        MimicHandler.ITEMS.clear();
-
-        if (entries.isEmpty())
-            return;
-
-        for (var entry : entries) {
-            var id = ResourceLocation.parse(entry);
-
-            if (!BuiltInRegistries.ITEM.containsKey(id))
-                continue;
-
-            MimicHandler.ITEMS.add(BuiltInRegistries.ITEM.get(id));
-        }
+        MimicHandler.readFromConfig((MimicConfigData) object);
     }
 }

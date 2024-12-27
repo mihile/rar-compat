@@ -1,8 +1,10 @@
 package it.hurts.octostudios.rarcompat.items;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.network.packets.RepulsionUmbrellaPacket;
+import it.hurts.sskirillss.relics.init.CreativeTabRegistry;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
-import it.hurts.sskirillss.relics.init.HotkeyRegistry;
+import it.hurts.sskirillss.relics.items.misc.CreativeContentConstructor;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -15,7 +17,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -24,27 +25,25 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class UmbrellaItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -108,31 +107,50 @@ public class UmbrellaItem extends WearableRelicItem {
     }
 
     @Override
+    public void gatherCreativeTabContent(CreativeContentConstructor constructor) {
+        ItemStack stack = this.getDefaultInstance();
+
+        setCharges(stack, getMaxCharges(stack));
+
+        constructor.entry(CreativeTabRegistry.RELICS_TAB.get(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY, stack);
+        constructor.entry(ModItems.CREATIVE_TAB.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS, stack);
+    }
+
+    @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
-        if (!(entity instanceof Player player))
+        if (!(entity instanceof Player player) || !canPlayerUseAbility(player, stack, "glider"))
             return;
 
-        if (player.onGround() && getCharges(stack) != 0) {
-            setCharges(stack, 0);
-            player.getCooldowns().addCooldown(this, 0);
-        }
+        var isOnGround = player.onGround();
 
-        if (player.isInWater() || !isHoldingUmbrellaUpright(player, player.getUsedItemHand()) || player.getDeltaMovement().y > 0 || player.getAbilities().flying
-                || player.isFallFlying() || player.hasEffect(MobEffects.SLOW_FALLING) || !canPlayerUseAbility(player, stack, "glider"))
+        if (isOnGround && getCharges(stack) != getMaxCharges(stack))
+            setCharges(stack, getMaxCharges(stack));
+
+        var hasUmbrella = false;
+
+        for (var hand : InteractionHand.values())
+            if (player.getItemInHand(hand) == stack) {
+                hasUmbrella = true;
+
+                break;
+            }
+
+        if (!hasUmbrella || player.isUsingItem() || player.isInLiquid() || player.getDeltaMovement().y > 0
+                || player.getAbilities().flying || player.isFallFlying())
             return;
 
-        Vec3 motion = player.getDeltaMovement();
+        var motion = player.getDeltaMovement();
 
-        player.setDeltaMovement(motion.x, -0.15, motion.z);
+        player.setDeltaMovement(motion.x(), -(player.isShiftKeyDown() ? 0.65F : 0.15F), motion.z());
         player.fallDistance = 0;
 
-        if (player.tickCount % 20 == 0 && !player.onGround())
+        if (player.tickCount % 20 == 0 && !isOnGround)
             spreadRelicExperience(player, stack, 1);
     }
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (canPlayerUseAbility(player, player.getMainHandItem(), "shield")) {
+        if (canPlayerUseAbility(player, player.getItemInHand(hand), "shield")) {
             player.startUsingItem(hand);
 
             return InteractionResultHolder.consume(player.getItemInHand(hand));
@@ -156,129 +174,137 @@ public class UmbrellaItem extends WearableRelicItem {
         return false;
     }
 
-    public static boolean isHoldingUmbrellaUpright(LivingEntity entity, InteractionHand hand) {
-        return entity.getItemInHand(hand).getItem() instanceof UmbrellaItem && (!entity.isUsingItem() || entity.getUsedItemHand() != hand);
-    }
-
     @Override
     public int getBarWidth(ItemStack stack) {
-        int charges = stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
-        int statCount = (int) MathUtils.round(getStatValue(stack, "glider", "count"), 0);
-
-        return Math.max(0, Math.round(13.0F * (statCount - charges) / statCount));
+        return Math.round((13F * getCharges(stack)) / getMaxCharges(stack));
     }
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return this.getCharges(stack) != 0;
+        return this.getCharges(stack) != getMaxCharges(stack);
     }
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        int charges = getCharges(stack);
-        int statCount = (int) getStatValue(stack, "glider", "count");
-
-        float normalizedValue = Math.max(0.0F, 1.0F - (charges / (float) statCount));
-        return Mth.hsvToRgb(normalizedValue / 3.0F, 1.0F, 1.0F);
+        return Mth.hsvToRgb(Math.max(0F, (float) getCharges(stack) / getMaxCharges(stack)) / 3F, 1F, 1F);
     }
 
-    public void addCharges(ItemStack stack, int val) {
-        setCharges(stack, getCharges(stack) + val);
+    public int getMaxCharges(ItemStack stack) {
+        return (int) MathUtils.round(getStatValue(stack, "glider", "count"), 0);
     }
 
     public int getCharges(ItemStack stack) {
         return stack.getOrDefault(DataComponentRegistry.CHARGE, 0);
     }
 
-    public void setCharges(ItemStack stack, int val) {
-        stack.set(DataComponentRegistry.CHARGE, Math.max(val, 0));
+    public void setCharges(ItemStack stack, int amount) {
+        stack.set(DataComponentRegistry.CHARGE, Math.max(amount, 0));
+    }
+
+    public void addCharges(ItemStack stack, int amount) {
+        setCharges(stack, getCharges(stack) + amount);
+    }
+
+    public static boolean isHoldingUmbrella(LivingEntity entity, InteractionHand hand) {
+        return entity.getItemInHand(hand).getItem() instanceof UmbrellaItem && (!entity.isUsingItem() || entity.getUsedItemHand() != hand);
     }
 
     @EventBusSubscriber(value = Dist.CLIENT)
-    public static class UmbrellaClientEvent {
+    public static class UmbrellaClientEvents {
         @SubscribeEvent
-        public static void onMouseInput(InputEvent.MouseButton.Pre event) {
-            Player playerClient = Minecraft.getInstance().player;
-
-            if (playerClient == null || event.getAction() != 1)
-                return;
-
-            ItemStack stack = playerClient.getMainHandItem();
-
-            if (event.getButton() == 0
-                    && !HotkeyRegistry.ABILITY_LIST.isDown()
-                    && event.getButton() != HotkeyRegistry.ABILITY_LIST.getKey().getValue()
-                    && !playerClient.hasContainerOpen()
-                    && !playerClient.getCooldowns().isOnCooldown(stack.getItem())
-                    && Minecraft.getInstance().screen == null
-                    && stack.getItem() instanceof UmbrellaItem relic
-                    && relic.canPlayerUseAbility(playerClient, stack, "glider")
-                    && relic.getCharges(stack) < (int) Math.round(relic.getStatValue(stack, "glider", "count"))
-                    && !playerClient.onGround()
-                    && !playerClient.isFallFlying()) {
-
-                playerClient.setDeltaMovement(playerClient.getLookAngle().scale(-1).scale(1.1));
-
-                NetworkHandler.sendToServer(new RepulsionUmbrellaPacket());
-            }
+        public static void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+            handleLeftClick(event);
         }
-    }
 
-    @EventBusSubscriber
-    public static class UmbrellaEvent {
         @SubscribeEvent
-        public static void onPlayerHurt(LivingIncomingDamageEvent event) {
-            if (!(event.getEntity() instanceof Player player))
-                return;
+        public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+            if (event.getAction() == PlayerInteractEvent.LeftClickBlock.Action.START && event.getEntity().level().isClientSide())
+                handleLeftClick(event);
+        }
 
-            ItemStack stack = player.getMainHandItem();
+        private static boolean handleLeftClick(PlayerInteractEvent event) {
+            var player = event.getEntity();
+            var stack = player.getMainHandItem();
 
-            if (stack.getItem() instanceof UmbrellaItem relic
-                    && player.isUsingItem()
-                    && event.getSource().getEntity() instanceof LivingEntity attacker
-                    && attacker != player) {
+            if (!(stack.getItem() instanceof UmbrellaItem relic) || !relic.canPlayerUseAbility(player, stack, "glider")
+                    || player.getCooldowns().isOnCooldown(relic) || relic.getCharges(stack) <= 0 || player.isFallFlying())
+                return false;
 
-                if (attacker.position().subtract(player.position()).normalize().dot(player.getLookAngle().normalize()) < 0.8)
-                    return;
+            var angle = player.getLookAngle().scale(-1.15F);
+            var motion = player.getDeltaMovement().add(angle);
 
-                event.setCanceled(true);
+            player.setDeltaMovement(motion.x(), angle.y(), motion.z());
 
-                AABB boundingBox = new AABB(player.blockPosition()).inflate(2, 1, 2);
+            NetworkHandler.sendToServer(new RepulsionUmbrellaPacket());
 
-                relic.spreadRelicExperience(player, stack, 1);
-
-                for (LivingEntity entity : player.level().getEntitiesOfClass(LivingEntity.class, boundingBox, entity -> entity != player && entity.isAlive())) {
-                    Vec3 toEntity = entity.position().subtract(player.position()).normalize().scale(0.4 + (relic.getStatValue(stack, "glider", "count") * 0.2));
-
-                    entity.setDeltaMovement(toEntity);
-
-                    Vec3 startPosition = attacker.position().add(new Vec3(0, attacker.getBbHeight() / 2.0, 0));
-                    Vec3 particleVelocity = toEntity.normalize().scale(0.5);
-
-                    ((ServerLevel) player.level()).sendParticles(ParticleTypes.CLOUD, startPosition.x, startPosition.y, startPosition.z,
-                            10, particleVelocity.x, particleVelocity.y, particleVelocity.z, 0.1);
-                }
-
-                player.level().playSound(null, player.blockPosition(), SoundEvents.ALLAY_HURT, SoundSource.MASTER, 0.3f,
-                        1 + (player.getRandom().nextFloat() * 0.25F));
-            }
+            return true;
         }
 
         @SubscribeEvent
         public static void onLivingRender(RenderLivingEvent.Pre<?, ?> event) {
-            if (!(event.getRenderer().getModel() instanceof HumanoidModel<?> humanoidModel) || !(event.getEntity() instanceof Player player)
-                    || !isHoldingUmbrellaUpright(player, player.getUsedItemHand()))
+            if (!(event.getEntity() instanceof Player player) || !(event.getRenderer().getModel() instanceof HumanoidModel<?> humanoidModel))
                 return;
 
-            boolean isHoldingOffHand = isHoldingUmbrellaUpright(player, InteractionHand.OFF_HAND);
-            boolean isHoldingMainHand = isHoldingUmbrellaUpright(player, InteractionHand.MAIN_HAND);
-            boolean isRightHanded = player.getMainArm() == HumanoidArm.RIGHT;
+            var isHoldingOffHand = isHoldingUmbrella(player, InteractionHand.OFF_HAND);
+            var isHoldingMainHand = isHoldingUmbrella(player, InteractionHand.MAIN_HAND);
+
+            var isRightHanded = player.getMainArm() == HumanoidArm.RIGHT;
 
             if ((isHoldingMainHand && isRightHanded) || (isHoldingOffHand && !isRightHanded))
                 humanoidModel.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
 
             if ((isHoldingMainHand && !isRightHanded) || (isHoldingOffHand && isRightHanded))
                 humanoidModel.leftArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
+        }
+    }
+
+    @EventBusSubscriber
+    public static class UmbrellaCommonEvents {
+        @SubscribeEvent
+        public static void onPlayerHurt(LivingIncomingDamageEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            var stack = ItemStack.EMPTY;
+
+            for (var hand : InteractionHand.values()) {
+                var entry = player.getItemInHand(hand);
+
+                if (entry.getItem() instanceof UmbrellaItem) {
+                    stack = entry;
+
+                    break;
+                }
+            }
+
+            if (stack.isEmpty())
+                return;
+
+            var relic = (UmbrellaItem) stack.getItem();
+
+            if (!player.isUsingItem() || !(event.getSource().getEntity() instanceof LivingEntity source)
+                    || source.position().subtract(player.position()).normalize().dot(player.getLookAngle().normalize()) < 0.65F)
+                return;
+
+            var level = player.getCommandSenderWorld();
+
+            event.setCanceled(true);
+
+            relic.spreadRelicExperience(player, stack, 1);
+
+            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(2), entity -> entity != player && entity.isAlive())) {
+                var motion = entity.position().subtract(player.position()).normalize().scale(0.4F + (relic.getStatValue(stack, "glider", "count") * 0.2F));
+
+                entity.setDeltaMovement(motion);
+
+                var pos = source.position().add(new Vec3(0F, source.getBbHeight() / 2F, 0F));
+                var velocity = motion.normalize().scale(0.5F);
+
+                if (!level.isClientSide())
+                    ((ServerLevel) level).sendParticles(ParticleTypes.CLOUD, pos.x, pos.y, pos.z, 10, velocity.x, velocity.y, velocity.z, 0.1F);
+            }
+
+            level.playSound(null, player.blockPosition(), SoundEvents.ALLAY_HURT, SoundSource.MASTER, 0.3F, 1 + (player.getRandom().nextFloat() * 0.25F));
         }
     }
 }

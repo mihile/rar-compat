@@ -65,7 +65,7 @@ public class LuckyScarfItem extends WearableRelicItem {
         var entity = slotContext.entity();
         var random = entity.getRandom();
 
-        var amount = MathUtils.multicast(entity.getRandom(), getStatValue(stack, "luck", "chance"), 1F);
+        var amount = MathUtils.multicast(entity.getRandom(), getStatValue(stack, "luck", "chance"));
 
         if (amount > 0)
             spreadRelicExperience(entity, stack, random.nextInt(amount) + 1);

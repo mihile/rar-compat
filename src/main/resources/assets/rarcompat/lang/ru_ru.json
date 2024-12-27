@@ -1,5 +1,5 @@
 {
-  "tooltip.rar_compat" : "Модифицировано [Relics: Artifacts Compat]",
+  "tooltip.rarcompat.modified" : "Модифицировано [Relics: Artifacts Compat]",
 
   "tooltip.relics.umbrella.description": "Смягчает падение, обеспечивая безопасное приземление с любой высоты. При умелом использовании может послужить верным щитом, не подпускающим врагов.",
   "tooltip.relics.umbrella.ability.glider": "Мягкое падение",

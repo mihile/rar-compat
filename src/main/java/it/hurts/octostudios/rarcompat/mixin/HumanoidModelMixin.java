@@ -1,8 +1,6 @@
 package it.hurts.octostudios.rarcompat.mixin;
 
 import it.hurts.octostudios.rarcompat.items.UmbrellaItem;
-import net.minecraft.world.entity.LivingEntity;
-import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.InteractionHand;
@@ -16,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HumanoidModel.class)
-public class HumanoidModelMixin<T extends LivingEntity>{
+public class HumanoidModelMixin<T extends LivingEntity> {
     @Shadow
     @Final
     public ModelPart rightArm;
@@ -28,15 +26,15 @@ public class HumanoidModelMixin<T extends LivingEntity>{
     @SuppressWarnings("AmbiguousMixinReference")
     @Inject(method = "setupAnim", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getMainArm()Lnet/minecraft/world/entity/HumanoidArm;"))
     private void reduceHandSwing(T entity, float f, float g, float h, float i, float j, CallbackInfo info) {
-        boolean isHoldingOffHand = UmbrellaItem.isHoldingUmbrellaUpright(entity, InteractionHand.OFF_HAND);
-        boolean isHoldingMainHand = UmbrellaItem.isHoldingUmbrellaUpright(entity, InteractionHand.MAIN_HAND);
-        boolean isRightHanded = entity.getMainArm() == HumanoidArm.RIGHT;
+        var isHoldingOffHand = UmbrellaItem.isHoldingUmbrella(entity, InteractionHand.OFF_HAND);
+        var isHoldingMainHand = UmbrellaItem.isHoldingUmbrella(entity, InteractionHand.MAIN_HAND);
 
-        if ((isHoldingMainHand && isRightHanded) || (isHoldingOffHand && !isRightHanded)) {
+        var isRightHanded = entity.getMainArm() == HumanoidArm.RIGHT;
+
+        if ((isHoldingMainHand && isRightHanded) || (isHoldingOffHand && !isRightHanded))
             this.rightArm.xRot /= 8;
-        }
-        if ((isHoldingMainHand && !isRightHanded) || (isHoldingOffHand && isRightHanded)) {
+
+        if ((isHoldingMainHand && !isRightHanded) || (isHoldingOffHand && isRightHanded))
             this.leftArm.xRot /= 8;
-        }
     }
 }
