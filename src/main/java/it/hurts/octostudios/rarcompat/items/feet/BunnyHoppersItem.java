@@ -78,7 +78,8 @@ public class BunnyHoppersItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold"))
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold")
+                || !isAbilityTicking(stack, "hold"))
             return;
 
         if (player.onGround() || getTime(stack) <= 0) {
@@ -86,10 +87,9 @@ public class BunnyHoppersItem extends WearableRelicItem {
             setToggled(stack, true);
         }
 
-        double limit = getStatValue(stack, "hold", "distance");
-
         if (!player.getCommandSenderWorld().isClientSide() || !(player instanceof LocalPlayer localPlayer)
-                || getTime(stack) >= limit || player.isFallFlying() || !getToggled(stack))
+                || getTime(stack) >= getStatValue(stack, "hold", "distance") || player.isFallFlying()
+                || !getToggled(stack))
             return;
 
         if (!localPlayer.input.jumping) {
@@ -112,7 +112,6 @@ public class BunnyHoppersItem extends WearableRelicItem {
                         player.getY() + 0.1 + offsetY,
                         player.getZ() + offsetZ,
                         0, 0, 0);
-
             }
         }
     }
