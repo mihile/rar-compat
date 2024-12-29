@@ -2,7 +2,6 @@ package it.hurts.octostudios.rarcompat.items.hat;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
-import it.hurts.octostudios.rarcompat.items.feet.KittySlippersItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -16,7 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -96,11 +94,10 @@ public class VillagerHatItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof IronGolem) || !(event.getNewAboutToBeSetTarget() instanceof Player player))
                 return;
 
-            ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.VILLAGER_HAT.value());
+            var itemStack = EntityUtils.findEquippedCurio(player, ModItems.VILLAGER_HAT.value());
 
             if (itemStack.getItem() instanceof VillagerHatItem)
                 event.setCanceled(true);
         }
-
     }
 }

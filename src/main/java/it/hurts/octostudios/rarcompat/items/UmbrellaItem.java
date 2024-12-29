@@ -222,13 +222,13 @@ public class UmbrellaItem extends WearableRelicItem {
                 handleLeftClick(event);
         }
 
-        private static boolean handleLeftClick(PlayerInteractEvent event) {
+        private static void handleLeftClick(PlayerInteractEvent event) {
             var player = event.getEntity();
             var stack = player.getMainHandItem();
 
             if (!(stack.getItem() instanceof UmbrellaItem relic) || !relic.canPlayerUseAbility(player, stack, "glider")
                     || player.getCooldowns().isOnCooldown(relic) || relic.getCharges(stack) <= 0 || player.isFallFlying())
-                return false;
+                return;
 
             var angle = player.getLookAngle().scale(-1.15F);
             var motion = player.getDeltaMovement().add(angle);
@@ -236,8 +236,6 @@ public class UmbrellaItem extends WearableRelicItem {
             player.setDeltaMovement(motion.x(), angle.y(), motion.z());
 
             NetworkHandler.sendToServer(new RepulsionUmbrellaPacket());
-
-            return true;
         }
 
         @SubscribeEvent
