@@ -67,7 +67,7 @@ public class AntidoteVesselItem extends WearableRelicItem {
     public static class AntidoteVeselEvent {
 
         @SubscribeEvent
-        public static void onMobEffect(MobEffectEvent.Added event) {
+        public static void onGetEffect(MobEffectEvent.Added event) {
             MobEffectInstance effectInstance = event.getEffectInstance();
 
             if (effectInstance == null || effectInstance == MobEffects.BAD_OMEN || effectInstance == MobEffects.TRIAL_OMEN || effectInstance == MobEffects.RAID_OMEN
