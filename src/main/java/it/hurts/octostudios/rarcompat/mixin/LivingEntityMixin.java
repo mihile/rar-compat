@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.mixin;
 
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -40,13 +41,10 @@ abstract class LivingEntityMixin extends Entity {
         if ((mounted instanceof FlyingAnimal || mounted instanceof FlyingMob || mounted instanceof WaterAnimal) && !mounted.onGround())
             this.travel(this.getRiddenInput(player, mounted), mounted);
         else {
+            if (player.level().isClientSide() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping && mounted.onGround())
+                mounted.addDeltaMovement(new Vec3(0, 0.6, 0));
 
             mounted.travel(this.getRiddenInput(player, mounted));
-        }
-        if (!this.isControlledByLocalInstance()) {
-            mounted.setDeltaMovement(Vec3.ZERO);
-            mounted.setSpeed(0.0F);
-            mounted.calculateEntityAnimation(false);
         }
 
         ci.cancel();

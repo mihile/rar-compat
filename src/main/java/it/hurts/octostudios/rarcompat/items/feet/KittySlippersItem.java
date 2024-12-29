@@ -121,9 +121,7 @@ public class KittySlippersItem extends WearableRelicItem {
 
         for (Creeper creeper : player.level().getEntitiesOfClass(Creeper.class, player.getBoundingBox().inflate(5))) {
             Vec3 creeperPosition = creeper.position();
-
             Vec3 escapeDirection = player.position().subtract(creeperPosition).normalize().scale(-1);
-
             Vec3 escapePosition = creeperPosition.add(escapeDirection.scale(5));
 
             PathNavigation navigation = creeper.getNavigation();

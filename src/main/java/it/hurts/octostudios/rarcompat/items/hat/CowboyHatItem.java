@@ -19,8 +19,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -34,6 +35,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import top.theillusivec4.curios.api.SlotContext;
+
+import java.awt.*;
+import java.util.Random;
 
 import static it.hurts.sskirillss.relics.utils.EntityUtils.rayTraceEntity;
 
@@ -57,7 +61,7 @@ public class CowboyHatItem extends WearableRelicItem {
                         .ability(AbilityData.builder("overlord")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
                                         .predicate("overlord", PredicateType.CAST, (player, stack) -> rayTraceEntity(player, entity -> entity instanceof Mob && !(entity instanceof Saddleable)
-                                                && !player.isPassenger(), player.getAttributes().getBaseValue(Attributes.ENTITY_INTERACTION_RANGE)) != null)
+                                                && !player.isPassenger(), player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue()) != null)
                                         .build())
                                 .requiredLevel(5)
                                 .stat(StatData.builder("time")
@@ -99,7 +103,7 @@ public class CowboyHatItem extends WearableRelicItem {
         if (!ability.equals("overlord") || player.getCommandSenderWorld().isClientSide)
             return;
 
-        EntityHitResult result = rayTraceEntity(player, entity -> entity instanceof Mob, player.getAttributes().getBaseValue(Attributes.ENTITY_INTERACTION_RANGE));
+        EntityHitResult result = rayTraceEntity(player, entity -> entity instanceof Mob, player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue());
 
         if (result == null)
             return;
@@ -111,29 +115,37 @@ public class CowboyHatItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
+        if (!(slotContext.entity() instanceof Player player) || !isAbilityUnlocked(stack, "cowboy")
+                || !(player.getRootVehicle() instanceof Mob beingMounted) || (beingMounted instanceof Horse horse && !horse.isTamed()))
             return;
 
-        if (getTime(stack) >= getStatValue(stack, "overlord", "time")) {
-            //if (player.getRootVehicle() instanceof Mob)
-             //   player.stopRiding();
+        if (getTime(stack) >= MathUtils.round(getStatValue(stack, "overlord", "time"),0)) {
+            player.stopRiding();
+            player.playSound(SoundEvents.WOOL_HIT, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
 
             setTime(stack, 0);
+
+            Random random = new Random();
+
+            for (int i = 0; i < 50; i++)
+                player.level().addParticle(
+                        ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(106), 50 + random.nextInt(100), 50 + random.nextInt(100)),
+                                0.5F, 60, 0.95F),
+                        player.getX(), player.getY() + 1.0, player.getZ(),
+                        (random.nextDouble() - 0.5) * 3.0,
+                        random.nextDouble() * 1.5,
+                        (random.nextDouble() - 0.5) * 3.0);
         }
 
-        if (!(player.getRootVehicle() instanceof Mob beingMounted))
+        if (player.getRootVehicle() instanceof Saddleable)
+            changeAttributes(beingMounted, stack, true, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
+
+        if (player.tickCount % 20 != 0)
             return;
 
-        if (player.tickCount % 20 == 0 && !(beingMounted instanceof Saddleable))
-            addTime(stack, 1);
+        addTime(stack, 1);
 
-        if (!canPlayerUseAbility(player, stack, "cowboy") || (beingMounted instanceof Horse horse && !horse.isTamed()))
-            return;
-
-        changeAttributes(beingMounted, stack, true, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
-
-        if ((beingMounted.getKnownMovement().x != 0 || beingMounted.getKnownMovement().z != 0) && beingMounted.getRandom().nextFloat() < 0.25F
-                && player.tickCount % 20 == 0)
+        if ((beingMounted.getKnownMovement().x != 0 || beingMounted.getKnownMovement().z != 0) && beingMounted.getRandom().nextFloat() <= 0.25F)
             spreadRelicExperience(player, stack, 1);
     }
 
@@ -179,13 +191,13 @@ public class CowboyHatItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
-            if (event.isDismounting() && event.getEntityBeingMounted() instanceof Mob mount && stack.getItem() instanceof CowboyHatItem relic) {
+            if (!event.isDismounting() || !(event.getEntityBeingMounted() instanceof Mob mount) || !(stack.getItem() instanceof CowboyHatItem relic))
+                return;
 
-              //  if (!(mount instanceof Saddleable))
-                    //relic.addAbilityCooldown(stack, "overlord", 1200);
+            //  if (!(mount instanceof Saddleable))
+            //relic.addAbilityCooldown(stack, "overlord", 1200);
 
-                relic.changeAttributes(mount, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
-            }
+            relic.changeAttributes(mount, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
         }
     }
 }
