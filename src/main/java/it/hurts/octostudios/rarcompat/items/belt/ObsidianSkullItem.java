@@ -117,7 +117,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
     public static class ObsidianSkull {
 
         @SubscribeEvent
-        public static void onAttack(EntityInvulnerabilityCheckEvent event) {
+        public static void onAttack(LivingDamageEvent.Pre event) {
             Level level = event.getEntity().getCommandSenderWorld();
 
             if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide())
@@ -134,7 +134,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
             addTime(stack, -getTime(stack));
 
             if (getCharges(stack) <= stat) {
-                event.setInvulnerable(true);
+                event.setNewDamage(0);
 
                 relic.spreadRelicExperience(player, stack, 1);
 
