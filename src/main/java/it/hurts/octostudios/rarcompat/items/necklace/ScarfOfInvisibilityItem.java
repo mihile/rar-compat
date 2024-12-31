@@ -81,6 +81,10 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
             return;
 
         var time = getTime(stack);
+        var knownMovement = player.getKnownMovement();
+
+        if (player.tickCount % 20 == 0 && (Math.abs(knownMovement.x) >= 0.01D || Math.abs(knownMovement.z) >= 0.01D))
+            spreadRelicExperience(player, stack, +1);
 
         if (time == 0 && getMobsCount(player) == 0)
             player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 4, 0, true, false));
@@ -89,7 +93,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
     }
 
     public int getMobsCount(Player player) {
-        return (int) player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(15)).stream().filter(mob -> mob.getTarget() == player && !mob.isDeadOrDying()).count();
+        return (int) player.getCommandSenderWorld().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(15)).stream().filter(mob -> mob.getTarget() == player && !mob.isDeadOrDying()).count();
     }
 
     public void addTime(ItemStack stack, int time) {
@@ -117,7 +121,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
         }
 
         @SubscribeEvent
-        public static void onHarvestCheck(PlayerEvent.HarvestCheck event) {
+        public static void onHarvestCheck(PlayerEvent.BreakSpeed event) {
             onInteract(event.getEntity());
         }
 
@@ -132,7 +136,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
             var stack = EntityUtils.findEquippedCurio(player, ModItems.SCARF_OF_INVISIBILITY.value());
 
-            if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic))
+            if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic) || !relic.isAbilityTicking(stack, "invisible"))
                 return;
 
             relic.setTime(stack, (int) relic.getStatValue(stack, "invisible", "time"));
