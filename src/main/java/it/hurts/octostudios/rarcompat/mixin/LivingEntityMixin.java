@@ -1,20 +1,16 @@
 package it.hurts.octostudios.rarcompat.mixin;
 
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.Holder;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffects;
+import artifacts.registry.ModItems;
+import it.hurts.octostudios.rarcompat.items.hat.CowboyHatItem;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,45 +24,46 @@ abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "travelRidden", at = @At("HEAD"), cancellable = true)
     private void travelRidden(Player player, Vec3 vec, CallbackInfo ci) {
-        Mob mounted = (Mob) (Object) this;
+        ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
-        if (mounted instanceof Saddleable)
+        if (!((LivingEntity) (Object) this instanceof Mob mounted) || mounted instanceof Saddleable || !(stack.getItem() instanceof CowboyHatItem relic))
             return;
+
+        if (!this.isControlledByLocalInstance()) {
+            mounted.setDeltaMovement(Vec3.ZERO);
+            mounted.setSpeed(0.0F);
+            mounted.calculateEntityAnimation(false);
+        }
 
         mounted.setTarget(null);
         mounted.setSpeed(0.3F);
 
         this.tickRidden(mounted, player);
 
-        if ((mounted instanceof FlyingAnimal || mounted instanceof FlyingMob || mounted instanceof WaterAnimal) && !mounted.onGround())
-            this.travel(this.getRiddenInput(player, mounted), mounted);
-        else {
-            if (player.level().isClientSide() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping && mounted.onGround())
-                mounted.addDeltaMovement(new Vec3(0, 0.6, 0));
-
-            mounted.travel(this.getRiddenInput(player, mounted));
-        }
+        if (relic.isWaterOrFlyingMob(mounted))
+            this.travel(this.getRiddenInput(player, relic, mounted), mounted);
+        else
+            mounted.travel(this.getRiddenInput(player, relic, mounted));
 
         ci.cancel();
     }
 
     @Unique
-    protected Vec3 getRiddenInput(Player player, Mob mounted) {
+    protected Vec3 getRiddenInput(Player player, CowboyHatItem relic, Mob mounted) {
         float f = player.xxa * 0.5F;
         float f1 = player.zza;
 
         if (f1 <= 0.0F)
             f1 *= 0.25F;
 
-        if ((mounted instanceof FlyingAnimal || mounted instanceof FlyingMob) || mounted instanceof WaterAnimal) {
-            double verticalSpeed = mounted.getDeltaMovement().y;
+        if (relic.isWaterOrFlyingMob(mounted)) {
+            var verticalSpeed = mounted.getDeltaMovement().y;
+            var speedMultiplier = 0.5;
 
-            double speedMultiplier = 0.5;
-
-            if (verticalSpeed != 0.0)
+            if (mounted.getDeltaMovement().y != 0.0)
                 speedMultiplier += Math.abs(verticalSpeed) * 0.1;
 
-            return new Vec3(f, -Math.sin(Math.toRadians(player.getXRot()) * speedMultiplier), f1);
+            return new Vec3(f, player.getLookAngle().y * speedMultiplier, f1);
         }
 
         return new Vec3(f, 0.0, f1);
@@ -85,36 +82,18 @@ abstract class LivingEntityMixin extends Entity {
         mob.setYRot(rotation.y % 360.0F);
 
         mob.yRotO = mob.yBodyRot = mob.yHeadRot = mob.getYRot();
-
-        if (!mob.isControlledByLocalInstance() || !mob.onGround())
-            return;
     }
 
+    @Unique
     public void travel(Vec3 movementInput, Mob mob) {
         if (!this.isControlledByLocalInstance())
             return;
 
-        Vec3 adjustedMovement = mob.handleRelativeFrictionAndCalculateMovement(movementInput, 0.5F);
-
-        double verticalMovement = adjustedMovement.y;
-
-        if (mob.hasEffect(MobEffects.LEVITATION))
-            verticalMovement += (0.05 * (double) (mob.getEffect(MobEffects.LEVITATION).getAmplifier() + 1) - adjustedMovement.y) * 0.2;
-        else if (!this.level().isClientSide)
-            verticalMovement -= -0.1;
+        Vec3 adjustedMovement = mob.handleRelativeFrictionAndCalculateMovement(movementInput, 1);
 
         if (!mob.isInWater() && mob instanceof WaterAnimal)
             this.setDeltaMovement(adjustedMovement.x, -0.08, adjustedMovement.z);
         else
-            this.setDeltaMovement(adjustedMovement.x, verticalMovement, adjustedMovement.z);
-
-        if (this.horizontalCollision && !this.level().isClientSide) {
-            double impactForce = this.getDeltaMovement().horizontalDistance();
-
-            if (impactForce > 0.1)
-                this.hurt(this.damageSources().flyIntoWall(), (float) (impactForce * 10.0));
-        }
-
-        mob.calculateEntityAnimation(this instanceof FlyingAnimal);
+            this.setDeltaMovement(adjustedMovement.x, movementInput.y * 0.8, adjustedMovement.z);
     }
 }

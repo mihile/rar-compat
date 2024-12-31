@@ -20,17 +20,29 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.animal.Squid;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.monster.ElderGuardian;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
@@ -60,7 +72,8 @@ public class CowboyHatItem extends WearableRelicItem {
                                 .build())
                         .ability(AbilityData.builder("overlord")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
-                                        .predicate("overlord", PredicateType.CAST, (player, stack) -> rayTraceEntity(player, entity -> entity instanceof Mob && !(entity instanceof Saddleable)
+                                        .predicate("overlord", PredicateType.CAST, (player, stack) -> rayTraceEntity(player, entity -> entity instanceof Mob
+                                                && !(entity instanceof Saddleable) && checkMob(entity, Squid.class, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class)
                                                 && !player.isPassenger(), player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue()) != null)
                                         .build())
                                 .requiredLevel(5)
@@ -116,47 +129,63 @@ public class CowboyHatItem extends WearableRelicItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || !isAbilityUnlocked(stack, "cowboy")
-                || !(player.getRootVehicle() instanceof Mob beingMounted) || (beingMounted instanceof Horse horse && !horse.isTamed()))
+                || !(player.getRootVehicle() instanceof Mob beingMounted) || (beingMounted instanceof Horse horse && !horse.isTamed())
+                || !checkMob(player, Squid.class, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class))
             return;
 
-        if (getTime(stack) >= MathUtils.round(getStatValue(stack, "overlord", "time"),0)) {
+        var level = player.getCommandSenderWorld();
+        var random = new Random();
+
+        if (getTime(stack) >= getStatValue(stack, "overlord", "time") * 20) {
             player.stopRiding();
             player.playSound(SoundEvents.WOOL_HIT, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
 
             setTime(stack, 0);
 
-            Random random = new Random();
 
             for (int i = 0; i < 50; i++)
-                player.level().addParticle(
+                level.addParticle(
                         ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(106), 50 + random.nextInt(100), 50 + random.nextInt(100)),
                                 0.5F, 60, 0.95F),
                         player.getX(), player.getY() + 1.0, player.getZ(),
                         (random.nextDouble() - 0.5) * 3.0,
                         random.nextDouble() * 1.5,
                         (random.nextDouble() - 0.5) * 3.0);
-        }
+        } else {
+            if (level.isClientSide() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
+                    && !(player.getRootVehicle() instanceof Saddleable) && beingMounted.onGround() && !isWaterOrFlyingMob(beingMounted))
+                beingMounted.addDeltaMovement(new Vec3(0, 0.8, 0));
 
-        if (player.getRootVehicle() instanceof Saddleable)
+            if ((beingMounted.getKnownMovement().x != 0 || beingMounted.getKnownMovement().z != 0) && random.nextFloat() <= 0.25F
+                    && player.tickCount % 20 == 0)
+                spreadRelicExperience(player, stack, 1);
+
             changeAttributes(beingMounted, stack, true, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
 
-        if (player.tickCount % 20 != 0)
-            return;
-
-        addTime(stack, 1);
-
-        if ((beingMounted.getKnownMovement().x != 0 || beingMounted.getKnownMovement().z != 0) && beingMounted.getRandom().nextFloat() <= 0.25F)
-            spreadRelicExperience(player, stack, 1);
+            addTime(stack, 1);
+        }
     }
 
     @SafeVarargs
-    private void changeAttributes(Mob beingMounted, ItemStack stack, boolean flag, Holder<Attribute>... attributeHolder) {
+    public final void changeAttributes(Mob beingMounted, ItemStack stack, boolean flag, Holder<Attribute>... attributeHolder) {
         for (Holder<Attribute> attributes : attributeHolder)
             if (flag)
-                EntityUtils.applyAttribute(beingMounted, stack, attributes, (float) getStatValue(stack, "cowboy", "speed"),
-                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+                EntityUtils.applyAttribute(beingMounted, stack, attributes, (float) getStatValue(stack, "cowboy", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
             else
                 EntityUtils.removeAttribute(beingMounted, stack, attributes, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    }
+
+    @SafeVarargs
+    private boolean checkMob(Entity entity, Class<? extends Mob>... mobClasses) {
+        for (Class<? extends Mob> mobClass : mobClasses)
+            if (mobClass.isInstance(entity))
+                return false;
+
+        return true;
+    }
+
+    public boolean isWaterOrFlyingMob(Mob mounted) {
+        return mounted instanceof FlyingAnimal || mounted instanceof FlyingMob || mounted instanceof WaterAnimal || mounted instanceof AmbientCreature;
     }
 
     public void addTime(ItemStack stack, int val) {
@@ -191,11 +220,16 @@ public class CowboyHatItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
-            if (!event.isDismounting() || !(event.getEntityBeingMounted() instanceof Mob mount) || !(stack.getItem() instanceof CowboyHatItem relic))
+            if (!event.isDismounting() || !(event.getEntityBeingMounted() instanceof Mob mount) || !(stack.getItem() instanceof CowboyHatItem relic)
+                    || player.getCommandSenderWorld().isClientSide())
                 return;
 
-            //  if (!(mount instanceof Saddleable))
-            //relic.addAbilityCooldown(stack, "overlord", 1200);
+            if (!(mount instanceof Saddleable)) {
+                relic.addAbilityCooldown(stack, "overlord", 1200);
+
+                relic.setTime(stack, 0);
+            }
+            EntityUtils.removeAttribute(mount, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
             relic.changeAttributes(mount, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
         }
