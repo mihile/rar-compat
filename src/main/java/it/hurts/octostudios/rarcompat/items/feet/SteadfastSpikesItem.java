@@ -3,7 +3,6 @@ package it.hurts.octostudios.rarcompat.items.feet;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.api.events.common.LivingSlippingEvent;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -15,14 +14,11 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
-import org.jetbrains.annotations.Nullable;
 
 public class SteadfastSpikesItem extends WearableRelicItem {
 
@@ -65,14 +61,6 @@ public class SteadfastSpikesItem extends WearableRelicItem {
                 .build();
     }
 
-    @Nullable
-    @Override
-    public RelicAttributeModifier getRelicAttributeModifiers(ItemStack stack) {
-        return RelicAttributeModifier.builder()
-                .attribute(new RelicAttributeModifier.Modifier(Attributes.KNOCKBACK_RESISTANCE, (float) this.getStatValue(stack, "resistance", "modifier"), AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
-                .build();
-    }
-
     @EventBusSubscriber
     public static class SteadfastSpikesEvent {
         @SubscribeEvent
@@ -84,7 +72,9 @@ public class SteadfastSpikesItem extends WearableRelicItem {
 
             if (!(stack.getItem() instanceof SteadfastSpikesItem relic))
                 return;
-            event.setStrength(1000);
+
+            event.setStrength((float) (event.getStrength() * (1 - relic.getStatValue(stack, "resistance", "modifier"))));
+
             relic.spreadRelicExperience(player, stack, 1);
         }
 
