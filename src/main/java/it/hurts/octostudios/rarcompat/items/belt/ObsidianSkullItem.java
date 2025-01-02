@@ -38,7 +38,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
                         .ability(AbilityData.builder("hell")
                                 .stat(StatData.builder("duration")
                                         .initialValue(40D, 60D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
                                         .formatValue(value -> MathUtils.round(value / 20, 1))
                                         .build())
                                 .research(ResearchData.builder()
@@ -79,7 +79,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
         addCooldown(stack, 1);
 
         if (getCooldown(stack) >= 60)
-            addTime(stack, -5);
+            addTime(stack, -1);
 
         if (getTime(stack) == 0)
             setCooldown(stack, 0);

@@ -272,8 +272,8 @@
   "tooltip.relics.obsidian_skull.description": "Перенаправляет на себя жар, исходно нацеленный навредить носителю реликвии.",
   "tooltip.relics.obsidian_skull.ability.hell": "Жаростойкость",
   "tooltip.relics.obsidian_skull.ability.hell.description": "Полностью поглощает до %1$s единиц урона от огненных источников, после чего уходит на перезарядку на 1 минуту. Если игрок не получал огненного урона в течение 3 секунд, количество уже поглощённого урона убавляется на 1 единицу каждую секунду.",
-  "tooltip.relics.obsidian_skull.leveling_source.buffer.title": "Жаростойкость",
-  "tooltip.relics.obsidian_skull.leveling_source.buffer.description": "+%1$s единиц опыта за каждую поглощенную единицу огненного урона способностью %2$s.",
+  "tooltip.relics.obsidian_skull.leveling_source.hell.title": "Жаростойкость",
+  "tooltip.relics.obsidian_skull.leveling_source.hell.description": "+%1$s единиц опыта за каждую поглощенную единицу огненного урона способностью %2$s.",
 
   "tooltip.relics.fire_gauntlet.description": "Наделяет оружие носителя реликвии силами стихии огня.",
   "tooltip.relics.fire_gauntlet.ability.arson": "Волна огня",

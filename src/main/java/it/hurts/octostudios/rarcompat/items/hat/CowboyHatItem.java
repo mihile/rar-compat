@@ -32,6 +32,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.horse.Horse;
@@ -113,15 +114,25 @@ public class CowboyHatItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !isAbilityUnlocked(stack, "cowboy")
-                || !(player.getRootVehicle() instanceof Mob beingMounted) || (beingMounted instanceof Horse horse && !horse.isTamed())
-                || !checkMob(player, Squid.class, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class))
+        if (!(slotContext.entity() instanceof Player player) || !(player.getRootVehicle() instanceof Mob beingMounted)
+                || !checkMob(player, Squid.class, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class)
+                || (beingMounted instanceof Horse horse && !horse.isTamed()))
             return;
 
         var level = player.getCommandSenderWorld();
         var random = new Random();
+        var isSaddleable = player.getRootVehicle() instanceof Saddleable;
 
-        if (getTime(stack) >= getStatValue(stack, "overlord", "time") * 20) {
+        if (!(beingMounted instanceof Pig) && !isSaddleable)
+            if (isAbilityOnCooldown(stack, "overlord") || !isAbilityUnlocked(stack, "overlord")) {
+                player.stopRiding();
+
+                setAbilityCooldown(stack, "overlord", 0);
+
+                return;
+            }
+
+        if (getTime(stack) >= getStatValue(stack, "overlord", "time") * 20 && !isSaddleable) {
             player.stopRiding();
             player.playSound(SoundEvents.WOOL_HIT, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
 
@@ -137,16 +148,19 @@ public class CowboyHatItem extends WearableRelicItem {
                         (random.nextDouble() - 0.5) * 3.0);
         } else {
             if (level.isClientSide() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
-                    && !(player.getRootVehicle() instanceof Saddleable) && beingMounted.onGround() && !isWaterOrFlyingMob(beingMounted))
+                    && !isSaddleable && beingMounted.onGround() && !isWaterOrFlyingMob(beingMounted))
                 beingMounted.addDeltaMovement(new Vec3(0, 0.8, 0));
 
-            if ((beingMounted.getKnownMovement().x != 0 || beingMounted.getKnownMovement().z != 0) && random.nextFloat() <= 0.25F
-                    && player.tickCount % 20 == 0)
+            var knownMovement = beingMounted.getKnownMovement();
+
+            if ((knownMovement.x != 0 || knownMovement.z != 0) && random.nextFloat() <= 0.25F && player.tickCount % 20 == 0)
                 spreadRelicExperience(player, stack, 1);
 
-            changeAttributes(beingMounted, stack, true, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
+            if (isAbilityUnlocked(stack, "cowboy"))
+                changeAttributes(beingMounted, stack, true, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
 
-            addTime(stack, 1);
+            if (!isSaddleable)
+                addTime(stack, 1);
         }
     }
 
@@ -163,6 +177,18 @@ public class CowboyHatItem extends WearableRelicItem {
         spreadRelicExperience(player, stack, 1);
 
         player.startRiding(result.getEntity());
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || newStack.getItem() == stack.getItem()
+                || !(player.getRootVehicle() instanceof Mob mob))
+            return;
+
+        changeAttributes(mob, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
+
+        if (!(player.getControlledVehicle() instanceof Mob) && !(mob instanceof Pig))
+            player.stopRiding();
     }
 
     @SafeVarargs
@@ -199,17 +225,6 @@ public class CowboyHatItem extends WearableRelicItem {
         stack.set(DataComponentRegistry.TIME, Math.max(val, 0));
     }
 
-    @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || newStack.getItem() == stack.getItem()
-                || !(player.getRootVehicle() instanceof Mob mob))
-            return;
-
-        changeAttributes(mob, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
-
-        player.stopRiding();
-    }
-
     @EventBusSubscriber
     public static class CowboyEvent {
         @SubscribeEvent
@@ -228,8 +243,6 @@ public class CowboyHatItem extends WearableRelicItem {
 
                 relic.setTime(stack, 0);
             }
-
-            EntityUtils.removeAttribute(mount, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
             relic.changeAttributes(mount, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
         }

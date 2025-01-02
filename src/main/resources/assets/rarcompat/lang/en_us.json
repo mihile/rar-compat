@@ -272,8 +272,8 @@
   "tooltip.relics.obsidian_skull.description": "Redirects heat aimed at harming the relic bearer onto itself.",
   "tooltip.relics.obsidian_skull.ability.hell": "Heat Resistance",
   "tooltip.relics.obsidian_skull.ability.hell.description": "Completely absorbs up to %1$s fire damage, then goes on a 1-minute cooldown. If the player takes no fire damage for 3 seconds, the absorbed damage decreases by 1 unit per second.",
-  "tooltip.relics.obsidian_skull.leveling_source.buffer.title": "Heat Resistance",
-  "tooltip.relics.obsidian_skull.leveling_source.buffer.description": "+%1$s experience points for each fire damage unit absorbed by the %2$s ability.",
+  "tooltip.relics.obsidian_skull.leveling_source.hell.title": "Heat Resistance",
+  "tooltip.relics.obsidian_skull.leveling_source.hell.description": "+%1$s experience points for each fire damage unit absorbed by the %2$s ability.",
 
   "tooltip.relics.fire_gauntlet.description": "Imbues the relic bearer's weapon with the power of fire.",
   "tooltip.relics.fire_gauntlet.ability.arson": "Fire Wave",

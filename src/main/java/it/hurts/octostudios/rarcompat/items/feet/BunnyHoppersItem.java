@@ -39,8 +39,6 @@ public class BunnyHoppersItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("hold")
-                                .active(CastData.builder().type(CastType.TOGGLEABLE)
-                                        .build())
                                 .stat(StatData.builder("distance")
                                         .initialValue(3D, 5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.06)
@@ -78,8 +76,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold")
-                || !isAbilityTicking(stack, "hold"))
+        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold"))
             return;
 
         if (player.onGround() || getTime(stack) <= 0) {

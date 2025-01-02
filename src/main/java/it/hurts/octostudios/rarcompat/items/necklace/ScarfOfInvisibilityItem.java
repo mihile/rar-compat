@@ -5,8 +5,6 @@ import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
@@ -36,9 +34,6 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("invisible")
-                                .active(CastData.builder()
-                                        .type(CastType.TOGGLEABLE)
-                                        .build())
                                 .stat(StatData.builder("time")
                                         .initialValue(140D, 100D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
@@ -76,19 +71,18 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "invisible")
-                || !isAbilityTicking(stack, "invisible") || player.getCommandSenderWorld().isClientSide())
+        if (!(slotContext.entity() instanceof Player player) || !isAbilityUnlocked(stack, "invisible")
+                || player.getCommandSenderWorld().isClientSide())
             return;
 
         var time = getTime(stack);
-        var knownMovement = player.getKnownMovement();
 
-        if (player.tickCount % 20 == 0 && (Math.abs(knownMovement.x) >= 0.01D || Math.abs(knownMovement.z) >= 0.01D))
-            spreadRelicExperience(player, stack, +1);
+        if (time == 0 && getMobsCount(player) == 0) {
+            if (!player.hasEffect(EffectRegistry.VANISHING))
+                spreadRelicExperience(player, stack, 1);
 
-        if (time == 0 && getMobsCount(player) == 0)
             player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 4, 0, true, false));
-        else if (time > 0)
+        } else if (time > 0)
             addTime(stack, -1);
     }
 
@@ -136,7 +130,7 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
             var stack = EntityUtils.findEquippedCurio(player, ModItems.SCARF_OF_INVISIBILITY.value());
 
-            if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic) || !relic.isAbilityTicking(stack, "invisible"))
+            if (!(stack.getItem() instanceof ScarfOfInvisibilityItem relic))
                 return;
 
             relic.setTime(stack, (int) relic.getStatValue(stack, "invisible", "time"));
