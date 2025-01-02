@@ -19,9 +19,7 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +32,6 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Objects;
-import java.util.logging.Level;
 
 public class CloudInBottleItem extends WearableRelicItem {
 
@@ -147,10 +144,9 @@ public class CloudInBottleItem extends WearableRelicItem {
                 double xOffset = Math.cos(angle) * radius;
                 double zOffset = Math.sin(angle) * radius;
 
-                player.level().addParticle(ParticleTypes.CLOUD, player.getX() + xOffset, player.getY(), player.getZ() + zOffset,
+                player.getCommandSenderWorld().addParticle(ParticleTypes.CLOUD, player.getX() + xOffset, player.getY(), player.getZ() + zOffset,
                         0, 0, 0.0);
             }
         }
-
     }
 }

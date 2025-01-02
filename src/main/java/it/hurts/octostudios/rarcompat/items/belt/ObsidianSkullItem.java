@@ -17,7 +17,6 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -78,17 +77,12 @@ public class ObsidianSkullItem extends WearableRelicItem {
             return;
 
         addCooldown(stack, 1);
-        System.out.println(getTime(stack) + " ");
-        System.out.println(getCooldown(stack) + "  Cooldown");
 
         if (getCooldown(stack) >= 60)
             addTime(stack, -5);
 
-        if (getTime(stack) == 0) {
+        if (getTime(stack) == 0)
             setCooldown(stack, 0);
-
-            player.playSound(SoundEvents.BAT_TAKEOFF, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
-        }
     }
 
     public void addTime(ItemStack stack, int time) {
@@ -112,7 +106,7 @@ public class ObsidianSkullItem extends WearableRelicItem {
     }
 
     public void setCooldown(ItemStack stack, int val) {
-        stack.set(DataComponentRegistry.COOLDOWN, Math.min(val, 60));
+        stack.set(DataComponentRegistry.COOLDOWN, Math.max(val, 0));
     }
 
     @EventBusSubscriber

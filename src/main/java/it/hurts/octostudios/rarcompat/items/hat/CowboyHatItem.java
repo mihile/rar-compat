@@ -112,21 +112,6 @@ public class CowboyHatItem extends WearableRelicItem {
     }
 
     @Override
-    public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (!ability.equals("overlord") || player.getCommandSenderWorld().isClientSide)
-            return;
-
-        EntityHitResult result = rayTraceEntity(player, entity -> entity instanceof Mob, player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue());
-
-        if (result == null)
-            return;
-
-        spreadRelicExperience(player, stack, 1);
-
-        player.startRiding(result.getEntity());
-    }
-
-    @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || !isAbilityUnlocked(stack, "cowboy")
                 || !(player.getRootVehicle() instanceof Mob beingMounted) || (beingMounted instanceof Horse horse && !horse.isTamed())
@@ -141,7 +126,6 @@ public class CowboyHatItem extends WearableRelicItem {
             player.playSound(SoundEvents.WOOL_HIT, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
 
             setTime(stack, 0);
-
 
             for (int i = 0; i < 50; i++)
                 level.addParticle(
@@ -164,6 +148,21 @@ public class CowboyHatItem extends WearableRelicItem {
 
             addTime(stack, 1);
         }
+    }
+
+    @Override
+    public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
+        if (!ability.equals("overlord") || player.getCommandSenderWorld().isClientSide)
+            return;
+
+        EntityHitResult result = rayTraceEntity(player, entity -> entity instanceof Mob, player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue());
+
+        if (result == null)
+            return;
+
+        spreadRelicExperience(player, stack, 1);
+
+        player.startRiding(result.getEntity());
     }
 
     @SafeVarargs
@@ -218,7 +217,7 @@ public class CowboyHatItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
             if (!event.isDismounting() || !(event.getEntityBeingMounted() instanceof Mob mount) || !(stack.getItem() instanceof CowboyHatItem relic)
                     || player.getCommandSenderWorld().isClientSide())
@@ -229,6 +228,7 @@ public class CowboyHatItem extends WearableRelicItem {
 
                 relic.setTime(stack, 0);
             }
+
             EntityUtils.removeAttribute(mount, stack, Attributes.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
             relic.changeAttributes(mount, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);

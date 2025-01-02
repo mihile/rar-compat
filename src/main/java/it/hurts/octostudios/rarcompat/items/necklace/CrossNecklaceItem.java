@@ -66,7 +66,8 @@ public class CrossNecklaceItem extends WearableRelicItem {
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
-        if (newStack == stack || !(slotContext.entity() instanceof Player player)) return;
+        if (newStack.getItem() == stack.getItem() || !(slotContext.entity() instanceof Player player))
+            return;
 
         player.invulnerableTime -= (int) getStatValue(stack, "invulnerability", "modifier");
     }
@@ -78,7 +79,7 @@ public class CrossNecklaceItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CROSS_NECKLACE.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.CROSS_NECKLACE.value());
 
             if (!(stack.getItem() instanceof CrossNecklaceItem relic) || !relic.canPlayerUseAbility(player, stack, "invulnerability"))
                 return;
