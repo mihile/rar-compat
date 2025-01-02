@@ -9,7 +9,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
-import it.hurts.sskirillss.relics.items.relics.base.data.misc.StatIcons;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -20,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
 public class GoldenHookItem extends WearableRelicItem {
 
@@ -76,11 +74,11 @@ public class GoldenHookItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof GoldenHookItem relic) || !relic.isAbilityUnlocked(stack, "hook"))
                 return;
 
-            double boostedExperience = event.getOriginalExperience() * relic.getStatValue(stack, "hook", "amount");
-
             relic.spreadRelicExperience(player, stack, 1);
 
-            event.setDroppedExperience((int) (event.getOriginalExperience() + boostedExperience));
+            var droppedExp = event.getDroppedExperience();
+
+            event.setDroppedExperience((int) (droppedExp + (droppedExp * relic.getStatValue(stack, "hook", "amount"))));
         }
 
     }
