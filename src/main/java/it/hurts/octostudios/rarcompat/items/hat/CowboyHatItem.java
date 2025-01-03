@@ -55,6 +55,7 @@ import java.util.Random;
 import static it.hurts.sskirillss.relics.utils.EntityUtils.rayTraceEntity;
 
 public class CowboyHatItem extends WearableRelicItem {
+    // TODO: Get rid of direct usage of entity types (like a Pig, Horse, Squid, etc-etc), use abstract interfaces instead where possible
 
     @Override
     public RelicData constructDefaultRelicData() {
@@ -116,15 +117,15 @@ public class CowboyHatItem extends WearableRelicItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || !(player.getRootVehicle() instanceof Mob beingMounted)
                 || !checkMob(player, Squid.class, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class)
-                || (beingMounted instanceof Horse horse && !horse.isTamed()))
+                || (beingMounted instanceof Horse horse && !horse.isTamed())) // TODO: Replace with OwnableEntity instance
             return;
 
         var level = player.getCommandSenderWorld();
-        var random = new Random();
+        var random = new Random(); // TODO: Do not create random instance, use level/entity random provider instead
         var isSaddleable = player.getRootVehicle() instanceof Saddleable;
 
-        if (!(beingMounted instanceof Pig) && !isSaddleable)
-            if (isAbilityOnCooldown(stack, "overlord") || !isAbilityUnlocked(stack, "overlord")) {
+        if (!(beingMounted instanceof Pig) && !isSaddleable) // TODO: Replace with ItemSteerable instance
+            if (isAbilityOnCooldown(stack, "overlord") || !isAbilityUnlocked(stack, "overlord")) { // TODO: Use IRelicItem#canPlayerUseAbility instead
                 player.stopRiding();
 
                 setAbilityCooldown(stack, "overlord", 0);
