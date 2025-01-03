@@ -2,7 +2,6 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastStage;
@@ -26,13 +25,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.Random;
-
 public class CharmOfShrinkingItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -108,9 +103,7 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
             return;
 
-        double time = getStatValue(stack, "shrinking", "time");
-
-        if (getCurrentTick(stack) >= time && getProgress(stack) > 0) {
+        if (getCurrentTick(stack) >= getStatValue(stack, "shrinking", "time") && getProgress(stack) > 0) {
             setCurrentTick(stack, -getCurrentTick(stack));
 
             setProgress(stack, -getProgress(stack));
@@ -124,9 +117,9 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
 
         if (player.tickCount % 20 == 0 && getProgress(stack) >= 5) {
             spreadRelicExperience(player, stack, 1);
+
             setCurrentTick(stack, 1);
         }
-
     }
 
     @Override
@@ -138,7 +131,7 @@ public class CharmOfShrinkingItem extends WearableRelicItem {
     }
 
     public void playSound(Player player, SoundEvent events) {
-        player.level().playSound(null, player, events, SoundSource.PLAYERS,
+        player.getCommandSenderWorld().playSound(null, player, events, SoundSource.PLAYERS,
                 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
     }
 

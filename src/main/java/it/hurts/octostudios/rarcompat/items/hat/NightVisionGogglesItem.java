@@ -1,5 +1,6 @@
 package it.hurts.octostudios.rarcompat.items.hat;
 
+import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.init.SoundRegistry;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -15,17 +16,20 @@ import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollectio
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
+import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.Random;
 
 public class NightVisionGogglesItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -90,7 +94,25 @@ public class NightVisionGogglesItem extends WearableRelicItem {
         if (ability.equals("vision") && player.level().isClientSide && stage == CastStage.START) {
             player.playSound(SoundRegistry.NIGHT_VISION_TOGGLE.get(), 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
         }
-
     }
 
+    @EventBusSubscriber
+    public static class NightVisionGogglesEvent {
+        @SubscribeEvent
+        public static void onGetEffect(MobEffectEvent.Added event) {
+            MobEffectInstance effectInstance = event.getEffectInstance();
+
+            if (effectInstance == null || !(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide()
+                    || (!effectInstance.is(MobEffects.DARKNESS) && !effectInstance.is(MobEffects.BLINDNESS)))
+                return;
+
+            var itemStack = EntityUtils.findEquippedCurio(player, ModItems.NIGHT_VISION_GOGGLES.value());
+
+            if (!(itemStack.getItem() instanceof NightVisionGogglesItem relic) || !relic.canPlayerUseAbility(player, itemStack, "vision"))
+                return;
+
+            event.getEffectInstance().duration = (int) (effectInstance.getDuration() * (1 - relic.getStatValue(itemStack, "vision", "amount")));
+        }
+
+    }
 }

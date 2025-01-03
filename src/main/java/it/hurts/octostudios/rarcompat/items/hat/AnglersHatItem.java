@@ -15,7 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -30,8 +29,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
-
-import java.util.List;
 
 public class AnglersHatItem extends WearableRelicItem {
     @Override
@@ -82,15 +79,14 @@ public class AnglersHatItem extends WearableRelicItem {
             Player player = event.getEntity();
             Level level = player.getCommandSenderWorld();
 
-            FishingHook fishingHook = event.getHookEntity();
-
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ANGLERS_HAT.value());
 
             if (!(stack.getItem() instanceof AnglersHatItem relic) || level.isClientSide() || !relic.canPlayerUseAbility(player, stack, "catch"))
                 return;
 
-            ServerLevel serverLevel = (ServerLevel) level;
-            RandomSource random = serverLevel.getRandom();
+            var serverLevel = (ServerLevel) level;
+
+            var random = serverLevel.getRandom();
 
             int rolls = MathUtils.multicast(random, relic.getStatValue(stack, "catch", "chance"));
 
@@ -105,10 +101,10 @@ public class AnglersHatItem extends WearableRelicItem {
                     .withParameter(LootContextParams.THIS_ENTITY, player)
                     .create(LootContextParamSets.FISHING);
 
-            for (int i = 0; i < rolls; i++) {
-                List<ItemStack> drop = loottable.getRandomItems(lootparams);
+            FishingHook fishingHook = event.getHookEntity();
 
-                for (ItemStack itemstack : drop) {
+            for (int i = 0; i < rolls; i++)
+                for (ItemStack itemstack : loottable.getRandomItems(lootparams)) {
                     ItemEntity itementity = new ItemEntity(serverLevel, fishingHook.getX(), fishingHook.getY(), fishingHook.getZ(), itemstack);
 
                     double x = player.getX() - fishingHook.getX();
@@ -121,7 +117,7 @@ public class AnglersHatItem extends WearableRelicItem {
 
                     serverLevel.addFreshEntity(new ExperienceOrb(serverLevel, player.getX(), player.getY() + 0.5, player.getZ() + 0.5, random.nextInt(6) + 1));
                 }
-            }
+
         }
     }
 }

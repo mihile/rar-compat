@@ -111,8 +111,9 @@ public class SnorkelItem extends WearableRelicItem {
             if (player == null)
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SNORKEL.value());
-            player.level().getFluidState(BlockPos.containing(player.getEyePosition()));
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.SNORKEL.value());
+
+            player.getCommandSenderWorld().getFluidState(BlockPos.containing(player.getEyePosition()));
 
             if (!(stack.getItem() instanceof SnorkelItem) || !player.isInLiquid())
                 return;

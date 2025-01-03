@@ -39,7 +39,7 @@ public class RootedBootsItem extends WearableRelicItem {
                                 .active(CastData.builder().type(CastType.TOGGLEABLE)
                                         .build())
                                 .stat(StatData.builder("frequency")
-                                        .initialValue(120D, 140D)
+                                        .initialValue(140D, 120D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.071)
                                         .formatValue(value -> MathUtils.round(value / 20, 1))
                                         .build())

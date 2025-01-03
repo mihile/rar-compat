@@ -89,22 +89,23 @@ public class CharmOfSinkingItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class CharmOfSinkingEvent {
-
         @SubscribeEvent
         public static void onBreathe(LivingBreatheEvent event) {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CHARM_OF_SINKING.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.CHARM_OF_SINKING.value());
 
             if (!(stack.getItem() instanceof CharmOfSinkingItem relic) || !player.isUnderWater()
                     || !relic.isAbilityUnlocked(stack, "immersion") || !player.onGround())
                 return;
 
-            if (player.tickCount % 20 == 0 && player.onGround() && player.getAirSupply() > 1)
+            var tickCount = player.tickCount;
+
+            if (tickCount % 20 == 0 && player.onGround() && player.getAirSupply() > 1)
                 relic.spreadRelicExperience(player, stack, 1);
 
-            if (player.tickCount % (int) relic.getStatValue(stack, "immersion", "air") == 0) {
+            if (tickCount % (int) relic.getStatValue(stack, "immersion", "air") == 0) {
                 event.setConsumeAirAmount(1);
             } else
                 event.setConsumeAirAmount(0);

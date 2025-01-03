@@ -65,9 +65,9 @@
 
   "tooltip.relics.scarf_of_invisibility.description": "При достаточно осторожном передвижении делает игрока незаметным для окружающих.",
   "tooltip.relics.scarf_of_invisibility.ability.invisible": "Тихий шаг",
-  "tooltip.relics.scarf_of_invisibility.ability.invisible.description": "Если скорость передвижения игрока не превышает %1$s блоков в секунду, он получает эффект исчезновения. При взаимодействии с объектом в мире появляется область радиусом %2$s блоков, внутри которой невидимость больше не действует до момента выхода игрока за её пределы.",
+  "tooltip.relics.scarf_of_invisibility.ability.invisible.description": "Наделяет игрока полной невидимостью. Эффект спадает на %1$s секунд при любом взаимодействии с миром. Если во время отсутствия невидимости какой-либо моб выберет игрока своей целью, эффект не восстановится пока этот моб не выберет себе другую цель.",
   "tooltip.relics.scarf_of_invisibility.leveling_source.invisible.title": "Тихий шаг",
-  "tooltip.relics.scarf_of_invisibility.leveling_source.invisible.description": "+%1$s единиц опыта за каждую секунду передвижения в невидимости от способности %2$s.",
+  "tooltip.relics.scarf_of_invisibility.leveling_source.invisible.description": "+%1$s единиц опыта за каждое применение невидимости от способности %2$s.",
 
   "tooltip.relics.flame_pendant.description": "Испепеляет каждого, кто осмелится напасть на обладателя реликвии.",
   "tooltip.relics.flame_pendant.ability.fire": "Пламенная оборона",
@@ -120,8 +120,8 @@
 
   "tooltip.relics.night_vision_goggles.description": "Позволяет владельцу реликвии чётче видеть в темноте.",
   "tooltip.relics.night_vision_goggles.ability.vision": "Гамма-виденье",
-  "tooltip.relics.night_vision_goggles.ability.vision.description": "Увеличивает яркость плохо освещённых мест на %1$s%%.",
-  "tooltip.relics.night_vision_goggles.leveling_source.vision.title": "Воздушный прыжок",
+  "tooltip.relics.night_vision_goggles.ability.vision.description": "Увеличивает яркость плохо освещённых мест, а также снижает эффективность слепоты и тьмы на %1$s%%.",
+  "tooltip.relics.night_vision_goggles.leveling_source.vision.title": "Гамма-виденье",
   "tooltip.relics.night_vision_goggles.leveling_source.vision.description": "+%1$s единиц опыта за каждые 5 секунд передвижения в темноте. Вероятность получения опыта прямо пропорциональна соотношению текущему уровню освещённости на месте пребывания игрока и максимальному.",
 
   "tooltip.relics.cloud_in_a_bottle.description": "Повышает манёвренность владельца реликвии, позволяя совершать дополнительные прыжки в воздухе.",
@@ -270,10 +270,10 @@
   "tooltip.relics.pocket_piston.leveling_source.interaction.description": "+%1$s единиц опыта за каждое взаимодействие с миром на дистанции действия способности %2$s.",
 
   "tooltip.relics.obsidian_skull.description": "Перенаправляет на себя жар, исходно нацеленный навредить носителю реликвии.",
-  "tooltip.relics.obsidian_skull.ability.buffer": "Жаростойкость",
-  "tooltip.relics.obsidian_skull.ability.buffer.description": "Полностью поглощает до %1$s единиц урона от огненных источников, после чего уходит на перезарядку на 1 минуту. Если игрок не получал огненного урона в течение 3 секунд, количество уже поглощённого урона убавляется на 1 единицу каждую секунду.",
-  "tooltip.relics.obsidian_skull.leveling_source.buffer.title": "Жаростойкость",
-  "tooltip.relics.obsidian_skull.leveling_source.buffer.description": "+%1$s единиц опыта за каждую поглощенную единицу огненного урона способностью %2$s.",
+  "tooltip.relics.obsidian_skull.ability.hell": "Жаростойкость",
+  "tooltip.relics.obsidian_skull.ability.hell.description": "Полностью поглощает урон от огненных источников на время до %1$s секунд. Если игрок не получал огненного урона в течение 3 секунд, запас времени поглощения восполняется обратно каждую секунду.",
+  "tooltip.relics.obsidian_skull.leveling_source.hell.title": "Жаростойкость",
+  "tooltip.relics.obsidian_skull.leveling_source.hell.description": "+%1$s единиц опыта за каждую секунду поглощения огненного урона способностью %2$s.",
 
   "tooltip.relics.fire_gauntlet.description": "Наделяет оружие носителя реликвии силами стихии огня.",
   "tooltip.relics.fire_gauntlet.ability.arson": "Волна огня",

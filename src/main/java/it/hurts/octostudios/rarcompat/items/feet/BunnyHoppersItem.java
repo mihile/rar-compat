@@ -39,8 +39,6 @@ public class BunnyHoppersItem extends WearableRelicItem {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("hold")
-                                .active(CastData.builder().type(CastType.TOGGLEABLE)
-                                        .build())
                                 .stat(StatData.builder("distance")
                                         .initialValue(3D, 5D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.06)
@@ -86,10 +84,9 @@ public class BunnyHoppersItem extends WearableRelicItem {
             setToggled(stack, true);
         }
 
-        double limit = getStatValue(stack, "hold", "distance");
-
         if (!player.getCommandSenderWorld().isClientSide() || !(player instanceof LocalPlayer localPlayer)
-                || getTime(stack) >= limit || player.isFallFlying() || !getToggled(stack))
+                || getTime(stack) >= getStatValue(stack, "hold", "distance") || player.isFallFlying()
+                || !getToggled(stack))
             return;
 
         if (!localPlayer.input.jumping) {
@@ -112,7 +109,6 @@ public class BunnyHoppersItem extends WearableRelicItem {
                         player.getY() + 0.1 + offsetY,
                         player.getZ() + offsetZ,
                         0, 0, 0);
-
             }
         }
     }

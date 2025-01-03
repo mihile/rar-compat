@@ -31,7 +31,6 @@ import java.awt.*;
 import java.util.Random;
 
 public class ShockPendantItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -57,8 +56,8 @@ public class ShockPendantItem extends WearableRelicItem {
                                 .maxLevel(0)
                                 .research(ResearchData.builder()
                                         .star(0, 6, 29).star(1, 10, 25).star(2, 12, 29).star(3, 15, 20)
-                                        .star(4, 18, 27).star(5, 8, 17).star(7, 5, 9).star(8, 13, 2).
-                                        star(9, 16, 5).star(10, 20, 12).star(11, 13, 9)
+                                        .star(4, 18, 27).star(5, 8, 17).star(7, 5, 9).star(8, 13, 2)
+                                        .star(9, 16, 5).star(10, 20, 12).star(11, 13, 9)
                                         .link(1, 0).link(1, 2).link(1, 3).link(3, 4).link(5, 7).link(7, 8).link(9, 10).link(3, 5).link(8, 9).link(10, 3)
                                         .link(1, 3).link(9, 11)
                                         .build())
@@ -89,29 +88,27 @@ public class ShockPendantItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class ShockPendantEvent {
-
         @SubscribeEvent
         public static void onReceivingDamage(LivingIncomingDamageEvent event) {
-            DamageSource damageSource = event.getSource();
-            Entity attacker = damageSource.getEntity();
-
             if (!(event.getEntity() instanceof Player player))
                 return;
 
+            DamageSource damageSource = event.getSource();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value());
-
             Level level = player.getCommandSenderWorld();
 
-            if (!(stack.getItem() instanceof ShockPendantItem relic) || level.isClientSide()
+            if (level.isClientSide() || !(stack.getItem() instanceof ShockPendantItem relic)
                     || !relic.canPlayerUseAbility(player, stack, "lightning"))
                 return;
 
             if (damageSource.is(DamageTypeTags.IS_LIGHTNING) && relic.canPlayerUseAbility(player, stack, "passive"))
                 event.setCanceled(true);
 
-            Random random = new Random();
+            var random = level.getRandom();
 
-            if (random.nextDouble(1) <= relic.getStatValue(stack, "lightning", "chance") && attacker != null) {
+            Entity attacker = damageSource.getEntity();
+
+            if (attacker != null && random.nextDouble() <= relic.getStatValue(stack, "lightning", "chance")) {
                 relic.spreadRelicExperience(player, stack, 1);
 
                 LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
