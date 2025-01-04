@@ -3,7 +3,9 @@ package it.hurts.octostudios.rarcompat.mixin;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.hat.CowboyHatItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.FlyingMob;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -17,13 +19,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
-    // TODO: Do not use constant values like 0.3, use dynamic sources instead
-
     @Inject(method = "travelRidden", at = @At("HEAD"), cancellable = true)
     private void travelRidden(Player player, Vec3 vec, CallbackInfo ci) {
         ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
-        if (!((LivingEntity) (Object) this instanceof Mob mounted) || mounted instanceof Saddleable || !(stack.getItem() instanceof CowboyHatItem relic))
+        if (!((LivingEntity) (Object) this instanceof Mob mounted) || !(stack.getItem() instanceof CowboyHatItem relic)
+                || !relic.getToggled(stack))
             return;
 
         if (!mounted.isControlledByLocalInstance()) {
@@ -32,8 +33,10 @@ abstract class LivingEntityMixin {
             mounted.calculateEntityAnimation(false);
         }
 
+        var speed = player.getSpeed();
+
         mounted.setTarget(null);
-        mounted.setSpeed(0.3F);
+        mounted.setSpeed((float) (speed + (speed * relic.getStatValue(stack, "cowboy", "speed") * 2)));
 
         rarcompat$tickRidden(mounted, player);
 

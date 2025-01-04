@@ -16,19 +16,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Mob.class)
 abstract class MobMixin {
-    // TODO: Use correct method arguments instead og obfuscated names
 
     @Inject(method = "getControllingPassenger", at = @At("HEAD"), cancellable = true)
     public void getControllingPassenger(CallbackInfoReturnable<LivingEntity> cir) {
         Mob mob = (Mob) (Object) this;
         Entity entity = mob.getFirstPassenger();
 
-        if (mob.isNoAi() || !(entity instanceof Player player) || mob instanceof Saddleable)
+        if (mob.isNoAi() || !(entity instanceof Player player))
             return;
 
         ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
-        if (!(stack.getItem() instanceof CowboyHatItem))
+        if (!(stack.getItem() instanceof CowboyHatItem relic) || !relic.getToggled(stack))
             return;
 
         cir.setReturnValue(player);
