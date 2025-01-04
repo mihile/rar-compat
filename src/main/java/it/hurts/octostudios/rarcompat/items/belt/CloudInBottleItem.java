@@ -20,7 +20,6 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -117,20 +116,19 @@ public class CloudInBottleItem extends WearableRelicItem {
 
             Vec3 movement = player.getDeltaMovement();
 
-            double horizontalFactorX = player.getKnownMovement().x / 2;
-            double horizontalFactor = 3;
-            double horizontalFactorZ = player.getKnownMovement().z / 2;
-
             if (movement.horizontalDistanceSqr() < 0.001) {
-                float direction = (float) (player.getYRot() * Math.PI / 180.0);
-                movement = new Vec3(-Mth.sin(direction), 0, Mth.cos(direction));
+                player.setDeltaMovement(0, upwardsMotion, 0);
+            } else {
+                double horizontalFactorX = player.getKnownMovement().x / 2;
+                double horizontalFactor = 2;
+                double horizontalFactorZ = player.getKnownMovement().z / 2;
+
+                Vec3 horizontalDirection = new Vec3(movement.x, 0, movement.z).normalize();
+
+                player.setDeltaMovement((horizontalDirection.x / horizontalFactor) + horizontalFactorX,
+                        upwardsMotion,
+                        (horizontalDirection.z / horizontalFactor) + horizontalFactorZ);
             }
-
-            Vec3 horizontalDirection = new Vec3(movement.x, 0, movement.z).normalize();
-
-            player.setDeltaMovement((horizontalDirection.x / horizontalFactor) + horizontalFactorX,
-                    upwardsMotion,
-                    (horizontalDirection.z / horizontalFactor) + horizontalFactorZ);
 
             NetworkHandler.sendToServer(new DoubleJumpPacket());
         }

@@ -1,7 +1,6 @@
 package it.hurts.octostudios.rarcompat.mixin;
 
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.RARCompat;
 import it.hurts.octostudios.rarcompat.items.hat.VillagerHatItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -17,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractVillager.class)
-public abstract class AbstractVillagerMixin {
+abstract class AbstractVillagerMixin {
 
     @Shadow
     private Player tradingPlayer;

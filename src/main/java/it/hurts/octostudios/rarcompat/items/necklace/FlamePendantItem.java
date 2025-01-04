@@ -16,16 +16,12 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.awt.*;
-import java.util.Random;
 
 public class FlamePendantItem extends WearableRelicItem {
 
@@ -78,18 +74,16 @@ public class FlamePendantItem extends WearableRelicItem {
 
         @SubscribeEvent
         public static void onReceivingDamage(LivingIncomingDamageEvent event) {
-            Entity attacker = event.getSource().getEntity();
+            var attacker = event.getSource().getEntity();
 
             if (!(event.getEntity() instanceof Player player) || attacker == null || attacker == player)
                 return;
 
-            Level level = attacker.level();
+            var level = attacker.getCommandSenderWorld();
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.FLAME_PENDANT.value());
+            var random = player.getRandom();
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.FLAME_PENDANT.value());
-
-            Random random = new Random();
-
-            if (!(stack.getItem() instanceof FlamePendantItem relic) || random.nextDouble(1) >= relic.getStatValue(stack, "fire", "chance")
+            if (level.isClientSide() || !(stack.getItem() instanceof FlamePendantItem relic) || random.nextDouble() >= relic.getStatValue(stack, "fire", "chance")
                     || !relic.canPlayerUseAbility(player, stack, "fire"))
                 return;
 

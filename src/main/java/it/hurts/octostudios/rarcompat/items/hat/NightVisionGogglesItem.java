@@ -27,8 +27,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.Random;
-
 public class NightVisionGogglesItem extends WearableRelicItem {
     @Override
     public RelicData constructDefaultRelicData() {
@@ -81,29 +79,28 @@ public class NightVisionGogglesItem extends WearableRelicItem {
         if (isAbilityTicking(stack, "vision")) {
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 10, 0, false, false));
 
-            float percent = (Math.abs(1 - (player.level().getMaxLocalRawBrightness(player.blockPosition()) / 15.0F)));
+            var percent = (Math.abs(1 - (player.getCommandSenderWorld().getMaxLocalRawBrightness(player.blockPosition()) / 15.0F)));
 
-            if (player.getRandom().nextFloat() <= percent && player.tickCount % 60 == 0 && !(Math.abs(player.getKnownMovement().x) <= 0.01D || Math.abs(player.getKnownMovement().z) <= 0.01D)) {
+            if (player.getRandom().nextFloat() <= percent && player.tickCount % 60 == 0 && !(Math.abs(player.getKnownMovement().x) <= 0.01D
+                    || Math.abs(player.getKnownMovement().z) <= 0.01D))
                 spreadRelicExperience(player, stack, 1);
-            }
         }
     }
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (ability.equals("vision") && player.level().isClientSide && stage == CastStage.START) {
-            player.playSound(SoundRegistry.NIGHT_VISION_TOGGLE.get(), 1F, 0.75F + new Random().nextFloat(1) * 0.5F);
-        }
+        if (ability.equals("vision") && player.getCommandSenderWorld().isClientSide && stage == CastStage.START)
+            player.playSound(SoundRegistry.NIGHT_VISION_TOGGLE.get(), 1F, 0.75F + player.getRandom().nextFloat() * 0.5F);
     }
 
     @EventBusSubscriber
     public static class NightVisionGogglesEvent {
         @SubscribeEvent
         public static void onGetEffect(MobEffectEvent.Added event) {
-            MobEffectInstance effectInstance = event.getEffectInstance();
+            var effectInstance = event.getEffectInstance();
 
-            if (effectInstance == null || !(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide()
-                    || (!effectInstance.is(MobEffects.DARKNESS) && !effectInstance.is(MobEffects.BLINDNESS)))
+            if (!(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide()
+                    || !effectInstance.is(MobEffects.DARKNESS) && !effectInstance.is(MobEffects.BLINDNESS))
                 return;
 
             var itemStack = EntityUtils.findEquippedCurio(player, ModItems.NIGHT_VISION_GOGGLES.value());
@@ -113,6 +110,5 @@ public class NightVisionGogglesItem extends WearableRelicItem {
 
             event.getEffectInstance().duration = (int) (effectInstance.getDuration() * (1 - relic.getStatValue(itemStack, "vision", "amount")));
         }
-
     }
 }

@@ -20,13 +20,11 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.awt.*;
-import java.util.Random;
 
 public class ThornPendantItem extends WearableRelicItem {
 
@@ -86,23 +84,22 @@ public class ThornPendantItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof Player player) || !(event.getSource().getEntity() instanceof LivingEntity attacker) || attacker == player)
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.THORN_PENDANT.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.THORN_PENDANT.value());
+            var random = player.getRandom();
+            var level = player.getCommandSenderWorld();
 
-            Random random = new Random();
-
-            if (!(stack.getItem() instanceof ThornPendantItem relic) || random.nextDouble(1) >= relic.getStatValue(stack, "poison", "chance")
+            if (level.isClientSide() || !(stack.getItem() instanceof ThornPendantItem relic) || random.nextDouble() >= relic.getStatValue(stack, "poison", "chance")
                     || !relic.canPlayerUseAbility(player, stack, "poison"))
                 return;
 
-            float multiplier = (float) relic.getStatValue(stack, "poison", "multiplier");
-            int time = (int) (relic.getStatValue(stack, "poison", "time") * 20);
+            var time = (int) (relic.getStatValue(stack, "poison", "time") * 20);
 
             relic.spreadRelicExperience(player, stack, 1);
 
-            attacker.hurt(event.getSource(), event.getAmount() * multiplier);
+            attacker.hurt(event.getSource(), (float) (event.getAmount() * relic.getStatValue(stack, "poison", "multiplier")));
             attacker.addEffect(new MobEffectInstance(MobEffects.POISON, time, 1));
 
-            ((ServerLevel) player.level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + random.nextInt(50), 200 + random.nextInt(55), 50 + random.nextInt(50)), 0.4F, 30, 0.95F),
+            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + random.nextInt(50), 200 + random.nextInt(55), 50 + random.nextInt(50)), 0.4F, 30, 0.95F),
                     attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
         }
 
