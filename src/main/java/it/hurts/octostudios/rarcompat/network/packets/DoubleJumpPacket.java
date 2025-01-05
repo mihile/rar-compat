@@ -63,7 +63,6 @@ public class DoubleJumpPacket implements CustomPacketPayload {
             }
 
             level.playSound(null, player.blockPosition(), SoundEvents.WOOL_PLACE, player.getSoundSource(), 1F, 0.75F + player.getRandom().nextFloat());
-
         });
     }
 

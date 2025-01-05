@@ -23,13 +23,13 @@ public class RepulsionUmbrellaPacket implements CustomPacketPayload {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RepulsionUmbrellaPacket> STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public void encode(RegistryFriendlyByteBuf buffer, RepulsionUmbrellaPacket packet) {
+        public void encode(RegistryFriendlyByteBuf buf, RepulsionUmbrellaPacket packet) {
 
         }
 
         @Nonnull
         @Override
-        public RepulsionUmbrellaPacket decode(@Nonnull RegistryFriendlyByteBuf buffer) {
+        public RepulsionUmbrellaPacket decode(@Nonnull RegistryFriendlyByteBuf buf) {
             return new RepulsionUmbrellaPacket();
         }
     };
