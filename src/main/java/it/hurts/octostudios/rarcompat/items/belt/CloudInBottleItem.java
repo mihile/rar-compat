@@ -18,12 +18,9 @@ import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -80,71 +77,52 @@ public class CloudInBottleItem extends WearableRelicItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "jump")
-                || !player.onGround() || stack.getOrDefault(DataComponentRegistry.COUNT, 0) <= 0)
+                || !player.onGround() || getCount(stack) <= 0)
             return;
 
-        stack.set(DataComponentRegistry.COUNT, 0);
+        setCount(stack, 0);
+    }
+
+    public void addCount(ItemStack stack, int amount) {
+        setCount(stack, getCount(stack) + amount);
+    }
+
+    public int getCount(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.COUNT, 0);
+    }
+
+    public void setCount(ItemStack stack, int val) {
+        stack.set(DataComponentRegistry.COUNT, Math.max(val, 0));
     }
 
     @EventBusSubscriber(value = Dist.CLIENT)
     public static class CloudInBottleEvent {
         @SubscribeEvent
         public static void onMouseInput(InputEvent.Key event) {
-            Minecraft minecraft = Minecraft.getInstance();
-
-            Player player = minecraft.player;
+            var minecraft = Minecraft.getInstance();
+            var player = minecraft.player;
 
             if (player == null)
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CLOUD_IN_A_BOTTLE.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.CLOUD_IN_A_BOTTLE.value());
 
             if (minecraft.screen != null || event.getAction() != 1 || !(stack.getItem() instanceof CloudInBottleItem relic)
                     || !relic.canPlayerUseAbility(player, stack, "jump") || event.getKey() != minecraft.options.keyJump.getKey().getValue()
-                    || stack.getOrDefault(DataComponentRegistry.COUNT, 0) >= Math.round(relic.getStatValue(stack, "jump", "count"))
+                    || relic.getCount(stack) >= Math.round(relic.getStatValue(stack, "jump", "count"))
                     || player.isFallFlying() || player.onGround())
                 return;
 
-            createJumpParticles(player);
-
-            player.playSound(SoundEvents.WOOL_PLACE, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
-
-            double upwardsMotion = 0.65;
+            var upwardsMotion = 0.65;
 
             if (player.hasEffect(MobEffects.JUMP))
                 upwardsMotion += 0.1 * (double) Objects.requireNonNull(player.getEffect(MobEffects.JUMP)).getAmplifier();
 
-            Vec3 movement = player.getDeltaMovement();
+            var movement = player.getDeltaMovement();
 
-            if (movement.horizontalDistanceSqr() < 0.001) {
-                player.setDeltaMovement(0, upwardsMotion, 0);
-            } else {
-                double horizontalFactorX = player.getKnownMovement().x / 2;
-                double horizontalFactor = 2;
-                double horizontalFactorZ = player.getKnownMovement().z / 2;
-
-                Vec3 horizontalDirection = new Vec3(movement.x, 0, movement.z).normalize();
-
-                player.setDeltaMovement((horizontalDirection.x / horizontalFactor) + horizontalFactorX,
-                        upwardsMotion,
-                        (horizontalDirection.z / horizontalFactor) + horizontalFactorZ);
-            }
+            player.setDeltaMovement(movement.x + player.getKnownMovement().x, upwardsMotion, movement.z + player.getKnownMovement().z);
 
             NetworkHandler.sendToServer(new DoubleJumpPacket());
-        }
-
-        private static void createJumpParticles(Player player) {
-            int particleCount = 70;
-            double radius = 1;
-
-            for (int i = 0; i < particleCount; i++) {
-                double angle = 2 * Math.PI * i / particleCount;
-                double xOffset = Math.cos(angle) * radius;
-                double zOffset = Math.sin(angle) * radius;
-
-                player.getCommandSenderWorld().addParticle(ParticleTypes.CLOUD, player.getX() + xOffset, player.getY(), player.getZ() + zOffset,
-                        0, 0, 0.0);
-            }
         }
     }
 }
