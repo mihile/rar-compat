@@ -165,8 +165,12 @@
   "tooltip.relics.antidote_vessel.description": "Усиливает сопротивление эффектам у носителя реликвии.",
   "tooltip.relics.antidote_vessel.ability.antidote": "Сопротивление ядам",
   "tooltip.relics.antidote_vessel.ability.antidote.description": "Сокращает продолжительность получаемых негативных эффектов на %1$s%%.",
+  "tooltip.relics.antidote_vessel.ability.devourer": "",
+  "tooltip.relics.antidote_vessel.ability.devourer.description": "%1$s%%.",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.title": "Сопротивление ядам",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.description": "+%1$s единиц опыта за каждое срабатывание способности %2$s.",
+  "tooltip.relics.antidote_vessel.leveling_source.devourer.title": "",
+  "tooltip.relics.antidote_vessel.leveling_source.devourer.description": "",
 
   "tooltip.relics.power_glove.description": "Позволяет носителю реликвии совершать усиленные атаки.",
   "tooltip.relics.power_glove.ability.power": "Сильный удар",
