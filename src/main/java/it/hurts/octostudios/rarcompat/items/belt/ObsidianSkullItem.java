@@ -30,7 +30,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.awt.*;
 
 public class ObsidianSkullItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -111,9 +110,8 @@ public class ObsidianSkullItem extends WearableRelicItem {
 
     @EventBusSubscriber
     public static class ObsidianSkull {
-
         @SubscribeEvent
-        public static void onAttack(LivingIncomingDamageEvent event) {
+        public static void onIncomingDamage(LivingIncomingDamageEvent event) {
             Level level = event.getEntity().getCommandSenderWorld();
 
             if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_FIRE) || level.isClientSide())
