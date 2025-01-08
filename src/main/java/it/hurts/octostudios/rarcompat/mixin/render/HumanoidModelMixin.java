@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.mixin;
+package it.hurts.octostudios.rarcompat.mixin.render;
 
 import it.hurts.octostudios.rarcompat.items.UmbrellaItem;
 import net.minecraft.client.model.HumanoidModel;

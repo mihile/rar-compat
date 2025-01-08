@@ -18,13 +18,15 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class NightVisionGogglesItem extends WearableRelicItem {
@@ -93,22 +95,29 @@ public class NightVisionGogglesItem extends WearableRelicItem {
             player.playSound(SoundRegistry.NIGHT_VISION_TOGGLE.get(), 1F, 0.75F + player.getRandom().nextFloat() * 0.5F);
     }
 
-    @EventBusSubscriber
+    @EventBusSubscriber(Dist.CLIENT)
     public static class NightVisionGogglesEvent {
         @SubscribeEvent
-        public static void onGetEffect(MobEffectEvent.Added event) {
-            var effectInstance = event.getEffectInstance();
+        public static void onFogRender(ViewportEvent.RenderFog event) {
+            Player player = Minecraft.getInstance().player;
 
-            if (!(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide()
-                    || !effectInstance.is(MobEffects.DARKNESS) && !effectInstance.is(MobEffects.BLINDNESS))
+            if (player == null)
                 return;
 
-            var itemStack = EntityUtils.findEquippedCurio(player, ModItems.NIGHT_VISION_GOGGLES.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.NIGHT_VISION_GOGGLES.value());
 
-            if (!(itemStack.getItem() instanceof NightVisionGogglesItem relic) || !relic.canPlayerUseAbility(player, itemStack, "vision"))
+            if (!(stack.getItem() instanceof NightVisionGogglesItem relic) || !relic.isAbilityTicking(stack, "vision")
+                    || !player.hasEffect(MobEffects.BLINDNESS) && !player.hasEffect(MobEffects.DARKNESS))
                 return;
 
-            event.getEffectInstance().duration = (int) (effectInstance.getDuration() * (1 - relic.getStatValue(itemStack, "vision", "amount")));
+            var statValue = relic.getStatValue(stack, "vision", "amount");
+
+            if (player.hasEffect(MobEffects.DARKNESS))
+                event.scaleFarPlaneDistance((float) (event.getFarPlaneDistance() * statValue));
+            else
+                event.scaleFarPlaneDistance((float) (event.getFarPlaneDistance() * (statValue * 7f)));
+
+            event.setCanceled(true);
         }
     }
 }

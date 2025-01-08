@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.IRelicItem;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
@@ -59,6 +60,8 @@ public class MimiDustItem extends Item implements ICreativeTabContent {
 
         var center = pos.getCenter();
         var random = mimic.getRandom();
+
+        level.playSound(null, mimic.blockPosition(), SoundEvents.ALLAY_AMBIENT_WITHOUT_ITEM, mimic.getSoundSource(), 1.3F, 0.75F + mimic.getRandom().nextFloat());
 
         ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, 223 + random.nextInt(33), random.nextInt(50), 255),
                 1F, 60, 0.85F), center.x(), center.y(), center.z(), 25, 0.3, 0.3, 0.3, 0.05);
