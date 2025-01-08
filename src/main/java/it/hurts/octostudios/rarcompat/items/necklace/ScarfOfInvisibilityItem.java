@@ -28,7 +28,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class ScarfOfInvisibilityItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -77,17 +76,13 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
         var time = getTime(stack);
 
-        if (time == 0 && getMobsCount(player) == 0) {
+        if (time == 0 && player.getCommandSenderWorld().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(15)).stream().anyMatch(mob -> mob.getTarget() == player)) {
             if (!player.hasEffect(EffectRegistry.VANISHING))
                 spreadRelicExperience(player, stack, 1);
 
             player.addEffect(new MobEffectInstance(EffectRegistry.VANISHING, 4, 0, true, false));
         } else if (time > 0)
             addTime(stack, -1);
-    }
-
-    public int getMobsCount(Player player) {
-        return (int) player.getCommandSenderWorld().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(15)).stream().filter(mob -> mob.getTarget() == player && !mob.isDeadOrDying()).count();
     }
 
     public void addTime(ItemStack stack, int time) {

@@ -17,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractVillager.class)
 abstract class AbstractVillagerMixin {
-
     @Shadow
     private Player tradingPlayer;
 
@@ -28,7 +27,7 @@ abstract class AbstractVillagerMixin {
     private void notifyTrade(MerchantOffer offer, CallbackInfo ci) {
         ItemStack relicStack = EntityUtils.findEquippedCurio(tradingPlayer, ModItems.VILLAGER_HAT.value());
 
-        if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null)
+        if (!(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null)
             return;
 
         int newPrice = (int) Math.round(offer.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier"));
@@ -41,11 +40,12 @@ abstract class AbstractVillagerMixin {
     private void getOffers(CallbackInfoReturnable<MerchantOffers> cir) {
         ItemStack relicStack = EntityUtils.findEquippedCurio(tradingPlayer, ModItems.VILLAGER_HAT.value());
 
-        if (relicStack == null || !(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null)
+        if (!(relicStack.getItem() instanceof VillagerHatItem hat) || offers == null)
             return;
 
         for (MerchantOffer offer : offers) {
             int newPrice = (int) Math.round(offer.getItemCostA().count() * hat.getStatValue(relicStack, "discount", "multiplier") / 100);
+
             offer.setSpecialPriceDiff(-newPrice);
         }
     }
