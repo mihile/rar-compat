@@ -1,6 +1,10 @@
 {
   "tooltip.rarcompat.modified" : "Modified by [Relics: Artifacts Compat]",
 
+  "tooltip.rarcompat.mimi_dust": "When used on a chest, it transforms it into a mimic that drops as many §orandom§r relics as it originally contained before the transformation.",
+
+  "item.rarcompat.mimi_dust": "Mimi-dust",
+
   "tooltip.relics.umbrella.description": "Softens the fall, providing safe landing from any height. When skillfully used, it can serve as a reliable shield, keeping enemies at bay.",
   "tooltip.relics.umbrella.ability.glider": "Soft Fall",
   "tooltip.relics.umbrella.ability.glider.description": "When held in hand, reduces the player's vertical speed, negating fall damage. Pressing LMB while falling propels the player backward. This propulsion can be used up to %1$s times in a row before the player touches the ground.",
