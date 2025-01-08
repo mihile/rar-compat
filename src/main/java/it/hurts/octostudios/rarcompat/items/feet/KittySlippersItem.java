@@ -20,14 +20,10 @@ import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
@@ -37,7 +33,6 @@ import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
-import java.util.Random;
 
 public class KittySlippersItem extends WearableRelicItem {
     @Override
@@ -119,14 +114,14 @@ public class KittySlippersItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
             return;
 
-        for (Creeper creeper : player.level().getEntitiesOfClass(Creeper.class, player.getBoundingBox().inflate(5))) {
-            Vec3 creeperPosition = creeper.position();
-            Vec3 escapeDirection = player.position().subtract(creeperPosition).normalize().scale(-1);
-            Vec3 escapePosition = creeperPosition.add(escapeDirection.scale(5));
+        var level = player.getCommandSenderWorld();
 
-            PathNavigation navigation = creeper.getNavigation();
-
-            Path path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
+        for (Creeper creeper : level.getEntitiesOfClass(Creeper.class, player.getBoundingBox().inflate(5))) {
+            var creeperPosition = creeper.position();
+            var escapeDirection = player.position().subtract(creeperPosition).normalize().scale(-1);
+            var escapePosition = creeperPosition.add(escapeDirection.scale(5));
+            var navigation = creeper.getNavigation();
+            var path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
 
             if (path != null)
                 navigation.moveTo(path, 1.5);
@@ -139,16 +134,12 @@ public class KittySlippersItem extends WearableRelicItem {
             creeper.yHeadRot = yaw;
         }
 
-        for (Phantom phantom : player.level().getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(5))) {
-            Vec3 phantomPosition = phantom.position();
-
-            Vec3 escapeDirection = player.position().subtract(phantomPosition).normalize().scale(-1);
-
-            Vec3 escapePosition = phantomPosition.add(escapeDirection.scale(5));
-
-            PathNavigation navigation = phantom.getNavigation();
-
-            Path path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
+        for (Phantom phantom : level.getEntitiesOfClass(Phantom.class, player.getBoundingBox().inflate(5))) {
+            var phantomPosition = phantom.position();
+            var escapeDirection = player.position().subtract(phantomPosition).normalize().scale(-1);
+            var escapePosition = phantomPosition.add(escapeDirection.scale(5));
+            var navigation = phantom.getNavigation();
+            var path = navigation.createPath(escapePosition.x, escapePosition.y, escapePosition.z, 0);
 
             if (path != null)
                 navigation.moveTo(path, 1.5);
@@ -167,10 +158,12 @@ public class KittySlippersItem extends WearableRelicItem {
         @SubscribeEvent
         public static void onLivingChangeTargetEvent(LivingChangeTargetEvent event) {
             if ((event.getEntity() instanceof Creeper || event.getEntity() instanceof Phantom) && event.getNewAboutToBeSetTarget() instanceof Player player) {
-                ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
+                var itemStack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
 
-                if (itemStack.getItem() instanceof KittySlippersItem)
-                    event.setCanceled(true);
+                if (!(itemStack.getItem() instanceof KittySlippersItem))
+                    return;
+
+                event.setCanceled(true);
             }
         }
 
@@ -206,11 +199,12 @@ public class KittySlippersItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.KITTY_SLIPPERS.value());
 
-            Level level = player.getCommandSenderWorld();
+            var level = player.getCommandSenderWorld();
+            var random = player.getRandom();
 
-            if (!(stack.getItem() instanceof KittySlippersItem relic) || new Random().nextFloat(1) > relic.getStatValue(stack, "resurrected", "chance")
+            if (!(stack.getItem() instanceof KittySlippersItem relic) || random.nextFloat() > relic.getStatValue(stack, "resurrected", "chance")
                     || !relic.canPlayerUseAbility(player, stack, "resurrected") || level.isClientSide())
                 return;
 
@@ -222,9 +216,7 @@ public class KittySlippersItem extends WearableRelicItem {
 
             stack.set(DataComponentRegistry.TOGGLED, false);
 
-            Random random = new Random();
-
-            level.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, player.getSoundSource(), 1F, 0.75F + random.nextFloat(1) * 0.5F);
+            level.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, player.getSoundSource(), 1F, 0.75F + random.nextFloat() * 0.5F);
 
             for (int i = 0; i < 50; i++)
                 ((ServerLevel) level).sendParticles(

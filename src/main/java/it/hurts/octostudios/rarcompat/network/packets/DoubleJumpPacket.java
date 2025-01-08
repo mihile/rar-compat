@@ -3,8 +3,6 @@ package it.hurts.octostudios.rarcompat.network.packets;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.RARCompat;
 import it.hurts.octostudios.rarcompat.items.belt.CloudInBottleItem;
-import it.hurts.octostudios.rarcompat.items.feet.BunnyHoppersItem;
-import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,10 +11,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -28,8 +26,7 @@ public class DoubleJumpPacket implements CustomPacketPayload {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DoubleJumpPacket> STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public void encode(RegistryFriendlyByteBuf p_320158_, DoubleJumpPacket p_320396_) {
-
+        public void encode(RegistryFriendlyByteBuf buf, DoubleJumpPacket packet) {
         }
 
         @Nonnull
@@ -37,7 +34,6 @@ public class DoubleJumpPacket implements CustomPacketPayload {
         public DoubleJumpPacket decode(@Nonnull RegistryFriendlyByteBuf buf) {
             return new DoubleJumpPacket();
         }
-
     };
 
     public void handle(IPayloadContext ctx) {
@@ -45,12 +41,10 @@ public class DoubleJumpPacket implements CustomPacketPayload {
             Player player = ctx.player();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.CLOUD_IN_A_BOTTLE.value());
 
-            if (!(stack.getItem() instanceof CloudInBottleItem relic) || player.onGround()
-                    || stack.getOrDefault(DataComponentRegistry.COUNT, 0) >= Math.round(relic.getStatValue(stack, "jump", "count")))
+            if (!(stack.getItem() instanceof CloudInBottleItem relic) || relic.getCount(stack) >= Math.round(relic.getStatValue(stack, "jump", "count")))
                 return;
 
-            stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
-
+            relic.addCount(stack, 1);
             relic.spreadRelicExperience(player, stack, 1);
 
             player.hasImpulse = true;
@@ -58,6 +52,17 @@ public class DoubleJumpPacket implements CustomPacketPayload {
             player.awardStat(Stats.JUMP);
 
             NeoForge.EVENT_BUS.post(new LivingEvent.LivingJumpEvent(player));
+
+            Level level = player.getCommandSenderWorld();
+
+            for (int i = 0; i < 50; i++) {
+                double angle = 2 * Math.PI * i / 50;
+
+                ((ServerLevel) level).sendParticles(ParticleTypes.CLOUD, player.getX() + Math.cos(angle), player.getY(), player.getZ() + Math.sin(angle),
+                        0, 0, 0.0, 0, 0);
+            }
+
+            level.playSound(null, player.blockPosition(), SoundEvents.WOOL_PLACE, player.getSoundSource(), 1F, 0.75F + player.getRandom().nextFloat());
         });
     }
 

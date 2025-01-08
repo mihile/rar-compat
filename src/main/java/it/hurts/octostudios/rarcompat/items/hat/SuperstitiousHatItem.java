@@ -67,7 +67,6 @@ public class SuperstitiousHatItem extends WearableRelicItem {
             return super.getLootingLevel(slotContext, lootContext, stack);
 
         var random = player.getRandom();
-
         var amount = MathUtils.multicast(random, getStatValue(stack, "looting", "chance"));
 
         if (amount > 0)

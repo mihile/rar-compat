@@ -165,8 +165,12 @@
   "tooltip.relics.antidote_vessel.description": "Enhances the relic bearer's resistance to effects.",
   "tooltip.relics.antidote_vessel.ability.antidote": "Poison Resistance",
   "tooltip.relics.antidote_vessel.ability.antidote.description": "Reduces the duration of negative effects received by %1$s%%.",
+  "tooltip.relics.antidote_vessel.ability.devourer": "",
+  "tooltip.relics.antidote_vessel.ability.devourer.description": "%1$s%%.",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.title": "Poison Resistance",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.description": "+%1$s experience points for each activation of the %2$s ability.",
+  "tooltip.relics.antidote_vessel.leveling_source.devourer.title": "",
+  "tooltip.relics.antidote_vessel.leveling_source.devourer.description": "",
 
   "tooltip.relics.power_glove.description": "Allows the relic bearer to perform empowered attacks.",
   "tooltip.relics.power_glove.ability.power": "Power Strike",

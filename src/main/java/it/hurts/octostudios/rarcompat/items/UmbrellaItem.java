@@ -135,8 +135,7 @@ public class UmbrellaItem extends WearableRelicItem {
                 break;
             }
 
-        if (!hasUmbrella || player.isUsingItem() || player.isInLiquid() || player.getDeltaMovement().y > 0
-                || player.getAbilities().flying || player.isFallFlying())
+        if (!hasUmbrella || player.isInLiquid() || player.getDeltaMovement().y > 0)
             return;
 
         var motion = player.getDeltaMovement();
@@ -165,7 +164,7 @@ public class UmbrellaItem extends WearableRelicItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
+    public int getUseDuration(ItemStack stack, LivingEntity livingEntity) {
         return 72000;
     }
 
@@ -181,7 +180,7 @@ public class UmbrellaItem extends WearableRelicItem {
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return this.getCharges(stack) != getMaxCharges(stack);
+        return this.getCharges(stack) != getMaxCharges(stack) && hasUnlockedAbility(stack);
     }
 
     @Override

@@ -21,8 +21,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
-import java.util.Random;
-
 public class OnionRingItem extends WearableRelicItem {
 
     @Override
@@ -95,7 +93,7 @@ public class OnionRingItem extends WearableRelicItem {
             float hardness = event.getState().getDestroySpeed(player.level(), player.blockPosition());
             float currentHunger = player.getFoodData().getFoodLevel();
 
-            if (hardness >= 0.5 && currentHunger / 20 >= new Random().nextFloat(1))
+            if (hardness >= 0.5 && currentHunger / 20 >= player.getRandom().nextFloat())
                 relic.spreadRelicExperience(player, stack, 1);
         }
     }

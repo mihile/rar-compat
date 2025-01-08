@@ -15,9 +15,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -25,10 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import top.theillusivec4.curios.api.SlotContext;
-
-import java.util.Random;
 
 public class CrystalHeartItem extends WearableRelicItem {
 
@@ -102,10 +96,9 @@ public class CrystalHeartItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof CrystalHeartItem relic) || !relic.isAbilityUnlocked(stack, "heart"))
                 return;
 
-            float currentHealth = player.getHealth();
             float maxHealth = player.getMaxHealth();
 
-            if (new Random().nextFloat() >= Math.max(0.1, (maxHealth - currentHealth) / maxHealth))
+            if (player.getRandom().nextFloat() <= Math.max(0.1, (maxHealth - player.getHealth()) / maxHealth))
                 relic.spreadRelicExperience(player, stack, 1);
         }
     }

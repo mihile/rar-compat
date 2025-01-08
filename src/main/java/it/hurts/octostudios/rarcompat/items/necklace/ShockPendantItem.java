@@ -93,25 +93,25 @@ public class ShockPendantItem extends WearableRelicItem {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
-            DamageSource damageSource = event.getSource();
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value());
-            Level level = player.getCommandSenderWorld();
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value());
+            var level = player.getCommandSenderWorld();
 
             if (level.isClientSide() || !(stack.getItem() instanceof ShockPendantItem relic)
                     || !relic.canPlayerUseAbility(player, stack, "lightning"))
                 return;
 
+            var damageSource = event.getSource();
+
             if (damageSource.is(DamageTypeTags.IS_LIGHTNING) && relic.canPlayerUseAbility(player, stack, "passive"))
                 event.setCanceled(true);
 
             var random = level.getRandom();
-
-            Entity attacker = damageSource.getEntity();
+            var attacker = damageSource.getEntity();
 
             if (attacker != null && random.nextDouble() <= relic.getStatValue(stack, "lightning", "chance")) {
                 relic.spreadRelicExperience(player, stack, 1);
 
-                LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+                var lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
 
                 lightningBolt.setVisualOnly(true);
                 lightningBolt.setPos(attacker.position());

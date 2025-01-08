@@ -18,16 +18,14 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 
 import java.awt.*;
 
@@ -42,16 +40,13 @@ public class WarpDriveItem extends WearableRelicItem {
                                         .predicate("teleport", PredicateType.CAST, (player, stack) -> {
                                             BlockPos pos = getHitResult(player, stack);
 
-                                            if (pos == null)
-                                                return false;
-
-                                            return player.position().distanceTo(pos.getCenter()) <= getStatValue(stack, "teleport", "distance");
+                                            return pos != null && player.position().distanceTo(pos.getCenter()) <= getStatValue(stack, "teleport", "distance");
                                         })
                                         .build())
                                 .stat(StatData.builder("distance")
                                         .initialValue(10D, 20D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
+                                        .formatValue(value -> MathUtils.round(value, 0))
                                         .build())
                                 .stat(StatData.builder("cooldown")
                                         .initialValue(60D, 40D)
@@ -92,67 +87,65 @@ public class WarpDriveItem extends WearableRelicItem {
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        Level level = player.level();
+        Level level = player.getCommandSenderWorld();
 
-        if (ability.equals("teleport") && !level.isClientSide) {
-            BlockPos blockPos = getHitResult(player, stack);
-            RandomSource random = player.getRandom();
-            BlockPos pos = getHitResult(player, stack);
+        if (!ability.equals("teleport") || level.isClientSide())
+            return;
 
-            if (pos == null)
-                return;
+        var blockPos = getHitResult(player, stack);
+        var random = player.getRandom();
+        var pos = getHitResult(player, stack);
 
-            ((ServerLevel) level).sendParticles(
-                    ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)),
-                            0.7F, 40, 0.9F),
-                    player.getX(), player.getY() + 1, player.getZ(),
-                    30,
-                    0,
-                    0, 0, 0.1);
+        if (pos == null)
+            return;
 
-            int distance = (int) player.position().distanceTo(pos.getCenter());
-            int roundedDistance = ((distance + 9) / 10) * 10;
+        ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)),
+                        0.7F, 40, 0.9F),
+                player.getX(), player.getY() + 1, player.getZ(),
+                30,
+                0,
+                0, 0, 0.1);
 
-            for (int i = 1; i <= roundedDistance; i++)
-                if (i % 10 == 0)
-                    spreadRelicExperience(player, stack, 1);
+        for (int i = 1; i <= player.position().distanceTo(pos.getCenter()) + 9; i++)
+            if (i % 10 == 0)
+                spreadRelicExperience(player, stack, 1);
 
-            player.teleportTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
-            player.fallDistance = 0;
-            player.level().playSound(null, player, SoundEvents.ENDER_EYE_DEATH, SoundSource.PLAYERS,
-                    1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
+        player.teleportTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+        player.fallDistance = 0;
+        level.playSound(null, player, SoundEvents.ENDER_EYE_DEATH, SoundSource.PLAYERS,
+                1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
 
-            setAbilityCooldown(stack, "teleport", (int) this.getStatValue(stack, "teleport", "cooldown"));
-        }
+        setAbilityCooldown(stack, "teleport", (int) this.getStatValue(stack, "teleport", "cooldown"));
     }
 
     public BlockPos getHitResult(Player player, ItemStack stack) {
-        Level world = player.getCommandSenderWorld();
-        Vec3 view = player.getViewVector(0);
-        Vec3 eyeVec = player.getEyePosition(0);
+        var level = player.getCommandSenderWorld();
+        var viewVec = player.getViewVector(0);
+        var eyeVec = player.getEyePosition(0);
+        var distance = getStatValue(stack, "teleport", "distance");
 
-        double distance = getStatValue(stack, "teleport", "distance");
+        var blockPos = level.clip(new ClipContext(eyeVec, eyeVec.add(viewVec.x * distance, viewVec.y * distance,
+                viewVec.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getBlockPos();
 
-        BlockHitResult ray = world.clip(new ClipContext(eyeVec, eyeVec.add(view.x * distance, view.y * distance,
-                view.z * distance), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
-        BlockPos pos = ray.getBlockPos();
-
-        if (!world.getBlockState(pos).blocksMotion())
+        if (!hasCollision(level, blockPos))
             return null;
 
-        pos = pos.above();
+        blockPos = blockPos.above();
 
         for (int i = 0; i < 10; i++) {
-            if (world.getBlockState(pos).blocksMotion() || world.getBlockState(pos.above()).blocksMotion()) {
-                pos = pos.above();
+            if (hasCollision(level, blockPos) || hasCollision(level, blockPos.above())) {
+                blockPos = blockPos.above();
 
                 continue;
             }
 
-            return pos;
+            return blockPos;
         }
 
         return null;
     }
 
+    private boolean hasCollision(Level level, BlockPos pos) {
+        return level.getBlockState(pos).getCollisionShape(level, pos).max(Direction.Axis.Y) == 1;
+    }
 }

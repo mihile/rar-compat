@@ -26,16 +26,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.ElderGuardian;
@@ -50,13 +46,10 @@ import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
-import java.util.Random;
 
 import static it.hurts.sskirillss.relics.utils.EntityUtils.rayTraceEntity;
 
 public class CowboyHatItem extends WearableRelicItem {
-    // TODO: Get rid of direct usage of entity types (like a Pig, Horse, Squid, etc-etc), use abstract interfaces instead where possible
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -75,7 +68,7 @@ public class CowboyHatItem extends WearableRelicItem {
                         .ability(AbilityData.builder("overlord")
                                 .active(CastData.builder().type(CastType.INSTANTANEOUS)
                                         .predicate("overlord", PredicateType.CAST, (player, stack) -> rayTraceEntity(player, entity -> entity instanceof Mob
-                                                && !(entity instanceof Saddleable) && checkMob(entity, Squid.class, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class)
+                                                && checkMob(entity, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class)
                                                 && !player.isPassenger(), player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue()) != null)
                                         .build())
                                 .requiredLevel(5)
@@ -116,64 +109,57 @@ public class CowboyHatItem extends WearableRelicItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (!(slotContext.entity() instanceof Player player) || !(player.getRootVehicle() instanceof Mob beingMounted)
-                || !checkMob(player, Squid.class, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class)
-                || (beingMounted instanceof Horse horse && !horse.isTamed())) // TODO: Replace with OwnableEntity instance
+                || !getToggled(stack) || !checkMob(player, EnderDragon.class, WitherBoss.class, Warden.class, ElderGuardian.class))
             return;
 
-        var level = player.getCommandSenderWorld();
-        var random = new Random(); // TODO: Do not create random instance, use level/entity random provider instead
-        var isSaddleable = player.getRootVehicle() instanceof Saddleable;
-
-        if (!(beingMounted instanceof Pig) && !isSaddleable) // TODO: Replace with ItemSteerable instance
-            if (isAbilityOnCooldown(stack, "overlord") || !isAbilityUnlocked(stack, "overlord")) { // TODO: Use IRelicItem#canPlayerUseAbility instead
-                player.stopRiding();
-
-                setAbilityCooldown(stack, "overlord", 0);
-
-                return;
-            }
-
-        if (getTime(stack) >= getStatValue(stack, "overlord", "time") * 20 && !isSaddleable) {
+        if (isAbilityOnCooldown(stack, "overlord") || !isAbilityUnlocked(stack, "overlord"))
             player.stopRiding();
-            player.playSound(SoundEvents.WOOL_HIT, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
+        else {
+            var random = player.getRandom();
+            var level = player.getCommandSenderWorld();
 
-            setTime(stack, 0);
+            if (getTime(stack) >= getStatValue(stack, "overlord", "time") * 20) {
+                player.stopRiding();
+                player.playSound(SoundEvents.WOOL_HIT, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
 
-            for (int i = 0; i < 50; i++)
-                level.addParticle(
-                        ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(106), 50 + random.nextInt(100), 50 + random.nextInt(100)),
-                                0.5F, 60, 0.95F),
-                        player.getX(), player.getY() + 1.0, player.getZ(),
-                        (random.nextDouble() - 0.5) * 3.0,
-                        random.nextDouble() * 1.5,
-                        (random.nextDouble() - 0.5) * 3.0);
-        } else {
-            if (level.isClientSide() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping
-                    && !isSaddleable && beingMounted.onGround() && !isWaterOrFlyingMob(beingMounted))
-                beingMounted.addDeltaMovement(new Vec3(0, 0.8, 0));
+                setTime(stack, 0);
 
-            var knownMovement = beingMounted.getKnownMovement();
+                for (int i = 0; i < 50; i++)
+                    level.addParticle(ParticleUtils.constructSimpleSpark(new Color(150 + random.nextInt(106), 50 + random.nextInt(100), 50 + random.nextInt(100)),
+                                    0.5F, 60, 0.95F),
+                            player.getX(), player.getY() + 1.0, player.getZ(),
+                            (random.nextDouble() - 0.5) * 3.0,
+                            random.nextDouble() * 1.5,
+                            (random.nextDouble() - 0.5) * 3.0);
+            } else {
+                if (level.isClientSide() && player instanceof LocalPlayer localPlayer && localPlayer.input.jumping && beingMounted.onGround()
+                        && !isWaterOrFlyingMob(beingMounted))
+                    beingMounted.addDeltaMovement(new Vec3(0, 0.8, 0));
 
-            if ((knownMovement.x != 0 || knownMovement.z != 0) && random.nextFloat() <= 0.25F && player.tickCount % 20 == 0)
-                spreadRelicExperience(player, stack, 1);
+                var knownMovement = beingMounted.getKnownMovement();
 
-            if (isAbilityUnlocked(stack, "cowboy"))
-                changeAttributes(beingMounted, stack, true, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
+                if ((knownMovement.x != 0 || knownMovement.z != 0) && random.nextFloat() <= 0.25F && player.tickCount % 20 == 0)
+                    spreadRelicExperience(player, stack, 1);
 
-            if (!isSaddleable)
+                if (isAbilityUnlocked(stack, "cowboy"))
+                    changeAttributes(beingMounted, stack, true, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
+
                 addTime(stack, 1);
+            }
         }
     }
 
     @Override
     public void castActiveAbility(ItemStack stack, Player player, String ability, CastType type, CastStage stage) {
-        if (!ability.equals("overlord") || player.getCommandSenderWorld().isClientSide)
+        if (player.getCommandSenderWorld().isClientSide() || !ability.equals("overlord"))
             return;
 
         EntityHitResult result = rayTraceEntity(player, entity -> entity instanceof Mob, player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue());
 
         if (result == null)
             return;
+
+        setToggled(stack, true);
 
         spreadRelicExperience(player, stack, 1);
 
@@ -188,7 +174,7 @@ public class CowboyHatItem extends WearableRelicItem {
 
         changeAttributes(mob, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
 
-        if (!(player.getControlledVehicle() instanceof Mob) && !(mob instanceof Pig))
+        if (!(player.getControlledVehicle() instanceof Mob))
             player.stopRiding();
     }
 
@@ -226,6 +212,14 @@ public class CowboyHatItem extends WearableRelicItem {
         stack.set(DataComponentRegistry.TIME, Math.max(val, 0));
     }
 
+    public void setToggled(ItemStack stack, boolean val) {
+        stack.set(DataComponentRegistry.TOGGLED, val);
+    }
+
+    public boolean getToggled(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TOGGLED, false);
+    }
+
     @EventBusSubscriber
     public static class CowboyEvent {
         @SubscribeEvent
@@ -235,16 +229,13 @@ public class CowboyHatItem extends WearableRelicItem {
 
             var stack = EntityUtils.findEquippedCurio(player, ModItems.COWBOY_HAT.value());
 
-            if (!event.isDismounting() || !(event.getEntityBeingMounted() instanceof Mob mount) || !(stack.getItem() instanceof CowboyHatItem relic)
-                    || player.getCommandSenderWorld().isClientSide())
+            if (player.getCommandSenderWorld().isClientSide() || !(stack.getItem() instanceof CowboyHatItem relic) || !event.isDismounting()
+                    || !(event.getEntityBeingMounted() instanceof Mob mount) || !relic.getToggled(stack))
                 return;
 
-            if (!(mount instanceof Saddleable)) {
-                relic.addAbilityCooldown(stack, "overlord", 1200);
-
-                relic.setTime(stack, 0);
-            }
-
+            relic.addAbilityCooldown(stack, "overlord", 1200);
+            relic.setTime(stack, 0);
+            relic.setToggled(stack, false);
             relic.changeAttributes(mount, stack, false, Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH, Attributes.SAFE_FALL_DISTANCE);
         }
     }

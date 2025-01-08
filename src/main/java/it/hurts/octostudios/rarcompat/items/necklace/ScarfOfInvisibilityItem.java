@@ -71,8 +71,8 @@ public class ScarfOfInvisibilityItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || !isAbilityUnlocked(stack, "invisible")
-                || player.getCommandSenderWorld().isClientSide())
+        if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide()
+                || !isAbilityUnlocked(stack, "invisible"))
             return;
 
         var time = getTime(stack);

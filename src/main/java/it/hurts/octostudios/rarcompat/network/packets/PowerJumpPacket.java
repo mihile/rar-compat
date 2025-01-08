@@ -24,8 +24,7 @@ public class PowerJumpPacket implements CustomPacketPayload {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PowerJumpPacket> STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public void encode(RegistryFriendlyByteBuf p_320158_, PowerJumpPacket p_320396_) {
-
+        public void encode(RegistryFriendlyByteBuf buf, PowerJumpPacket packet) {
         }
 
         @Nonnull
@@ -33,7 +32,6 @@ public class PowerJumpPacket implements CustomPacketPayload {
         public PowerJumpPacket decode(@Nonnull RegistryFriendlyByteBuf buf) {
             return new PowerJumpPacket();
         }
-
     };
 
     public void handle(IPayloadContext ctx) {
