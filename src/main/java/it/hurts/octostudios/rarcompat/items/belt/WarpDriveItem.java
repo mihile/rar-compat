@@ -146,8 +146,6 @@ public class WarpDriveItem extends WearableRelicItem {
     }
 
     private boolean hasCollision(Level level, BlockPos pos) {
-        var state = level.getBlockState(pos);
-
-        return state.getCollisionShape(level, pos).max(Direction.Axis.Y) == 1;
+        return level.getBlockState(pos).getCollisionShape(level, pos).max(Direction.Axis.Y) == 1;
     }
 }

@@ -15,12 +15,13 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 
 public class AntidoteVesselItem extends WearableRelicItem {
 
@@ -39,6 +40,13 @@ public class AntidoteVesselItem extends WearableRelicItem {
                                         .link(0, 1).link(1, 2).link(1, 2).link(1, 3)
                                         .build())
                                 .build())
+                        .ability(AbilityData.builder("devourer")
+                                .stat(StatData.builder("duration")
+                                        .initialValue(0.1D, 0.3D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
+                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .build())
+                                .build())
                         .build())
                 .style(StyleData.builder()
                         .tooltip(TooltipData.builder()
@@ -55,6 +63,10 @@ public class AntidoteVesselItem extends WearableRelicItem {
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
+                                .source(LevelingSourceData.abilityBuilder("devourer ")
+                                        .initialValue(1)
+                                        .gem(GemShape.SQUARE, GemColor.BLUE)
+                                        .build())
                                 .build())
                         .build())
                 .loot(LootData.builder()
@@ -64,25 +76,54 @@ public class AntidoteVesselItem extends WearableRelicItem {
     }
 
     @EventBusSubscriber
-    public static class AntidoteVeselEvent {
-
+    public static class AntidoteVeselEvents {
         @SubscribeEvent
-        public static void onGetEffect(MobEffectEvent.Added event) {
-            MobEffectInstance effectInstance = event.getEffectInstance();
-
-            if (effectInstance == null || effectInstance == MobEffects.BAD_OMEN || effectInstance == MobEffects.TRIAL_OMEN || effectInstance == MobEffects.RAID_OMEN
-                    || effectInstance.getEffect().value().isBeneficial() || !(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide())
+        public static void onIncomingDamage(AttackEntityEvent event) {
+            if (!(event.getTarget() instanceof LivingEntity target) || target.getCommandSenderWorld().isClientSide()
+                    || target.getActiveEffects().isEmpty())
                 return;
 
-            ItemStack itemStack = EntityUtils.findEquippedCurio(player, ModItems.ANTIDOTE_VESSEL.value());
+            var player = event.getEntity();
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.ANTIDOTE_VESSEL.value());
 
-            if (!(itemStack.getItem() instanceof AntidoteVesselItem relic) || !relic.canPlayerUseAbility(player, itemStack, "antidote"))
+            if (!(stack.getItem() instanceof AntidoteVesselItem relic) || !relic.canPlayerUseAbility(player, stack, "devourer"))
                 return;
 
-            event.getEffectInstance().duration = (int) (effectInstance.getDuration() * (1 - relic.getStatValue(itemStack, "antidote", "amount")));
+            for (var activeEffect : target.getActiveEffects().stream().filter(effect -> effect.getEffect().value().isBeneficial()).toList()) {
+                var transferDuration = (int) (activeEffect.getDuration() * relic.getStatValue(stack, "devourer", "duration"));
 
-            relic.spreadRelicExperience(player, itemStack, 1);
+                target.removeEffect(activeEffect.getEffect());
+                target.addEffect(new MobEffectInstance(activeEffect.getEffect(), activeEffect.getDuration() - transferDuration, activeEffect.getAmplifier()));
+
+                MobEffectInstance existingEffect = player.getEffect(activeEffect.getEffect());
+
+                if (existingEffect != null) {
+                    transferDuration += existingEffect.getDuration();
+                    player.removeEffect(activeEffect.getEffect());
+                }
+
+                player.addEffect(new MobEffectInstance(activeEffect.getEffect(), transferDuration, activeEffect.getAmplifier()));
+
+                relic.spreadRelicExperience(player, stack, 1);
+            }
         }
 
+        @SubscribeEvent
+        public static void onAddedEffect(MobEffectEvent.Added event) {
+            var effectDuration = event.getEffectInstance();
+
+            if (!(event.getEntity() instanceof Player player) || player.getCommandSenderWorld().isClientSide()
+                    || effectDuration.getEffect().value().isBeneficial())
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.ANTIDOTE_VESSEL.value());
+
+            if (!(stack.getItem() instanceof AntidoteVesselItem relic) || !relic.canPlayerUseAbility(player, stack, "antidote"))
+                return;
+
+            effectDuration.duration = (int) (effectDuration.getDuration() * (1 - relic.getStatValue(stack, "antidote", "amount")));
+
+            relic.spreadRelicExperience(player, stack, 1);
+        }
     }
 }

@@ -20,14 +20,16 @@ import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class HeliumFlamingoItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -38,6 +40,11 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                                         .build())
                                 .stat(StatData.builder("time")
                                         .initialValue(3D, 5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .build())
+                                .stat(StatData.builder("speed")
+                                        .initialValue(0.2D, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
@@ -88,61 +95,91 @@ public class HeliumFlamingoItem extends WearableRelicItem {
             spreadRelicExperience(player, stack, 1);
         }
 
-        int timeWorked = (int) MathUtils.round(getStatValue(stack, "flying", "time"), 0);
+        int statValue = (int) MathUtils.round(getStatValue(stack, "flying", "time"), 0);
 
-        if (getTime(stack) >= timeWorked || player.onGround()) {
-            player.setDeltaMovement(player.getDeltaMovement().x, -0.08, player.getKnownMovement().z);
+        if (getTime(stack) >= statValue) {
+            player.setDeltaMovement(player.getDeltaMovement().x, -0.25, player.getKnownMovement().z);
             player.fallDistance = 0;
 
             setToggled(stack, false);
         }
     }
 
-    public static boolean getToggled(ItemStack stack) {
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
+        if (!(slotContext.entity() instanceof Player player) || newStack == stack)
+            return;
+
+        EntityUtils.removeAttribute(player, stack, NeoForgeMod.SWIM_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        setToggled(stack, false);
+        setTime(stack, 0);
+    }
+
+    public boolean getToggled(ItemStack stack) {
         return stack.getOrDefault(DataComponentRegistry.TOGGLED, false);
     }
 
-    public static void setToggled(ItemStack stack, boolean val) {
+    public void setToggled(ItemStack stack, boolean val) {
         stack.set(DataComponentRegistry.TOGGLED, val);
     }
 
-    public static void addTime(ItemStack stack, int val) {
-        stack.set(DataComponentRegistry.TIME, getTime(stack) + val);
+    public void addTime(ItemStack stack, int time) {
+        setTime(stack, getTime(stack) + time);
     }
 
-    public static int getTime(ItemStack stack) {
+    public int getTime(ItemStack stack) {
         return stack.getOrDefault(DataComponentRegistry.TIME, 0);
+    }
+
+    public void setTime(ItemStack stack, int val) {
+        stack.set(DataComponentRegistry.TIME, Math.max(val, 0));
     }
 
     @EventBusSubscriber
     public static class HeliumFlamingoEvent {
+        @SubscribeEvent
+        public static void onLivingJump(LivingEvent.LivingJumpEvent event) {
+            if (!(event.getEntity() instanceof Player player))
+                return;
+
+            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.HELIUM_FLAMINGO.value());
+
+            if (!(stack.getItem() instanceof HeliumFlamingoItem relic) || player.isInWater()
+                    || !relic.isAbilityTicking(stack, "flying"))
+                return;
+
+            var statValue = (int) MathUtils.round(relic.getStatValue(stack, "flying", "time"), 0);
+            var time = relic.getTime(stack);
+
+            if (time >= statValue || Math.abs(player.getKnownMovement().x) <= 0.01D || Math.abs(player.getKnownMovement().z) <= 0.01D)
+                return;
+
+            player.setSprinting(true);
+            relic.setToggled(stack, true);
+        }
 
         @SubscribeEvent
         public static void onSwimAir(PlayerSwimEvent event) {
             Player player = event.getEntity();
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.HELIUM_FLAMINGO.value());
 
-            if (!(stack.getItem() instanceof HeliumFlamingoItem relic) || player.isInWater() || player.getSpeed() >= 0.132)
+            if (!(stack.getItem() instanceof HeliumFlamingoItem relic) || player.isInWater() || !relic.isAbilityTicking(stack, "flying"))
                 return;
 
-            int timeWorked = (int) MathUtils.round(relic.getStatValue(stack, "flying", "time"), 0);
-
-            if (getTime(stack) >= timeWorked && player.onGround()) {
-                addTime(stack, -getTime(stack));
-
-                player.setSprinting(false);
-
-                setToggled(stack, false);
-
-                event.setResult(EventResult.PASS);
-
-                return;
+            if (player.onGround()) {
+                relic.setTime(stack, 0);
+                relic.setToggled(stack, false);
             }
 
-            if (relic.isAbilityTicking(stack, "flying") && getTime(stack) < timeWorked && player.isSprinting() && !player.onGround()) {
+            if (relic.getToggled(stack)) {
                 event.setResult(EventResult.SUCCESS);
+                player.setSprinting(true);
 
-                setToggled(stack, true);
+                EntityUtils.applyAttribute(player, stack, NeoForgeMod.SWIM_SPEED, (float) relic.getStatValue(stack, "flying", "speed"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            } else {
+                event.setResult(EventResult.PASS);
+
+                EntityUtils.removeAttribute(player, stack, NeoForgeMod.SWIM_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
             }
         }
     }
