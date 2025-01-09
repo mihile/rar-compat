@@ -72,19 +72,10 @@ public class VillagerHatItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || getIronGolems(player, player.getCommandSenderWorld()) == null)
+        if (!(slotContext.entity() instanceof Player player))
             return;
 
-        for (IronGolem mob : getIronGolems(player, player.getCommandSenderWorld())) {
-            if (mob.getTarget() != player)
-                break;
-
-            mob.setTarget(null);
-        }
-    }
-
-    public List<IronGolem> getIronGolems(Player player, Level level) {
-        return level.getEntitiesOfClass(IronGolem.class, player.getBoundingBox().inflate(5)).stream().filter(mob -> mob.getTarget() == player && !mob.isDeadOrDying()).toList();
+        player.getCommandSenderWorld().getEntitiesOfClass(IronGolem.class, player.getBoundingBox().inflate(8)).stream().filter(mob -> mob.getTarget() == player).forEach(mob -> mob.setTarget(null));
     }
 
     @EventBusSubscriber

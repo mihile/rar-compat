@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.mixin;
+package it.hurts.octostudios.rarcompat.mixin.render;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.hat.NightVisionGogglesItem;

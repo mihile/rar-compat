@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.mixin;
+package it.hurts.octostudios.rarcompat.mixin.render;
 
 import artifacts.client.item.model.BeltModel;
 import net.minecraft.client.model.geom.PartPose;

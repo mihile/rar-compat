@@ -30,7 +30,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.util.Objects;
 
 public class CloudInBottleItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()

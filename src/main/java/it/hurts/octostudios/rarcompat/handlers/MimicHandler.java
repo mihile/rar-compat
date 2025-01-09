@@ -47,7 +47,9 @@ public class MimicHandler {
 
         var level = entity.getCommandSenderWorld();
         var random = level.getRandom();
+        var persistentData = entity.getPersistentData();
 
-        event.getDrops().add(new ItemEntity(level, entity.getX(), entity.getY(), entity.getZ(), ITEMS.get(random.nextInt(ITEMS.size())).getDefaultInstance()));
+        for (int i = 0; i < (persistentData.getInt("relicCount") == 0 ? 1 : persistentData.getInt("relicCount")); i++)
+            event.getDrops().add(new ItemEntity(level, entity.getX(), entity.getY(), entity.getZ(), ITEMS.get(random.nextInt(ITEMS.size())).getDefaultInstance()));
     }
 }

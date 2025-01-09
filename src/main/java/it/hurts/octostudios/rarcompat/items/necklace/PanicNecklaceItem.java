@@ -19,14 +19,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class PanicNecklaceItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -81,7 +79,8 @@ public class PanicNecklaceItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || player.getCommandSenderWorld().isClientSide() || !canPlayerUseAbility(player, stack, "panic"))
             return;
 
-        double target = getMobsCount(player, player.level(), stack) * this.getStatValue(stack, "panic", "movement");
+        double target = player.getCommandSenderWorld().getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius")))
+                .stream().filter(mob -> mob.getTarget() == player).count() * this.getStatValue(stack, "panic", "movement");
 
         double speed = getSpeed(stack);
         double step = 0.01D;
@@ -103,10 +102,6 @@ public class PanicNecklaceItem extends WearableRelicItem {
 
     public void setSpeed(ItemStack stack, double val) {
         stack.set(DataComponentRegistry.SPEED, Math.max(val, 0D));
-    }
-
-    public int getMobsCount(Player player, Level level, ItemStack stack) {
-        return (int) level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(getStatValue(stack, "panic", "radius"))).stream().filter(mob -> mob.getTarget() == player && !mob.isDeadOrDying()).count();
     }
 
     @EventBusSubscriber

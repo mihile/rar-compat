@@ -24,7 +24,6 @@ import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class CharmOfSinkingItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -34,7 +33,7 @@ public class CharmOfSinkingItem extends WearableRelicItem {
                                 .build())
                         .ability(AbilityData.builder("immersion")
                                 .stat(StatData.builder("air")
-                                        .initialValue(1D, 3D)
+                                        .initialValue(1D, 3D) // TODO: Use actual percent value or either real time value instead of current implementation
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1)
                                         .formatValue(value -> (int) MathUtils.round(value * 10, 1))
                                         .build())
@@ -102,9 +101,10 @@ public class CharmOfSinkingItem extends WearableRelicItem {
 
             var tickCount = player.tickCount;
 
-            if (tickCount % 20 == 0 && player.onGround() && player.getAirSupply() > 1)
+            if (tickCount % 20 == 0 && player.onGround() && player.getAirSupply() > 1) // TODO: Do not duplicate conditional blocks
                 relic.spreadRelicExperience(player, stack, 1);
 
+            // TODO: Do not hard-lock 'else' block since it may disable other mods functionality
             if (tickCount % (int) relic.getStatValue(stack, "immersion", "air") == 0) {
                 event.setConsumeAirAmount(1);
             } else

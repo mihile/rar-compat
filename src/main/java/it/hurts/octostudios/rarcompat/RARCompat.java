@@ -2,6 +2,7 @@ package it.hurts.octostudios.rarcompat;
 
 import it.hurts.octostudios.rarcompat.handlers.MimicHandler;
 import it.hurts.octostudios.rarcompat.init.ConfigRegistry;
+import it.hurts.octostudios.rarcompat.init.ItemRegistry;
 import it.hurts.octostudios.rarcompat.init.SoundRegistry;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -14,6 +15,7 @@ public class RARCompat {
     public RARCompat(IEventBus bus) {
         bus.addListener(this::setupCommon);
 
+        ItemRegistry.register(bus);
         SoundRegistry.register(bus);
     }
 
