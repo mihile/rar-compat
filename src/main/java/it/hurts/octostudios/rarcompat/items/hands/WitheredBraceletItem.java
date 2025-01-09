@@ -86,7 +86,8 @@ public class WitheredBraceletItem extends WearableRelicItem {
             var stack = EntityUtils.findEquippedCurio(player, ModItems.WITHERED_BRACELET.value());
             var random = player.getRandom();
 
-            if (!(stack.getItem() instanceof WitheredBraceletItem relic) || random.nextDouble() > relic.getStatValue(stack, "withered", "chance"))
+            if (!(stack.getItem() instanceof WitheredBraceletItem relic) || random.nextDouble() > relic.getStatValue(stack, "withered", "chance")
+                    || !relic.isAbilityUnlocked(stack, "withered"))
                 return;
 
             attacker.addEffect(new MobEffectInstance(MobEffects.WITHER, (int) relic.getStatValue(stack, "withered", "time") * 20, 1));
