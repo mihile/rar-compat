@@ -1,6 +1,10 @@
 {
   "tooltip.rarcompat.modified" : "다음 모드에 의해 수정됨 [유물: 아티팩트 호환]",
 
+  "tooltip.rarcompat.mimi_dust": "상자에 사용하면 상자가 미믹으로 변하며, 변하기 전 상자가 담고 있던 만큼의 §o무작위§r 유물을 드롭합니다.",
+
+  "item.rarcompat.mimi_dust": "미믹 가루",
+
   "tooltip.relics.umbrella.description": "유물 소지자의 낙하 속도를 완화하여 어떤 높이에서도 안전한 착지를 보장합니다. 숙련된 사용자의 손에 맡겨지면 신뢰할 수 있는 방패로 변해 적을 막아낼 수 있습니다.",
   "tooltip.relics.umbrella.ability.glider": "안전한 착지",
   "tooltip.relics.umbrella.ability.glider.description": "우산을 들고 있으면 플레이어의 낙하 속도가 점차 감소하고, 낙하 속도에 따라 피해가 줄어듭니다. 낙하 속도가 느릴수록 피해 감소량이 커져 최대 피해 무효화까지 가능합니다.",
@@ -167,8 +171,8 @@
   "tooltip.relics.antidote_vessel.ability.antidote.description": "해로운 상태이상 지속시간이 %1$s%% 줄어듭니다.",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.title": "상태이상 저항",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.description": "%2$s 능력을 사용할 때마다 +%1$s 유물 경험치를 획득합니다.",
-
-  "tooltip.relics.power_glove.description": "유물 소지자에게 강력한 공격을 할 수 있는 능력을 부여합니다.",
+  
+  "tooltip.relics.power_glove.description": "유물 소지자에게 일격을 날릴 수 있는 능력을 부여합니다.",
   "tooltip.relics.power_glove.ability.power": "파워 스트라이크",
   "tooltip.relics.power_glove.ability.power.description": "5초의 재사용 대기시간을 가진 일격을 날립니다. 해당 일격은 +%1$s%% 증가된 피해를 줍니다.",
   "tooltip.relics.power_glove.leveling_source.power.title": "파워 스트라이크",
