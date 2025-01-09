@@ -19,12 +19,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.awt.*;
 
 public class FlamePendantItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -38,7 +37,7 @@ public class FlamePendantItem extends WearableRelicItem {
                                 .stat(StatData.builder("chance")
                                         .initialValue(0.25D, 0.35D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 2))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 10, 18).star(1, 4, 14).star(2, 11, 13)
@@ -70,10 +69,9 @@ public class FlamePendantItem extends WearableRelicItem {
     }
 
     @EventBusSubscriber
-    public static class Event {
-
+    public static class FlamePendantEvent {
         @SubscribeEvent
-        public static void onReceivingDamage(LivingIncomingDamageEvent event) {
+        public static void onReceivingDamage(LivingDamageEvent.Pre event) {
             var attacker = event.getSource().getEntity();
 
             if (!(event.getEntity() instanceof Player player) || attacker == null || attacker == player)
@@ -83,7 +81,7 @@ public class FlamePendantItem extends WearableRelicItem {
             var stack = EntityUtils.findEquippedCurio(player, ModItems.FLAME_PENDANT.value());
             var random = player.getRandom();
 
-            if (level.isClientSide() || !(stack.getItem() instanceof FlamePendantItem relic) || random.nextDouble() >= relic.getStatValue(stack, "fire", "chance")
+            if (level.isClientSide() || !(stack.getItem() instanceof FlamePendantItem relic) || random.nextDouble() > relic.getStatValue(stack, "fire", "chance")
                     || !relic.canPlayerUseAbility(player, stack, "fire"))
                 return;
 

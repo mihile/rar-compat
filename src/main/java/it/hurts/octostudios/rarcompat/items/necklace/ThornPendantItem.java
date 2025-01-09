@@ -22,12 +22,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.awt.*;
 
 public class ThornPendantItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -46,7 +45,7 @@ public class ThornPendantItem extends WearableRelicItem {
                                 .stat(StatData.builder("chance")
                                         .initialValue(0.1D, 0.15D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 2))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 0))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 10, 18).star(1, 4, 14).star(2, 11, 13)
@@ -78,9 +77,9 @@ public class ThornPendantItem extends WearableRelicItem {
     }
 
     @EventBusSubscriber
-    public static class Event {
+    public static class ThornPendantEvent {
         @SubscribeEvent
-        public static void onReceivingDamage(LivingIncomingDamageEvent event) {
+        public static void onReceivingDamage(LivingDamageEvent.Pre event) {
             if (!(event.getEntity() instanceof Player player) || !(event.getSource().getEntity() instanceof LivingEntity attacker) || attacker == player)
                 return;
 
@@ -88,15 +87,15 @@ public class ThornPendantItem extends WearableRelicItem {
             var random = player.getRandom();
             var level = player.getCommandSenderWorld();
 
-            if (level.isClientSide() || !(stack.getItem() instanceof ThornPendantItem relic) || random.nextDouble() >= relic.getStatValue(stack, "poison", "chance")
-                    || !relic.canPlayerUseAbility(player, stack, "poison"))
+            if (level.isClientSide() || !(stack.getItem() instanceof ThornPendantItem relic) || !relic.canPlayerUseAbility(player, stack, "poison")
+                    || random.nextDouble() > relic.getStatValue(stack, "poison", "chance"))
                 return;
 
             var time = (int) (relic.getStatValue(stack, "poison", "time") * 20);
 
             relic.spreadRelicExperience(player, stack, 1);
 
-            attacker.hurt(event.getSource(), (float) (event.getAmount() * relic.getStatValue(stack, "poison", "multiplier")));
+            attacker.hurt(event.getSource(), (float) (event.getNewDamage() * relic.getStatValue(stack, "poison", "multiplier")));
             attacker.addEffect(new MobEffectInstance(MobEffects.POISON, time, 1));
 
             ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + random.nextInt(50), 200 + random.nextInt(55), 50 + random.nextInt(50)), 0.4F, 30, 0.95F),
