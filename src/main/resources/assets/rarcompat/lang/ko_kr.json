@@ -9,7 +9,7 @@
   "tooltip.relics.umbrella.ability.glider": "안전한 착지",
   "tooltip.relics.umbrella.ability.glider.description": "우산을 들고 있으면 플레이어의 낙하 속도가 점차 감소하고, 낙하 속도에 따라 피해가 줄어듭니다. 낙하 속도가 느릴수록 피해 감소량이 커져 최대 피해 무효화까지 가능합니다.",
   "tooltip.relics.umbrella.ability.shield": "에어 쉴드",
-  "tooltip.relics.umbrella.ability.shield.description": "사용 시 방패 역할을 하며, 적을 %1$s블록 밀쳐냅니다.",
+  "tooltip.relics.umbrella.ability.shield.description": "사용 시 방패 역할을 하며, 적을 %1$s 블록 밀쳐냅니다.",
   "tooltip.relics.umbrella.leveling_source.glider_1.title": "자유 낙하",
   "tooltip.relics.umbrella.leveling_source.glider_1.description": "떨어지는 시간(초) 당 +%1$s 유물 경험치를 획득합니다.",
   "tooltip.relics.umbrella.leveling_source.glider_2.title": "공중 곡예사",
@@ -158,7 +158,7 @@
   "tooltip.relics.digging_claws.ability.fast_mining": "빠른 광질",
   "tooltip.relics.digging_claws.ability.fast_mining.description": "채굴 속도를 +%1$s%% 증가시킵니다.",
   "tooltip.relics.digging_claws.leveling_source.fast_mining.title": "빠른 광질",
-  "tooltip.relics.digging_claws.leveling_source.fast_mining.description": "채굴한 블록당 +%1$s의 유물 경험치를 획득합니다. 더 단단한 블록일수록 얻는 유물 경험치가 증가합니다. 바로 부서지는 블록에는 적용되지 않습니다.",
+  "tooltip.relics.digging_claws.leveling_source.fast_mining.description": "채굴한 블록당 +%1$s 유물 경험치를 획득합니다. 더 단단한 블록일수록 얻는 유물 경험치가 증가합니다. 바로 부서지는 블록에는 적용되지 않습니다.",
 
   "tooltip.relics.feral_claws.description": "유물 소지자 내면의 살육 본능을 깨워, 공격할 때마다 공격 속도가 증가합니다.",
   "tooltip.relics.feral_claws.ability.claws": "야생 발톱",
@@ -239,7 +239,7 @@
 
   "tooltip.relics.bunny_hoppers.description": "유물 소지자의 다리를 강화하여 더 높이 점프할 수 있게 합니다.",
   "tooltip.relics.bunny_hoppers.ability.hold": "깡충깡충",
-  "tooltip.relics.bunny_hoppers.ability.hold.description": "점프 버튼을 길게 누르면 %1$s블록 더 높이 점프할 수 있습니다.",
+  "tooltip.relics.bunny_hoppers.ability.hold.description": "점프 버튼을 길게 누르면 %1$s 블록 더 높이 점프할 수 있습니다.",
   "tooltip.relics.bunny_hoppers.leveling_source.hold.title": "깡충깡충",
   "tooltip.relics.bunny_hoppers.leveling_source.hold.description": "%2$s 능력으로 점프할 때마다 +%1$s 유물 경험치를 획득합니다.",
 
