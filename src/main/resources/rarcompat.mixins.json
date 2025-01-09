@@ -14,9 +14,9 @@
     "init.ModItemsMixin"
   ],
   "client": [
-    "BeltModelMixin",
-    "GameRendererMixin",
-    "HumanoidModelMixin"
+    "render.BeltModelMixin",
+    "render.GameRendererMixin",
+    "render.HumanoidModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

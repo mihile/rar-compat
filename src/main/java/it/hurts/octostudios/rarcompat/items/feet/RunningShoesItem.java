@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
@@ -28,6 +29,12 @@ public class RunningShoesItem extends WearableRelicItem {
                                         .initialValue(0.5D, 0.8D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .build())
+                                .research(ResearchData.builder()
+                                        .star(0, 13, 27).star(1, 4, 18).star(2, 4, 9).star(3, 8, 6)
+                                        .star(4, 12, 6).star(5, 16, 10).star(6, 16, 15).star(7, 20, 21)
+                                        .star(8, 20, 27)
+                                        .link(0, 1).link(1, 2).link(2, 3).link(3, 4).link(4, 5).link(5, 6).link(6, 7).link(7, 8).link(8, 0)
                                         .build())
                                 .build())
                         .build())
