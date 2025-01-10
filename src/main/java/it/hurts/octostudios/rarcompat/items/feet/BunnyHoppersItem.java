@@ -5,8 +5,6 @@ import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.octostudios.rarcompat.network.packets.PowerJumpPacket;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
-import it.hurts.sskirillss.relics.items.relics.base.data.cast.misc.CastType;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
@@ -31,7 +29,6 @@ import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
-import java.util.Random;
 
 public class BunnyHoppersItem extends WearableRelicItem {
     @Override
@@ -79,13 +76,15 @@ public class BunnyHoppersItem extends WearableRelicItem {
         if (!(slotContext.entity() instanceof Player player) || !canPlayerUseAbility(player, stack, "hold"))
             return;
 
-        if (player.onGround() || getTime(stack) <= 0) {
+        if (player.onGround() || getTime(stack) == 0) {
             addTime(stack, -getTime(stack));
             setToggled(stack, true);
         }
 
-        if (!player.getCommandSenderWorld().isClientSide() || !(player instanceof LocalPlayer localPlayer)
-                || getTime(stack) >= getStatValue(stack, "hold", "distance") || player.isFallFlying()
+        var level = player.getCommandSenderWorld();
+
+        if (!level.isClientSide() || !(player instanceof LocalPlayer localPlayer)
+                || getTime(stack) >=getStatValue(stack, "hold", "distance") || player.isFallFlying()
                 || !getToggled(stack))
             return;
 
@@ -94,17 +93,17 @@ public class BunnyHoppersItem extends WearableRelicItem {
         } else {
             NetworkHandler.sendToServer(new PowerJumpPacket());
 
-            player.setDeltaMovement(new Vec3(player.getDeltaMovement().x, 0.6 + ((double) getTime(stack) / 80), player.getDeltaMovement().z));
+            player.setDeltaMovement(new Vec3(player.getDeltaMovement().x, 0.5 + ((double) getTime(stack) / 80), player.getDeltaMovement().z));
 
-            Random random = new Random();
+            var random = player.getRandom();
 
             for (int i = 0; i < 10; i++) {
                 double offsetX = (random.nextDouble() - 0.5) * 0.5;
                 double offsetY = (random.nextDouble() - 0.5) * 0.5;
                 double offsetZ = (random.nextDouble() - 0.5) * 0.5;
 
-                player.level().addParticle(ParticleUtils.constructSimpleSpark(new Color(200 + random.nextInt(56), 200 + random.nextInt(56), 200 + random.nextInt(56)),
-                                0.7F, 40, 0.9F),
+                level.addParticle(ParticleUtils.constructSimpleSpark(new Color(200 + random.nextInt(56), 200 + random.nextInt(56), 200 + random.nextInt(56)),
+                                0.5F, 40, 0.9F),
                         player.getX() + offsetX,
                         player.getY() + 0.1 + offsetY,
                         player.getZ() + offsetZ,
@@ -132,7 +131,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
     @EventBusSubscriber
     public static class BunnyHoppersEvent {
         @SubscribeEvent
-        public static void onJumping(LivingEvent.LivingJumpEvent event) {
+        public static void onPlayerJumping(LivingEvent.LivingJumpEvent event) {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
@@ -145,7 +144,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
         }
 
         @SubscribeEvent
-        public static void onFall(LivingFallEvent event) {
+        public static void onPlayerFall(LivingFallEvent event) {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
@@ -154,7 +153,7 @@ public class BunnyHoppersItem extends WearableRelicItem {
             if (!(stack.getItem() instanceof BunnyHoppersItem relic) || player.getCommandSenderWorld().isClientSide())
                 return;
 
-            event.setDistance(event.getDistance() - (float) relic.getTime(stack));
+            event.setDistance(Math.max(event.getDistance() - (float) relic.getTime(stack),0));
         }
     }
 }

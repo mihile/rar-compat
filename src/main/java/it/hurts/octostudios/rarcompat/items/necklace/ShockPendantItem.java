@@ -16,19 +16,14 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.awt.*;
-import java.util.Random;
 
 public class ShockPendantItem extends WearableRelicItem {
     @Override
@@ -44,7 +39,7 @@ public class ShockPendantItem extends WearableRelicItem {
                                 .stat(StatData.builder("chance")
                                         .initialValue(0.2D, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 2))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 10, 18).star(1, 4, 14).star(2, 11, 13)
@@ -108,7 +103,7 @@ public class ShockPendantItem extends WearableRelicItem {
             var random = level.getRandom();
             var attacker = damageSource.getEntity();
 
-            if (attacker != null && random.nextDouble() <= relic.getStatValue(stack, "lightning", "chance")) {
+            if (attacker != null && random.nextDouble() >= relic.getStatValue(stack, "lightning", "chance")) {
                 relic.spreadRelicExperience(player, stack, 1);
 
                 var lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);

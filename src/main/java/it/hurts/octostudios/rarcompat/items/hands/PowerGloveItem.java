@@ -3,7 +3,6 @@ package it.hurts.octostudios.rarcompat.items.hands;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
-import it.hurts.sskirillss.relics.items.relics.base.data.RelicAttributeModifier;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
@@ -18,28 +17,25 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 
 import java.awt.*;
 
 public class PowerGloveItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("power")
                                 .stat(StatData.builder("amount")
-                                        .initialValue(0.2D, 0.4D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .initialValue(0.8D, 1D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.4D)
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 0))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 2, 24).star(1, 8, 23).star(2, 5, 18).star(3, 5, 11)
@@ -74,16 +70,27 @@ public class PowerGloveItem extends WearableRelicItem {
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0
+        if (!(slotContext.entity() instanceof Player player) || player.tickCount % 20 != 0 || getTime(stack) > 5
                 || !canPlayerUseAbility(player, stack, "power"))
             return;
 
-        stack.set(DataComponentRegistry.COUNT, stack.getOrDefault(DataComponentRegistry.COUNT, 0) + 1);
+        addTime(stack, 1);
+    }
+
+    public void addTime(ItemStack stack, int val) {
+        setTime(stack, getTime(stack) + val);
+    }
+
+    public int getTime(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TIME, 0);
+    }
+
+    public void setTime(ItemStack stack, int val) {
+        stack.set(DataComponentRegistry.TIME, Math.max(val, 0));
     }
 
     @EventBusSubscriber
-    public static class Event {
-
+    public static class PowerGloveEvent {
         @SubscribeEvent
         public static void onPlayerAttack(LivingIncomingDamageEvent event) {
             if (!(event.getSource().getEntity() instanceof Player player))
@@ -91,29 +98,21 @@ public class PowerGloveItem extends WearableRelicItem {
 
             ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.POWER_GLOVE.value());
 
-            if (!(stack.getItem() instanceof PowerGloveItem relic) || stack.getOrDefault(DataComponentRegistry.COUNT, 0) < 5
+            if (!(stack.getItem() instanceof PowerGloveItem relic) || relic.getTime(stack) < 5
                     || !relic.canPlayerUseAbility(player, stack, "power"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);
+            relic.setTime(stack, 0);
 
             event.setAmount((float) (event.getAmount() + (event.getAmount() * relic.getStatValue(stack, "power", "amount"))));
 
-            stack.set(DataComponentRegistry.COUNT, 0);
-
-            RandomSource random = player.getRandom();
+            var random = player.getRandom();
 
             for (int i = 0; i < 20; i++) {
-                ((ServerLevel) player.level()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200 + random.nextInt(55), 100 + random.nextInt(100), random.nextInt(50)),
-                                0.7F, 60, 0.9F),
-                        player.getX(),
-                        player.getY() + 1.0,
-                        player.getZ(),
-                        1,
-                        0.0,
-                        0.5,
-                        0.0,
-                        0.05
+                ((ServerLevel) player.getCommandSenderWorld()).sendParticles(ParticleUtils.constructSimpleSpark(new Color(200 + random.nextInt(55), 100 + random.nextInt(100), random.nextInt(50)),
+                                0.7F, 60, 0.9F), player.getX(), player.getY() + 1.0, player.getZ(),
+                        1, 0.0, 0.5, 0.0, 0.05
                 );
             }
         }
