@@ -82,10 +82,11 @@ public class CharmOfSinkingItem extends WearableRelicItem {
             if (player.tickCount % 20 == 0 && player.onGround()) {
                 player.setAirSupply((int) (player.getAirSupply() + getStatValue(stack, "dipping", "air") * 20));
 
-                spreadRelicExperience(player, stack, 1);
-
-                if (getToggled(stack))
+                if (getToggled(stack)) {
                     setToggled(stack, false);
+
+                    spreadRelicExperience(player, stack, 1);
+                }
             }
         } else {
             EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
@@ -111,7 +112,7 @@ public class CharmOfSinkingItem extends WearableRelicItem {
     @EventBusSubscriber
     public static class CharmOfSinkingEvent {
         @SubscribeEvent
-        public static void onBreathe(LivingBreatheEvent event) {
+        public static void onPlayerBreathe(LivingBreatheEvent event) {
             if (!(event.getEntity() instanceof Player player))
                 return;
 

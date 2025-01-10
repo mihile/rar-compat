@@ -63,7 +63,7 @@ public class MimiDustItem extends Item implements ICreativeTabContent {
 
         level.playSound(null, mimic.blockPosition(), SoundEvents.ALLAY_AMBIENT_WITHOUT_ITEM, mimic.getSoundSource(), 1.3F, 0.75F + mimic.getRandom().nextFloat());
 
-        ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, 223 + random.nextInt(33), random.nextInt(50), 255),
+        ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(255, 50 + random.nextInt(50), 200 + random.nextInt(55), 255)   ,
                 1F, 60, 0.85F), center.x(), center.y(), center.z(), 25, 0.3, 0.3, 0.3, 0.05);
 
         return InteractionResult.SUCCESS;
