@@ -40,7 +40,7 @@ public class SnorkelItem extends WearableRelicItem {
                                 .stat(StatData.builder("duration")
                                         .initialValue(5D, 10D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 20, 9).star(1, 16, 14).star(2, 6, 10)

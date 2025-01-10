@@ -34,7 +34,7 @@ public class CrystalHeartItem extends WearableRelicItem {
                                 .stat(StatData.builder("amount")
                                         .initialValue(2D, 6D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 6, 12).star(1, 16, 12).star(2, 11, 22)

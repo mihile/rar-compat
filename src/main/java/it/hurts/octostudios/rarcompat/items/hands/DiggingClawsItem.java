@@ -29,7 +29,6 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import java.util.Random;
 
 public class DiggingClawsItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()

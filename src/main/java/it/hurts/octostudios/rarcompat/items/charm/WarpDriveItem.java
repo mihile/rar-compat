@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import java.awt.*;
 
 public class WarpDriveItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -46,11 +45,11 @@ public class WarpDriveItem extends WearableRelicItem {
                                 .stat(StatData.builder("distance")
                                         .initialValue(10D, 20D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
-                                        .formatValue(value -> MathUtils.round(value, 0))
+                                        .formatValue(value ->(int)  MathUtils.round(value, 0))
                                         .build())
                                 .stat(StatData.builder("cooldown")
-                                        .initialValue(60D, 40D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
+                                        .initialValue(100D, 80D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.075)
                                         .formatValue(value -> MathUtils.round(value / 20, 1))
                                         .build())
                                 .research(ResearchData.builder()

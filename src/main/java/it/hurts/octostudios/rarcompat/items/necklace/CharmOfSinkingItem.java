@@ -35,7 +35,7 @@ public class CharmOfSinkingItem extends WearableRelicItem {
                         .ability(AbilityData.builder("dipping")
                                 .stat(StatData.builder("air")
                                         .initialValue(0.2D, 0.4D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
@@ -76,10 +76,13 @@ public class CharmOfSinkingItem extends WearableRelicItem {
         if (player.isUnderWater()) {
             EntityUtils.applyAttribute(player, stack, Attributes.GRAVITY, 2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
+            if (!isAbilityUnlocked(stack, "dipping"))
+                return;
+
             if (!player.onGround())
                 setToggled(stack, true);
 
-            if (player.tickCount % 20 == 0 && player.onGround()) {
+            if (player.tickCount % 20 == 0 && player.onGround() && player.getMaxAirSupply() > player.getAirSupply()) {
                 player.setAirSupply((int) (player.getAirSupply() + getStatValue(stack, "dipping", "air") * 20));
 
                 if (getToggled(stack)) {

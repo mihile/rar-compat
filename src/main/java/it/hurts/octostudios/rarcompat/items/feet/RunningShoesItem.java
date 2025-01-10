@@ -28,7 +28,7 @@ public class RunningShoesItem extends WearableRelicItem {
                                 .stat(StatData.builder("speed")
                                         .initialValue(0.5D, 0.8D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 13, 27).star(1, 4, 18).star(2, 4, 9).star(3, 8, 6)

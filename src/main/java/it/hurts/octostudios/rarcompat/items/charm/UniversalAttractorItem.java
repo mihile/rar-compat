@@ -31,7 +31,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import java.util.Random;
 
 public class UniversalAttractorItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()

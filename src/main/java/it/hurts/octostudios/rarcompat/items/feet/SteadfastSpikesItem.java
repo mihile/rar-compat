@@ -30,7 +30,7 @@ public class SteadfastSpikesItem extends WearableRelicItem {
                                 .stat(StatData.builder("modifier")
                                         .initialValue(0.2, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .build())
                         .build())

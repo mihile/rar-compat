@@ -27,7 +27,7 @@ public class FlippersItem extends WearableRelicItem {
                                 .stat(StatData.builder("modifier")
                                         .initialValue(0.3D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 4, 26).star(1, 10, 16).star(2, 16, 4).star(3, 18, 13)

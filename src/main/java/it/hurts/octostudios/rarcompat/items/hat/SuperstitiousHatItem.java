@@ -27,7 +27,7 @@ public class SuperstitiousHatItem extends WearableRelicItem {
                                 .stat(StatData.builder("chance")
                                         .initialValue(0.1D, 0.2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 11, 12).star(1, 9, 4).star(2, 4, 8)

@@ -41,7 +41,7 @@ public class NightVisionGogglesItem extends WearableRelicItem {
                                 .stat(StatData.builder("amount")
                                         .initialValue(0.1D, 0.15)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
-                                        .formatValue(value -> MathUtils.round(value * 100D, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100D, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 9, 26).star(1, 11, 13).star(2, 6, 7).star(3, 16, 7)
@@ -114,7 +114,8 @@ public class NightVisionGogglesItem extends WearableRelicItem {
 
             if (player.hasEffect(MobEffects.DARKNESS))
                 event.scaleFarPlaneDistance((float) (event.getFarPlaneDistance() * statValue));
-            else
+
+            if (player.hasEffect(MobEffects.BLINDNESS))
                 event.scaleFarPlaneDistance((float) (event.getFarPlaneDistance() * (statValue * 7f)));
 
             event.setCanceled(true);

@@ -28,7 +28,6 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class WhoopeeCushionItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -37,7 +36,7 @@ public class WhoopeeCushionItem extends WearableRelicItem {
                                 .stat(StatData.builder("chance")
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.075)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .stat(StatData.builder("radius")
                                         .initialValue(3D, 5D)

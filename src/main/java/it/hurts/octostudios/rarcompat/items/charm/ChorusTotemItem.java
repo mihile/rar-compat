@@ -41,7 +41,7 @@ public class ChorusTotemItem extends WearableRelicItem {
                                 .stat(StatData.builder("capacity")
                                         .initialValue(14D, 12D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.08D)
-                                        .formatValue(value -> MathUtils.round(value, 0))
+                                        .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 11, 19).star(1, 11, 27).star(2, 3, 12).star(3, 19, 12)

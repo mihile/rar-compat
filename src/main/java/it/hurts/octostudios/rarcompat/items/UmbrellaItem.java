@@ -226,7 +226,7 @@ public class UmbrellaItem extends WearableRelicItem {
             var stack = player.getMainHandItem();
 
             if (!(stack.getItem() instanceof UmbrellaItem relic) || !relic.canPlayerUseAbility(player, stack, "glider")
-                    || player.getCooldowns().isOnCooldown(relic) || relic.getCharges(stack) <= 0 || player.isFallFlying())
+                    || player.getCooldowns().isOnCooldown(relic) || relic.getCharges(stack) <= 0)
                 return;
 
             var angle = player.getLookAngle().scale(-1.15F);

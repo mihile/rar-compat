@@ -34,7 +34,7 @@ public class VillagerHatItem extends WearableRelicItem {
                                 .stat(StatData.builder("multiplier")
                                         .initialValue(10D, 20D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 3, 25).star(1, 12, 23).star(2, 12, 19)

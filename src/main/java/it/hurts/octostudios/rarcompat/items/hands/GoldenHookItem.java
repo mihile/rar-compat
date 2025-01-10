@@ -30,7 +30,7 @@ public class GoldenHookItem extends WearableRelicItem {
                                 .stat(StatData.builder("amount")
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 6, 10).star(1, 10, 5).star(2, 15, 10).star(3, 10, 18)

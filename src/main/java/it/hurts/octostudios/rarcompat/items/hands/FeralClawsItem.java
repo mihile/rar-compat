@@ -25,7 +25,6 @@ import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class FeralClawsItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -34,7 +33,7 @@ public class FeralClawsItem extends WearableRelicItem {
                                 .stat(StatData.builder("modifier")
                                         .initialValue(0.05D, 0.15D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.12D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 4, 15).star(1, 12, 3).star(2, 6, 19).star(3, 16, 6)

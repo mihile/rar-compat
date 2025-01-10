@@ -58,7 +58,7 @@ public class CowboyHatItem extends WearableRelicItem {
                                 .stat(StatData.builder("speed")
                                         .initialValue(0.2D, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 5, 8).star(1, 7, 22).star(2, 16, 22).star(3, 19, 18).star(4, 12, 17)

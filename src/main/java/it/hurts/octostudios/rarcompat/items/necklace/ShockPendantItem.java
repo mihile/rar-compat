@@ -104,21 +104,23 @@ public class ShockPendantItem extends WearableRelicItem {
             var random = level.getRandom();
             var attacker = damageSource.getEntity();
 
-            if (attacker != null && random.nextDouble() >= relic.getStatValue(stack, "lightning", "chance")) {
-                relic.spreadRelicExperience(player, stack, 1);
+            if (attacker == null && random.nextDouble() > relic.getStatValue(stack, "lightning", "chance"))
+                return;
 
-                var lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+            relic.spreadRelicExperience(player, stack, 1);
 
-                lightningBolt.setVisualOnly(true);
-                lightningBolt.setPos(attacker.position());
+            var lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
 
-                level.addFreshEntity(lightningBolt);
+            lightningBolt.setVisualOnly(true);
+            lightningBolt.setPos(attacker.position());
 
-                attacker.hurt(lightningBolt.damageSources().lightningBolt(), (float) relic.getStatValue(stack, "lightning", "damage"));
+            level.addFreshEntity(lightningBolt);
 
-                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.4F, 30, 0.95F),
-                        attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
-            }
+            attacker.hurt(lightningBolt.damageSources().lightningBolt(), (float) relic.getStatValue(stack, "lightning", "damage"));
+
+            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.4F, 30, 0.95F),
+                    attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
+
         }
     }
 }
