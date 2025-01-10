@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.belt;
+package it.hurts.octostudios.rarcompat.items.charm;
 
 import artifacts.registry.ModItems;
 import be.florens.expandability.api.EventResult;
@@ -14,7 +14,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -74,7 +74,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                         .build())
 
                 .loot(LootData.builder()
-                        .entry(LootCollections.DESERT)
+                        .entry(LootEntries.WILDCARD, LootEntries.AQUATIC)
                         .build())
                 .build();
     }

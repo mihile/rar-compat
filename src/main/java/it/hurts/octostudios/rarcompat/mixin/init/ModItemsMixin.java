@@ -4,7 +4,7 @@ import artifacts.item.WearableArtifactItem;
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.UmbrellaItem;
 import it.hurts.octostudios.rarcompat.items.hat.WhoopeeCushionItem;
-import it.hurts.octostudios.rarcompat.items.belt.*;
+import it.hurts.octostudios.rarcompat.items.charm.*;
 import it.hurts.octostudios.rarcompat.items.feet.*;
 import it.hurts.octostudios.rarcompat.items.hat.NightVisionGogglesItem;
 import it.hurts.octostudios.rarcompat.items.hands.*;
