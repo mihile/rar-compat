@@ -2,7 +2,7 @@ package it.hurts.octostudios.rarcompat.network.packets;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.RARCompat;
-import it.hurts.octostudios.rarcompat.items.belt.CloudInBottleItem;
+import it.hurts.octostudios.rarcompat.items.charm.CloudInBottleItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;

@@ -8,6 +8,8 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -62,6 +64,9 @@ public class PanicNecklaceItem extends WearableRelicItem {
                                         .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
                                 .build())
+                        .build())
+                .loot(LootData.builder()
+                        .entry(LootEntries.WILDCARD, LootEntries.FOREST, LootEntries.TROPIC)
                         .build())
                 .build();
     }

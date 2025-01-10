@@ -1,7 +1,6 @@
 package it.hurts.octostudios.rarcompat.mixin;
 
 import artifacts.registry.ModItems;
-import it.hurts.octostudios.rarcompat.items.belt.HeliumFlamingoItem;
 import it.hurts.octostudios.rarcompat.items.hat.CowboyHatItem;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import net.minecraft.world.entity.FlyingMob;
@@ -17,7 +16,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
