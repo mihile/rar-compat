@@ -1,5 +1,5 @@
 {
-  "tooltip.rarcompat.modified" : "다음 모드에 의해 수정됨 [유물: 아티팩트 호환]",
+  "tooltip.rarcompat.modified" : "Modified by [Relics: Artifacts Compat]",
 
   "tooltip.rarcompat.mimi_dust": "상자에 사용하면 상자가 미믹으로 변하며, 변하기 전 상자가 담고 있던 만큼의 §o무작위§r 유물을 드롭합니다.",
 
@@ -169,9 +169,13 @@
   "tooltip.relics.antidote_vessel.description": "유물 소지자의 상태이상 저항력을 증가시킵니다.",
   "tooltip.relics.antidote_vessel.ability.antidote": "상태이상 저항",
   "tooltip.relics.antidote_vessel.ability.antidote.description": "해로운 상태이상 지속시간이 %1$s%% 줄어듭니다.",
+  "tooltip.relics.antidote_vessel.ability.devourer": "연금술사의 손길",
+  "tooltip.relics.antidote_vessel.ability.devourer.description": "공격한 대상이 이로운 효과를 가지고 있을 시 해당 효과를 %1$s초 만큼 훔쳐옵니다.",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.title": "상태이상 저항",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.description": "%2$s 능력을 사용할 때마다 +%1$s 유물 경험치를 획득합니다.",
-  
+  "tooltip.relics.antidote_vessel.leveling_source.devourer.title": "연금술사의 손길",
+  "tooltip.relics.antidote_vessel.leveling_source.devourer.description": "%2$s 능력을 사용하여 훔친 각 효과당 +%1$s 유물 경험치를 획득합니다.",
+
   "tooltip.relics.power_glove.description": "유물 소지자에게 일격을 날릴 수 있는 능력을 부여합니다.",
   "tooltip.relics.power_glove.ability.power": "파워 스트라이크",
   "tooltip.relics.power_glove.ability.power.description": "5초의 재사용 대기시간을 가진 일격을 날립니다. 해당 일격은 +%1$s%% 증가된 피해를 줍니다.",
@@ -221,7 +225,7 @@
 
   "tooltip.relics.whoopee_cushion.description": "유물 소지자의 방귀를 신비롭게 증가시켜 예측할 수 없는 결과를 초래합니다.",
   "tooltip.relics.whoopee_cushion.ability.push": "방귀",
-  "tooltip.relics.whoopee_cushion.ability.push.description": "피해를 입거나 웅크릴 시, %1$s%% 확률로 주변의 생물을 %2$s블록만큼 밀쳐내고 10초간 구역질 효과를 부여합니다.",
+  "tooltip.relics.whoopee_cushion.ability.push.description": "피해를 입거나 웅크리는걸 계속 반복 시 %1$s%% 확률로 주변의 생물을 %2$s 블록 만큼 밀쳐내고, 10초간 구역질 효과를 부여합니다.",
   "tooltip.relics.whoopee_cushion.leveling_source.push.title": "방귀",
   "tooltip.relics.whoopee_cushion.leveling_source.push.description": "%2$s 능력을 사용할 때마다 +%1$s 유물 경험치를 획득합니다.",
 
@@ -246,10 +250,10 @@
   "tooltip.relics.charm_of_sinking.description": "유물 소지자의 다리에 땅의 기운을 흡수하는 힘을 부여합니다.",
   "tooltip.relics.charm_of_sinking.ability.dive": "닻",
   "tooltip.relics.charm_of_sinking.ability.dive.description": "플레이어의 가라앉는 속도를 두 배로 늘립니다.",
-  "tooltip.relics.charm_of_sinking.ability.immersion": "수중 보행",
-  "tooltip.relics.charm_of_sinking.ability.immersion.description": "해저를 걸을 때 산소 소비를 %1$s%% 감소시킵니다.",
-  "tooltip.relics.charm_of_sinking.leveling_source.immersion.title": "수중 보행",
-  "tooltip.relics.charm_of_sinking.leveling_source.immersion.description": "남은 산소가 있는 상태로 해저를 걷는 매 초마다 +%1$s 유물 경험치를 획득합니다.",
+  "tooltip.relics.charm_of_sinking.ability.dipping": "다이버",
+  "tooltip.relics.charm_of_sinking.ability.dipping.description": "수중 바닥에 서 있는 동안 매초마다 플레이어의 숨을 %1$s초 만큼 회복시킵니다.",
+  "tooltip.relics.charm_of_sinking.leveling_source.dipping.title": "다이버",
+  "tooltip.relics.charm_of_sinking.leveling_source.dipping.description": "수중 바닥에 닿을 때마다 +%1$s 유물 경험치를 획득합니다.",
 
   "tooltip.relics.panic_necklace.description": "유물 소지자의 심장 박동을 가속시켜 다가올 위험을 감지하게 합니다.",
   "tooltip.relics.panic_necklace.ability.panic": "패닉",
@@ -259,7 +263,7 @@
 
   "tooltip.relics.helium_flamingo.description": "일시적으로 유물 소지자가 물에서처럼 공중을 활공할 수 있게 합니다.",
   "tooltip.relics.helium_flamingo.ability.flying": "공중 유영",
-  "tooltip.relics.helium_flamingo.ability.flying.description": "질주 키를 누르고 있는 동안 최대 %1$s초 동안 공중에서 수영할 수 있습니다.",
+  "tooltip.relics.helium_flamingo.ability.flying.description": "공중에서 더블 점프 시 플레이어는 최대 %1$s초 동안 공중에 떠 있을 수 있습니다. 공중에서의 이동 속도는 플레이어의 수영 속도에 비례하며, 추가로 %2$s%% 의 추가 속도를 얻습니다.",
   "tooltip.relics.helium_flamingo.leveling_source.flying.title": "공중 유영",
   "tooltip.relics.helium_flamingo.leveling_source.flying.description": "%2$s 능력을 사용하여 공중을 수영하는 매 초마다 +%1$s 유물 경험치를 획득합니다.",
 
