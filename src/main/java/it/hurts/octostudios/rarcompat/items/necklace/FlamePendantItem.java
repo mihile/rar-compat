@@ -35,7 +35,7 @@ public class FlamePendantItem extends WearableRelicItem {
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
-                                        .initialValue(0.25D, 0.35D)
+                                        .initialValue(0.2D, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
@@ -71,18 +71,18 @@ public class FlamePendantItem extends WearableRelicItem {
     @EventBusSubscriber
     public static class FlamePendantEvent {
         @SubscribeEvent
-        public static void onReceivingDamage(LivingDamageEvent.Pre event) {
+        public static void onReceivingDamage(LivingDamageEvent.Post event) {
             var attacker = event.getSource().getEntity();
 
-            if (!(event.getEntity() instanceof Player player) || attacker == null || attacker == player)
+            if (!(event.getEntity() instanceof Player player) || attacker == null || attacker.getStringUUID().equals(player.getStringUUID()))
                 return;
 
             var level = attacker.getCommandSenderWorld();
             var stack = EntityUtils.findEquippedCurio(player, ModItems.FLAME_PENDANT.value());
             var random = player.getRandom();
 
-            if (level.isClientSide() || !(stack.getItem() instanceof FlamePendantItem relic) || random.nextDouble() > relic.getStatValue(stack, "fire", "chance")
-                    || !relic.canPlayerUseAbility(player, stack, "fire"))
+            if (level.isClientSide() || !(stack.getItem() instanceof FlamePendantItem relic) || !relic.canPlayerUseAbility(player, stack, "fire")
+                    || random.nextDouble() > relic.getStatValue(stack, "fire", "chance"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);

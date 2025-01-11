@@ -33,17 +33,17 @@ public class ThornPendantItem extends WearableRelicItem {
                 .abilities(AbilitiesData.builder()
                         .ability(AbilityData.builder("poison")
                                 .stat(StatData.builder("multiplier")
-                                        .initialValue(0.05D, 0.1D)
+                                        .initialValue(0.05D, 0.15D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
                                         .formatValue(value -> MathUtils.round(value * 100, 1))
                                         .build())
                                 .stat(StatData.builder("time")
-                                        .initialValue(2D, 3D)
+                                        .initialValue(2D, 4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.3D)
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
-                                        .initialValue(0.1D, 0.15D)
+                                        .initialValue(0.1D, 0.2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.15D)
                                         .formatValue(value -> (int) MathUtils.round(value * 100, 0))
                                         .build())
@@ -80,8 +80,9 @@ public class ThornPendantItem extends WearableRelicItem {
     @EventBusSubscriber
     public static class ThornPendantEvent {
         @SubscribeEvent
-        public static void onReceivingDamage(LivingDamageEvent.Pre event) {
-            if (!(event.getEntity() instanceof Player player) || !(event.getSource().getEntity() instanceof LivingEntity attacker) || attacker == player)
+        public static void onReceivingDamage(LivingDamageEvent.Post event) {
+            if (!(event.getEntity() instanceof Player player) || !(event.getSource().getEntity() instanceof LivingEntity attacker)
+                    || attacker.getStringUUID().equals(player.getStringUUID()))
                 return;
 
             var stack = EntityUtils.findEquippedCurio(player, ModItems.THORN_PENDANT.value());
@@ -92,16 +93,13 @@ public class ThornPendantItem extends WearableRelicItem {
                     || random.nextDouble() > relic.getStatValue(stack, "poison", "chance"))
                 return;
 
-            var time = (int) (relic.getStatValue(stack, "poison", "time") * 20);
-
             relic.spreadRelicExperience(player, stack, 1);
 
-            attacker.hurt(event.getSource(), (float) (event.getNewDamage() * relic.getStatValue(stack, "poison", "multiplier")));
-            attacker.addEffect(new MobEffectInstance(MobEffects.POISON, time, 1));
+            attacker.hurt(level.damageSources().thorns(player), (float) (event.getNewDamage() * relic.getStatValue(stack, "poison", "multiplier")));
+            attacker.addEffect(new MobEffectInstance(MobEffects.POISON, (int) (relic.getStatValue(stack, "poison", "time") * 20), 1));
 
             ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(50 + random.nextInt(50), 200 + random.nextInt(55), 50 + random.nextInt(50)), 0.4F, 30, 0.95F),
                     attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
         }
-
     }
 }
