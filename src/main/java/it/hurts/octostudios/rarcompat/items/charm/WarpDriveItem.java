@@ -43,8 +43,8 @@ public class WarpDriveItem extends WearableRelicItem {
                                         })
                                         .build())
                                 .stat(StatData.builder("distance")
-                                        .initialValue(10D, 20D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
+                                        .initialValue(5D, 15D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.565D)
                                         .formatValue(value ->(int)  MathUtils.round(value, 0))
                                         .build())
                                 .stat(StatData.builder("cooldown")
@@ -131,7 +131,7 @@ public class WarpDriveItem extends WearableRelicItem {
 
         blockPos = blockPos.above();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < (int) Math.round(distance / 3); i++) {
             if (hasCollision(level, blockPos) || hasCollision(level, blockPos.above())) {
                 blockPos = blockPos.above();
 
