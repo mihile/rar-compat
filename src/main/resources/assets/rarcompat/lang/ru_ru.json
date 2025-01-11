@@ -1,7 +1,7 @@
 {
   "tooltip.rarcompat.modified" : "Модифицировано [Relics: Artifacts Compat]",
 
-  "tooltip.rarcompat.mimi_dust": "При использовании на сундуке создаст из него мимика, дропающего столько §oслучайных§r реликвий, сколько было в нём до превращения.",
+  "tooltip.rarcompat.mimi_dust": "При использовании на сундуке создаст из него мимика, дропающего столько случайных реликвий, сколько было в нём до превращения.",
 
   "item.rarcompat.mimi_dust": "Мими-пыль",
 
@@ -169,12 +169,12 @@
   "tooltip.relics.antidote_vessel.description": "Усиливает сопротивление эффектам у носителя реликвии.",
   "tooltip.relics.antidote_vessel.ability.antidote": "Сопротивление ядам",
   "tooltip.relics.antidote_vessel.ability.antidote.description": "Сокращает продолжительность получаемых негативных эффектов на %1$s%%.",
-  "tooltip.relics.antidote_vessel.ability.devourer": "",
-  "tooltip.relics.antidote_vessel.ability.devourer.description": "%1$s%%.",
+  "tooltip.relics.antidote_vessel.ability.devourer": "Алхимическое касание",
+  "tooltip.relics.antidote_vessel.ability.devourer.description": "Каждая совершённая атака крадёт у цели %1$s секунд от всех имеющихся у неё положительных эффектов.",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.title": "Сопротивление ядам",
   "tooltip.relics.antidote_vessel.leveling_source.antidote.description": "+%1$s единиц опыта за каждое срабатывание способности %2$s.",
-  "tooltip.relics.antidote_vessel.leveling_source.devourer.title": "",
-  "tooltip.relics.antidote_vessel.leveling_source.devourer.description": "",
+  "tooltip.relics.antidote_vessel.leveling_source.devourer.title": "Алхимическое касание",
+  "tooltip.relics.antidote_vessel.leveling_source.devourer.description": "+%1$s единиц опыта за каждый украденный эффект при помощи способности %2$s.",
 
   "tooltip.relics.power_glove.description": "Позволяет носителю реликвии совершать усиленные атаки.",
   "tooltip.relics.power_glove.ability.power": "Сильный удар",
@@ -250,10 +250,10 @@
   "tooltip.relics.charm_of_sinking.description": "Наделяет ноги носителя реликвии способностью к поглощению воздуха из почвы.",
   "tooltip.relics.charm_of_sinking.ability.dive": "Якорь",
   "tooltip.relics.charm_of_sinking.ability.dive.description": "Увеличивает скорость потопления игрока в 2 раза.",
-  "tooltip.relics.charm_of_sinking.ability.immersion": "Подводный ходок",
-  "tooltip.relics.charm_of_sinking.ability.immersion.description": "При передвижении игрока по подводному дну, замедляет расход воздуха на %1$s%%.",
-  "tooltip.relics.charm_of_sinking.leveling_source.immersion.title": "Подводный ходок",
-  "tooltip.relics.charm_of_sinking.leveling_source.immersion.description": "+%1$s единиц опыта за каждую секунду передвижения по подводному дну при условии наличия у игрока воздуха.",
+  "tooltip.relics.charm_of_sinking.ability.dipping": "Ныряльщик",
+  "tooltip.relics.charm_of_sinking.ability.dipping.description": "Восполняет запас воздуха игрока на %1$s секунд каждую секунду, пока тот стоит на подводном дне.",
+  "tooltip.relics.charm_of_sinking.leveling_source.dipping.title": "Ныряльщик",
+  "tooltip.relics.charm_of_sinking.leveling_source.dipping.description": "+%1$s единиц опыта за каждое совершённое касание подводного дна.",
 
   "tooltip.relics.panic_necklace.description": "Учащает стук сердца носителя реликвии, предостерегая о надвигающейся опасности.",
   "tooltip.relics.panic_necklace.ability.panic": "Паника",
@@ -263,8 +263,7 @@
 
   "tooltip.relics.helium_flamingo.description": "На время позволяет носителю реликвии рассекать воздух так же, как он рассекает воду.",
   "tooltip.relics.helium_flamingo.ability.flying": "Воздушный пловец",
-  "tooltip.relics.helium_flamingo.ability.flying.description": "Позволяет игроку плавать в воздухе до %1$s секунд при зажатии клавиши бега.",
-  "tooltip.relics.helium_flamingo.leveling_source.flying.title": "Воздушный пловец",
+  "tooltip.relics.helium_flamingo.ability.flying.description": "При совершении двойного прыжка позволяет игроку плавать в воздухе на время до %1$s секунд. Скорость передвижения в воздухе пропорциональна скорости плавания игрока с бонусом в дополнительные %2$s%%.",  "tooltip.relics.helium_flamingo.leveling_source.flying.title": "Воздушный пловец",
   "tooltip.relics.helium_flamingo.leveling_source.flying.description": "+%1$s единиц опыта за каждую секунду плавания в воздухе от способности %2$s.",
 
   "tooltip.relics.pocket_piston.description": "Наделяет руки носителя реликвии силой, свойственной лишь механизмам.",

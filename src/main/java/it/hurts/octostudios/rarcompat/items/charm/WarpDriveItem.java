@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.belt;
+package it.hurts.octostudios.rarcompat.items.charm;
 
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
@@ -11,7 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import java.awt.*;
 
 public class WarpDriveItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -46,11 +45,11 @@ public class WarpDriveItem extends WearableRelicItem {
                                 .stat(StatData.builder("distance")
                                         .initialValue(10D, 20D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.5D)
-                                        .formatValue(value -> MathUtils.round(value, 0))
+                                        .formatValue(value ->(int)  MathUtils.round(value, 0))
                                         .build())
                                 .stat(StatData.builder("cooldown")
-                                        .initialValue(60D, 40D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.05D)
+                                        .initialValue(100D, 80D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.075)
                                         .formatValue(value -> MathUtils.round(value / 20, 1))
                                         .build())
                                 .research(ResearchData.builder()
@@ -80,7 +79,7 @@ public class WarpDriveItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .loot(LootData.builder()
-                        .entry(LootCollections.ANTHROPOGENIC)
+                        .entry(LootEntries.WILDCARD, LootEntries.END_LIKE, LootEntries.THE_END)
                         .build())
                 .build();
     }

@@ -1,9 +1,10 @@
-package it.hurts.octostudios.rarcompat.items.belt;
+package it.hurts.octostudios.rarcompat.items.charm;
 
 import artifacts.registry.ModItems;
 import be.florens.expandability.api.EventResult;
 import be.florens.expandability.api.forge.PlayerSwimEvent;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.octostudios.rarcompat.network.packets.FlamingoSwimPacket;
 import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.cast.CastData;
@@ -14,19 +15,22 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
+import it.hurts.sskirillss.relics.network.NetworkHandler;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class HeliumFlamingoItem extends WearableRelicItem {
@@ -46,7 +50,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                                 .stat(StatData.builder("speed")
                                         .initialValue(0.2D, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2D)
-                                        .formatValue(value -> MathUtils.round(value, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 2, 6).star(1, 8, 10).star(2, 6, 19)
@@ -72,9 +76,8 @@ public class HeliumFlamingoItem extends WearableRelicItem {
                                         .build())
                                 .build())
                         .build())
-
                 .loot(LootData.builder()
-                        .entry(LootCollections.DESERT)
+                        .entry(LootEntries.WILDCARD, LootEntries.AQUATIC)
                         .build())
                 .build();
     }
@@ -95,9 +98,7 @@ public class HeliumFlamingoItem extends WearableRelicItem {
             spreadRelicExperience(player, stack, 1);
         }
 
-        int statValue = (int) MathUtils.round(getStatValue(stack, "flying", "time"), 0);
-
-        if (getTime(stack) >= statValue) {
+        if (getTime(stack) >= (int) MathUtils.round(getStatValue(stack, "flying", "time"), 0)) {
             player.setDeltaMovement(player.getDeltaMovement().x, -0.25, player.getKnownMovement().z);
             player.fallDistance = 0;
 
@@ -135,17 +136,21 @@ public class HeliumFlamingoItem extends WearableRelicItem {
         stack.set(DataComponentRegistry.TIME, Math.max(val, 0));
     }
 
-    @EventBusSubscriber
-    public static class HeliumFlamingoEvent {
+    @EventBusSubscriber(Dist.CLIENT)
+    public static class HeliumFlamingoClientEvent {
         @SubscribeEvent
-        public static void onLivingJump(LivingEvent.LivingJumpEvent event) {
-            if (!(event.getEntity() instanceof Player player))
+        public static void onClientTick(InputEvent.Key event) {
+            var minecraft = Minecraft.getInstance();
+            var player = minecraft.player;
+
+            if (player == null)
                 return;
 
-            ItemStack stack = EntityUtils.findEquippedCurio(player, ModItems.HELIUM_FLAMINGO.value());
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.HELIUM_FLAMINGO.value());
 
-            if (!(stack.getItem() instanceof HeliumFlamingoItem relic) || player.isInWater()
-                    || !relic.isAbilityTicking(stack, "flying"))
+            if (minecraft.screen != null || event.getAction() != 1 || !(stack.getItem() instanceof HeliumFlamingoItem relic)
+                    || !relic.canPlayerUseAbility(player, stack, "flying") || event.getKey() != minecraft.options.keyJump.getKey().getValue()
+                    || player.mayFly() || player.onGround())
                 return;
 
             var statValue = (int) MathUtils.round(relic.getStatValue(stack, "flying", "time"), 0);
@@ -154,10 +159,12 @@ public class HeliumFlamingoItem extends WearableRelicItem {
             if (time >= statValue || Math.abs(player.getKnownMovement().x) <= 0.01D || Math.abs(player.getKnownMovement().z) <= 0.01D)
                 return;
 
-            player.setSprinting(true);
-            relic.setToggled(stack, true);
+            NetworkHandler.sendToServer(new FlamingoSwimPacket());
         }
+    }
 
+    @EventBusSubscriber
+    public static class HeliumFlamingoEvent {
         @SubscribeEvent
         public static void onSwimAir(PlayerSwimEvent event) {
             Player player = event.getEntity();

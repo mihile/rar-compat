@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.belt;
+package it.hurts.octostudios.rarcompat.items.charm;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
@@ -8,7 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -24,7 +24,6 @@ import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 
 public class AntidoteVesselItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -33,7 +32,7 @@ public class AntidoteVesselItem extends WearableRelicItem {
                                 .stat(StatData.builder("amount")
                                         .initialValue(0.2D, 0.4D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 4, 7).star(1, 12, 18).star(2, 5, 26).star(3, 15, 26)
@@ -41,10 +40,11 @@ public class AntidoteVesselItem extends WearableRelicItem {
                                         .build())
                                 .build())
                         .ability(AbilityData.builder("devourer")
+                                .requiredLevel(5)
                                 .stat(StatData.builder("duration")
-                                        .initialValue(0.1D, 0.3D)
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .initialValue(1D, 1.5D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.4D)
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .build())
                         .build())
@@ -56,21 +56,21 @@ public class AntidoteVesselItem extends WearableRelicItem {
                         .build())
                 .leveling(LevelingData.builder()
                         .initialCost(100)
-                        .maxLevel(10)
+                        .maxLevel(15)
                         .step(100)
                         .sources(LevelingSourcesData.builder()
                                 .source(LevelingSourceData.abilityBuilder("antidote")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.YELLOW)
                                         .build())
-                                .source(LevelingSourceData.abilityBuilder("devourer ")
+                                .source(LevelingSourceData.abilityBuilder("devourer")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.BLUE)
                                         .build())
                                 .build())
                         .build())
                 .loot(LootData.builder()
-                        .entry(LootCollections.JUNGLE)
+                        .entry(LootEntries.WILDCARD, LootEntries.TROPIC)
                         .build())
                 .build();
     }
@@ -86,23 +86,27 @@ public class AntidoteVesselItem extends WearableRelicItem {
             var player = event.getEntity();
             var stack = EntityUtils.findEquippedCurio(player, ModItems.ANTIDOTE_VESSEL.value());
 
-            if (!(stack.getItem() instanceof AntidoteVesselItem relic) || !relic.canPlayerUseAbility(player, stack, "devourer"))
+            if (!(stack.getItem() instanceof AntidoteVesselItem relic) || !relic.canPlayerUseAbility(player, stack, "devourer")
+                    || player.getAttackStrengthScale(0) <= 0.9F)
                 return;
 
             for (var activeEffect : target.getActiveEffects().stream().filter(effect -> effect.getEffect().value().isBeneficial()).toList()) {
-                var transferDuration = (int) (activeEffect.getDuration() * relic.getStatValue(stack, "devourer", "duration"));
+                var transferDuration = (int) (activeEffect.getDuration() - (relic.getStatValue(stack, "devourer", "duration") * 20));
 
                 target.removeEffect(activeEffect.getEffect());
-                target.addEffect(new MobEffectInstance(activeEffect.getEffect(), activeEffect.getDuration() - transferDuration, activeEffect.getAmplifier()));
+                target.addEffect(new MobEffectInstance(activeEffect.getEffect(), transferDuration, activeEffect.getAmplifier()));
 
                 MobEffectInstance existingEffect = player.getEffect(activeEffect.getEffect());
 
+                var amplifier = existingEffect == null ? 1 : activeEffect.getAmplifier();
+                var transferDuration1 = (int) relic.getStatValue(stack, "devourer", "duration") * 20;
+
                 if (existingEffect != null) {
-                    transferDuration += existingEffect.getDuration();
+                    transferDuration1 += (existingEffect.getDuration());
                     player.removeEffect(activeEffect.getEffect());
                 }
 
-                player.addEffect(new MobEffectInstance(activeEffect.getEffect(), transferDuration, activeEffect.getAmplifier()));
+                player.addEffect(new MobEffectInstance(activeEffect.getEffect(), transferDuration1, amplifier));
 
                 relic.spreadRelicExperience(player, stack, 1);
             }

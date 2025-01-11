@@ -7,7 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -26,7 +26,7 @@ public class LuckyScarfItem extends WearableRelicItem {
                                 .stat(StatData.builder("chance")
                                         .initialValue(0.1D, 0.2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.25)
-                                        .formatValue(value -> MathUtils.round(value * 100, 1))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 14, 6).star(1, 6, 12).star(2, 16, 15)
@@ -52,7 +52,7 @@ public class LuckyScarfItem extends WearableRelicItem {
                                         .build())
                                 .build())
                         .build()).loot(LootData.builder()
-                        .entry(LootCollections.ANTHROPOGENIC)
+                        .entry(LootEntries.WILDCARD, LootEntries.VILLAGE, LootEntries.MINESHAFT, LootEntries.CAVE)
                         .build())
                 .build();
     }

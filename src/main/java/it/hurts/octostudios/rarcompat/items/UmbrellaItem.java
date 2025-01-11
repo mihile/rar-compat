@@ -11,7 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -101,7 +101,7 @@ public class UmbrellaItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .loot(LootData.builder()
-                        .entry(LootCollections.ANTHROPOGENIC)
+                        .entry(LootEntries.WILDCARD, LootEntries.VILLAGE, LootEntries.MOUNTAIN)
                         .build())
                 .build();
     }
@@ -226,7 +226,7 @@ public class UmbrellaItem extends WearableRelicItem {
             var stack = player.getMainHandItem();
 
             if (!(stack.getItem() instanceof UmbrellaItem relic) || !relic.canPlayerUseAbility(player, stack, "glider")
-                    || player.getCooldowns().isOnCooldown(relic) || relic.getCharges(stack) <= 0 || player.isFallFlying())
+                    || player.getCooldowns().isOnCooldown(relic) || relic.getCharges(stack) <= 0)
                 return;
 
             var angle = player.getLookAngle().scale(-1.15F);

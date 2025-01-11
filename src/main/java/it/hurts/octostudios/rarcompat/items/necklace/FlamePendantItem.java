@@ -8,7 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -19,12 +19,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.awt.*;
 
 public class FlamePendantItem extends WearableRelicItem {
-
     @Override
     public RelicData constructDefaultRelicData() {
         return RelicData.builder()
@@ -36,9 +35,9 @@ public class FlamePendantItem extends WearableRelicItem {
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
-                                        .initialValue(0.25D, 0.35D)
+                                        .initialValue(0.2D, 0.3D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 2))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 10, 18).star(1, 4, 14).star(2, 11, 13)
@@ -64,27 +63,26 @@ public class FlamePendantItem extends WearableRelicItem {
                                         .build())
                                 .build())
                         .build()).loot(LootData.builder()
-                        .entry(LootCollections.NETHER)
+                        .entry(LootEntries.WILDCARD, LootEntries.NETHER_LIKE, LootEntries.THE_NETHER)
                         .build())
                 .build();
     }
 
     @EventBusSubscriber
-    public static class Event {
-
+    public static class FlamePendantEvent {
         @SubscribeEvent
-        public static void onReceivingDamage(LivingIncomingDamageEvent event) {
+        public static void onReceivingDamage(LivingDamageEvent.Post event) {
             var attacker = event.getSource().getEntity();
 
-            if (!(event.getEntity() instanceof Player player) || attacker == null || attacker == player)
+            if (!(event.getEntity() instanceof Player player) || attacker == null || attacker.getStringUUID().equals(player.getStringUUID()))
                 return;
 
             var level = attacker.getCommandSenderWorld();
             var stack = EntityUtils.findEquippedCurio(player, ModItems.FLAME_PENDANT.value());
             var random = player.getRandom();
 
-            if (level.isClientSide() || !(stack.getItem() instanceof FlamePendantItem relic) || random.nextDouble() >= relic.getStatValue(stack, "fire", "chance")
-                    || !relic.canPlayerUseAbility(player, stack, "fire"))
+            if (level.isClientSide() || !(stack.getItem() instanceof FlamePendantItem relic) || !relic.canPlayerUseAbility(player, stack, "fire")
+                    || random.nextDouble() > relic.getStatValue(stack, "fire", "chance"))
                 return;
 
             relic.spreadRelicExperience(player, stack, 1);

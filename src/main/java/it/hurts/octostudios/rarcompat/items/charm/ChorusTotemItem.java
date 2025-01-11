@@ -1,4 +1,4 @@
-package it.hurts.octostudios.rarcompat.items.belt;
+package it.hurts.octostudios.rarcompat.items.charm;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
@@ -13,14 +13,13 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
 import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.data.WorldPosition;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -42,7 +41,7 @@ public class ChorusTotemItem extends WearableRelicItem {
                                 .stat(StatData.builder("capacity")
                                         .initialValue(14D, 12D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, -0.08D)
-                                        .formatValue(value -> MathUtils.round(value, 0))
+                                        .formatValue(value -> (int) MathUtils.round(value, 0))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 11, 19).star(1, 11, 27).star(2, 3, 12).star(3, 19, 12)
@@ -69,7 +68,7 @@ public class ChorusTotemItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .loot(LootData.builder()
-                        .entry(LootCollections.ANTHROPOGENIC)
+                        .entry(LootEntries.WILDCARD, LootEntries.END_LIKE, LootEntries.THE_END)
                         .build())
                 .build();
     }

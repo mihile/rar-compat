@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -15,20 +16,17 @@ import it.hurts.sskirillss.relics.utils.EntityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.ParticleUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.awt.*;
-import java.util.Random;
 
 public class ShockPendantItem extends WearableRelicItem {
     @Override
@@ -42,9 +40,9 @@ public class ShockPendantItem extends WearableRelicItem {
                                         .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .stat(StatData.builder("chance")
-                                        .initialValue(0.2D, 0.3D)
+                                        .initialValue(0.1D, 0.2D)
                                         .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1D)
-                                        .formatValue(value -> MathUtils.round(value * 100, 2))
+                                        .formatValue(value -> (int) MathUtils.round(value * 100, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 10, 18).star(1, 4, 14).star(2, 11, 13)
@@ -81,7 +79,7 @@ public class ShockPendantItem extends WearableRelicItem {
                                 .build())
                         .build())
                 .loot(LootData.builder()
-                        .entry("minecraft:chests/ancient_city", 0.5F)
+                        .entry(LootEntries.WILDCARD, LootEntries.MOUNTAIN, LootEntries.PLAINS)
                         .build())
                 .build();
     }
@@ -89,7 +87,21 @@ public class ShockPendantItem extends WearableRelicItem {
     @EventBusSubscriber
     public static class ShockPendantEvent {
         @SubscribeEvent
-        public static void onReceivingDamage(LivingIncomingDamageEvent event) {
+        public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
+            if (!(event.getEntity() instanceof Player player) || !event.getSource().is(DamageTypeTags.IS_LIGHTNING))
+                return;
+
+            var stack = EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value());
+
+            if (!(EntityUtils.findEquippedCurio(player, ModItems.SHOCK_PENDANT.value()).getItem() instanceof ShockPendantItem relic)
+                    || !relic.canPlayerUseAbility(player, stack, "passive"))
+                return;
+
+            event.setCanceled(true);
+        }
+
+        @SubscribeEvent
+        public static void onReceivingDamage(LivingDamageEvent.Post event) {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
@@ -100,29 +112,26 @@ public class ShockPendantItem extends WearableRelicItem {
                     || !relic.canPlayerUseAbility(player, stack, "lightning"))
                 return;
 
-            var damageSource = event.getSource();
-
-            if (damageSource.is(DamageTypeTags.IS_LIGHTNING) && relic.canPlayerUseAbility(player, stack, "passive"))
-                event.setCanceled(true);
-
             var random = level.getRandom();
-            var attacker = damageSource.getEntity();
+            var attacker = event.getSource().getEntity();
 
-            if (attacker != null && random.nextDouble() <= relic.getStatValue(stack, "lightning", "chance")) {
-                relic.spreadRelicExperience(player, stack, 1);
+            if (attacker == null || random.nextDouble() > relic.getStatValue(stack, "lightning", "chance"))
+                return;
 
-                var lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+            relic.spreadRelicExperience(player, stack, 1);
 
-                lightningBolt.setVisualOnly(true);
-                lightningBolt.setPos(attacker.position());
+            var bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
 
-                level.addFreshEntity(lightningBolt);
+            bolt.setCause((ServerPlayer) player);
+            bolt.setPos(attacker.position());
+            bolt.setVisualOnly(true);
 
-                attacker.hurt(lightningBolt.damageSources().lightningBolt(), (float) relic.getStatValue(stack, "lightning", "damage"));
+            level.addFreshEntity(bolt);
 
-                ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.4F, 30, 0.95F),
-                        attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
-            }
+            attacker.hurt(bolt.damageSources().lightningBolt(), (float) relic.getStatValue(stack, "lightning", "damage"));
+
+            ((ServerLevel) level).sendParticles(ParticleUtils.constructSimpleSpark(new Color(random.nextInt(50), random.nextInt(50), 50 + random.nextInt(55)), 0.4F, 30, 0.95F),
+                    attacker.getX(), attacker.getY() + attacker.getBbHeight() / 2F, attacker.getZ(), 10, attacker.getBbWidth() / 2F, attacker.getBbHeight() / 2F, attacker.getBbWidth() / 2F, 0.025F);
         }
     }
 }

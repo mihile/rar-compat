@@ -2,13 +2,14 @@ package it.hurts.octostudios.rarcompat.items.necklace;
 
 import artifacts.registry.ModItems;
 import it.hurts.octostudios.rarcompat.items.WearableRelicItem;
+import it.hurts.sskirillss.relics.init.DataComponentRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.*;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemColor;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.GemShape;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.misc.UpgradeOperation;
 import it.hurts.sskirillss.relics.items.relics.base.data.loot.LootData;
-import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootCollections;
+import it.hurts.sskirillss.relics.items.relics.base.data.loot.misc.LootEntries;
 import it.hurts.sskirillss.relics.items.relics.base.data.research.ResearchData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.StyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.style.TooltipData;
@@ -31,11 +32,11 @@ public class CharmOfSinkingItem extends WearableRelicItem {
                         .ability(AbilityData.builder("dive")
                                 .maxLevel(0)
                                 .build())
-                        .ability(AbilityData.builder("immersion")
+                        .ability(AbilityData.builder("dipping")
                                 .stat(StatData.builder("air")
-                                        .initialValue(1D, 3D) // TODO: Use actual percent value or either real time value instead of current implementation
-                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.1)
-                                        .formatValue(value -> (int) MathUtils.round(value * 10, 1))
+                                        .initialValue(0.2D, 0.4D)
+                                        .upgradeModifier(UpgradeOperation.MULTIPLY_BASE, 0.2)
+                                        .formatValue(value -> MathUtils.round(value, 1))
                                         .build())
                                 .research(ResearchData.builder()
                                         .star(0, 12, 9).star(1, 9, 14).star(2, 16, 14)
@@ -55,27 +56,44 @@ public class CharmOfSinkingItem extends WearableRelicItem {
                         .maxLevel(10)
                         .step(100)
                         .sources(LevelingSourcesData.builder()
-                                .source(LevelingSourceData.abilityBuilder("immersion")
+                                .source(LevelingSourceData.abilityBuilder("dipping")
                                         .initialValue(1)
                                         .gem(GemShape.SQUARE, GemColor.CYAN)
                                         .build())
                                 .build())
                         .build())
                 .loot(LootData.builder()
-                        .entry(LootCollections.AQUATIC)
+                        .entry(LootEntries.WILDCARD, LootEntries.AQUATIC)
                         .build())
                 .build();
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-        if (!(slotContext.entity() instanceof Player player))
+        if (!(slotContext.entity() instanceof Player player) || !isAbilityUnlocked(stack, "dive"))
             return;
 
-        if (player.isUnderWater())
+        if (player.isUnderWater()) {
             EntityUtils.applyAttribute(player, stack, Attributes.GRAVITY, 2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        else
+
+            if (!isAbilityUnlocked(stack, "dipping"))
+                return;
+
+            if (!player.onGround())
+                setToggled(stack, true);
+
+            if (player.tickCount % 20 == 0 && player.onGround() && player.getMaxAirSupply() > player.getAirSupply()) {
+                player.setAirSupply((int) (player.getAirSupply() + getStatValue(stack, "dipping", "air") * 20));
+
+                if (getToggled(stack)) {
+                    setToggled(stack, false);
+
+                    spreadRelicExperience(player, stack, 1);
+                }
+            }
+        } else {
             EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        }
     }
 
     @Override
@@ -86,29 +104,28 @@ public class CharmOfSinkingItem extends WearableRelicItem {
         EntityUtils.removeAttribute(player, stack, Attributes.GRAVITY, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
+    public void setToggled(ItemStack stack, boolean val) {
+        stack.set(DataComponentRegistry.TOGGLED, val);
+    }
+
+    public boolean getToggled(ItemStack stack) {
+        return stack.getOrDefault(DataComponentRegistry.TOGGLED, true);
+    }
+
     @EventBusSubscriber
     public static class CharmOfSinkingEvent {
         @SubscribeEvent
-        public static void onBreathe(LivingBreatheEvent event) {
+        public static void onPlayerBreathe(LivingBreatheEvent event) {
             if (!(event.getEntity() instanceof Player player))
                 return;
 
             var stack = EntityUtils.findEquippedCurio(player, ModItems.CHARM_OF_SINKING.value());
 
             if (!(stack.getItem() instanceof CharmOfSinkingItem relic) || !player.isUnderWater()
-                    || !relic.isAbilityUnlocked(stack, "immersion") || !player.onGround())
+                    || !relic.isAbilityUnlocked(stack, "dipping") || !player.onGround() || player.getAirSupply() == player.getMaxAirSupply())
                 return;
 
-            var tickCount = player.tickCount;
-
-            if (tickCount % 20 == 0 && player.onGround() && player.getAirSupply() > 1) // TODO: Do not duplicate conditional blocks
-                relic.spreadRelicExperience(player, stack, 1);
-
-            // TODO: Do not hard-lock 'else' block since it may disable other mods functionality
-            if (tickCount % (int) relic.getStatValue(stack, "immersion", "air") == 0) {
-                event.setConsumeAirAmount(1);
-            } else
-                event.setConsumeAirAmount(0);
+            event.setConsumeAirAmount(0);
         }
     }
 }
